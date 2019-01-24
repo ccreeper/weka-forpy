@@ -1,0 +1,924 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="5697102d-0fc1-4646-ae95-2e8bbdced8cc" name="Default" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/qttest$TreeNodeButton.coverage" NAME="TreeNodeButton Coverage Results" MODIFIED="1548314315189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui" />
+    <SUITE FILE_PATH="coverage/qttest$Instance.coverage" NAME="Instance Coverage Results" MODIFIED="1547624620968" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/qttest$CallMain.coverage" NAME="CallMain Coverage Results" MODIFIED="1548321536724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/qttest$Attributes.coverage" NAME="Attributes Coverage Results" MODIFIED="1547544662640" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/qttest$MatplotlibWidget.coverage" NAME="MatplotlibWidget Coverage Results" MODIFIED="1548304878894" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui" />
+    <SUITE FILE_PATH="coverage/qttest$AttributeInfo.coverage" NAME="AttributeInfo Coverage Results" MODIFIED="1547625079879" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/qttest$Main.coverage" NAME="Main Coverage Results" MODIFIED="1546573040502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/qttest$Stats.coverage" NAME="Stats Coverage Results" MODIFIED="1547544673491" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/qttest$MatplotlibWidget_pyqt.coverage" NAME="MatplotlibWidget_pyqt Coverage Results" MODIFIED="1547804232914" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui" />
+    <SUITE FILE_PATH="coverage/qttest$ExtendUI.coverage" NAME="ExtendUI Coverage Results" MODIFIED="1547378132948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/qttest$AttributePanel.coverage" NAME="AttributePanel Coverage Results" MODIFIED="1547544681176" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
+    <SUITE FILE_PATH="coverage/qttest$InstanceSummaryPanel.coverage" NAME="InstanceSummaryPanel Coverage Results" MODIFIED="1547544684853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
+    <SUITE FILE_PATH="coverage/qttest$Instances.coverage" NAME="Instances Coverage Results" MODIFIED="1547624904312" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/qttest$AttributeVisualizationPanel.coverage" NAME="AttributeVisualizationPanel Coverage Results" MODIFIED="1548303758219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
+    <SUITE FILE_PATH="coverage/qttest$MyUI.coverage" NAME="MyUI Coverage Results" MODIFIED="1547016168870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/qttest$Utils.coverage" NAME="Utils Coverage Results" MODIFIED="1548057979573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+    <SUITE FILE_PATH="coverage/qttest$Preprocess.coverage" NAME="Preprocess Coverage Results" MODIFIED="1548316422726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/qttest$AttributeSummaryPanel.coverage" NAME="AttributeSummaryPanel Coverage Results" MODIFIED="1547544653681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
+    <SUITE FILE_PATH="coverage/qttest$test.coverage" NAME="test Coverage Results" MODIFIED="1543983384211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/qttest$AttributeStats.coverage" NAME="AttributeStats Coverage Results" MODIFIED="1547544667741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="Preprocess.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Preprocess.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="253">
+              <caret line="17" column="51" lean-forward="false" selection-start-line="17" selection-start-column="51" selection-end-line="18" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#53#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Add.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/filters/attribute/Add.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="17" column="13" lean-forward="false" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#20#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Option.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/core/Option.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="46">
+              <caret line="2" column="30" lean-forward="false" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AttributeInfo.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/AttributeInfo.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="9" column="72" lean-forward="true" selection-start-line="9" selection-start-column="53" selection-end-line="9" selection-end-column="72" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SingleIndex.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/SingleIndex.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="989">
+              <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Filter.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/filters/Filter.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="437">
+              <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#20#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenericObjectEditor.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/scripts/GenericObjectEditor.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="276">
+              <caret line="12" column="20" lean-forward="false" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TreeNodeButton.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/TreeNodeButton.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="115">
+              <caret line="17" column="31" lean-forward="false" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CallMain.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CallMain.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="483">
+              <caret line="29" column="38" lean-forward="false" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="QtWidgets.pyi" pinned="false" current-in-tab="false">
+        <entry file="file://D:/Anaconda3/Lib/site-packages/PyQt5/QtWidgets.pyi">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="257">
+              <caret line="298" column="8" lean-forward="false" selection-start-line="298" selection-start-column="8" selection-end-line="298" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>Tab</find>
+      <find>预处理</find>
+      <find>tabWidget</find>
+      <find>gui.</find>
+      <find>ui.attrPanel</find>
+      <find>ui.summaryPanel</find>
+      <find>sb.append(</find>
+      <find>st</find>
+      <find>&quot;&quot; +</find>
+      <find>).append(</find>
+      <find>numericStats</find>
+      <find>attributeStats</find>
+      <find>selected_table</find>
+      <find>relationName</find>
+      <find>show</find>
+      <find>instance</find>
+      <find>getValueAt</find>
+      <find>getSelectedAttributes</find>
+      <find>m_Instances</find>
+      <find>round</find>
+      <find>setCurrentCell</find>
+      <find>font</find>
+      <find>print(&quot;te</find>
+      <find>m_fm</find>
+      <find>for i in range(</find>
+      <find>Utils</find>
+      <find>debug</find>
+      <find>off</find>
+      <find>tree</find>
+      <find>chose_btn</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>self</replace>
+      <replace>string=string+</replace>
+      <replace>str(</replace>
+      <replace>+</replace>
+      <replace>m_StatsTable</replace>
+      <replace>m_treeView</replace>
+    </replaceStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/test.qss" />
+        <option value="$PROJECT_DIR$/Main.py" />
+        <option value="$PROJECT_DIR$/MyUI.py" />
+        <option value="$PROJECT_DIR$/Instances.py" />
+        <option value="$PROJECT_DIR$/NominalAttributeInfo.py" />
+        <option value="$PROJECT_DIR$/Attributes.py" />
+        <option value="$PROJECT_DIR$/core/NominalAttributeInfo.py" />
+        <option value="$PROJECT_DIR$/core/DateAttributeInfo.py" />
+        <option value="$PROJECT_DIR$/test/MyUI.py" />
+        <option value="$PROJECT_DIR$/core/ExtendUI.py" />
+        <option value="$PROJECT_DIR$/core/SummaryPanel.py" />
+        <option value="$PROJECT_DIR$/core/AttributePanel.py" />
+        <option value="$PROJECT_DIR$/core/AttributeSummaryPanel.py" />
+        <option value="$PROJECT_DIR$/core/Stats.py" />
+        <option value="$PROJECT_DIR$/core/AttributeStats.py" />
+        <option value="$PROJECT_DIR$/core/Instance.py" />
+        <option value="$PROJECT_DIR$/gui/scripts/AttributePanel.py" />
+        <option value="$PROJECT_DIR$/gui/scripts/InstanceSummaryPanel.py" />
+        <option value="$PROJECT_DIR$/core/AttributeInfo.py" />
+        <option value="$PROJECT_DIR$/gui/MatplotlibWidget_pyqt.py" />
+        <option value="$PROJECT_DIR$/core/Attributes.py" />
+        <option value="$PROJECT_DIR$/gui/scripts/AttributeSummaryPanel.py" />
+        <option value="$PROJECT_DIR$/gui/scripts/AttributeSelectionPanel.py" />
+        <option value="$PROJECT_DIR$/core/Instances.py" />
+        <option value="$PROJECT_DIR$/core/SparseInstance.py" />
+        <option value="$PROJECT_DIR$/core/Utils.py" />
+        <option value="$PROJECT_DIR$/gui/scripts/AttributeVisualizationPanel.py" />
+        <option value="$PROJECT_DIR$/gui/MatplotlibWidget.py" />
+        <option value="$PROJECT_DIR$/resources/apprcc.qrc" />
+        <option value="$PROJECT_DIR$/gui/Main.py" />
+        <option value="$PROJECT_DIR$/CallMain.py" />
+        <option value="$PROJECT_DIR$/gui/TreeNodeButton.py" />
+        <option value="$PROJECT_DIR$/gui/scripts/GenericObjectEditor.py" />
+        <option value="$PROJECT_DIR$/Preprocess.py" />
+        <option value="$PROJECT_DIR$/filters/Filter.py" />
+        <option value="$PROJECT_DIR$/core/SingleIndex.py" />
+        <option value="$PROJECT_DIR$/filters/attribute/Add.py" />
+        <option value="$PROJECT_DIR$/core/Options.py" />
+        <option value="$PROJECT_DIR$/core/Option.py" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="235" />
+    <option name="y" value="-19" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="qttest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="qttest" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="qttest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="qttest" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="qttest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="qttest" type="462c0819:PsiDirectoryNode" />
+              <item name="filters" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="qttest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="qttest" type="462c0819:PsiDirectoryNode" />
+              <item name="filters" type="462c0819:PsiDirectoryNode" />
+              <item name="attribute" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="qttest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="qttest" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="qttest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="qttest" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="scripts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="qttest" type="b2602c69:ProjectViewProjectNode" />
+              <item name="qttest" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../test_Qt" />
+    <property name="SearchEverywhereHistoryKey" value="attributeStats&#9;null&#9;null" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\15005\python\qttest\resources" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\15005\python\qttest\gui\scripts" />
+      <recent name="F:\15005\python\qttest\core" />
+      <recent name="F:\15005\python\qttest\configuration" />
+      <recent name="F:\15005\python\qttest\test" />
+      <recent name="F:\15005\python\qttest\gui" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.CallMain">
+    <configuration name="AttributeVisualizationPanel" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gui/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="qttest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gui/scripts/AttributeVisualizationPanel.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="CallMain" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="qttest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CallMain.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="MatplotlibWidget" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gui" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="qttest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gui/MatplotlibWidget.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="Preprocess" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="qttest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Preprocess.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="TreeNodeButton" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/gui" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="qttest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gui/TreeNodeButton.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="Utils" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/core" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="qttest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/Utils.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <list size="6">
+      <item index="0" class="java.lang.String" itemvalue="Python.MatplotlibWidget" />
+      <item index="1" class="java.lang.String" itemvalue="Python.CallMain" />
+      <item index="2" class="java.lang.String" itemvalue="Python.Utils" />
+      <item index="3" class="java.lang.String" itemvalue="Python.AttributeVisualizationPanel" />
+      <item index="4" class="java.lang.String" itemvalue="Python.TreeNodeButton" />
+      <item index="5" class="java.lang.String" itemvalue="Python.Preprocess" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python.CallMain" />
+        <item index="1" class="java.lang.String" itemvalue="Python.Preprocess" />
+        <item index="2" class="java.lang.String" itemvalue="Python.TreeNodeButton" />
+        <item index="3" class="java.lang.String" itemvalue="Python.AttributeVisualizationPanel" />
+        <item index="4" class="java.lang.String" itemvalue="Python.Utils" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5697102d-0fc1-4646-ae95-2e8bbdced8cc" name="Default" comment="" />
+      <created>1542350759227</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1542350759227</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-9" y="-9" width="1938" height="1098" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26519337" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1475322" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3403315" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3993576" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="18" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://D:/Anaconda3/Lib/site-packages/arff.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="593">
+          <caret line="846" column="28" lean-forward="false" selection-start-line="846" selection-start-column="28" selection-end-line="846" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Instance.py" />
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/backends/backend_gtk.py" />
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/backends/backend_gtkagg.py" />
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/typing.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="293" column="8" lean-forward="false" selection-start-line="293" selection-start-column="8" selection-end-line="293" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/axes/_subplots.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="278">
+          <caret line="168" column="34" lean-forward="true" selection-start-line="168" selection-start-column="34" selection-end-line="168" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/astropy/visualization/wcsaxes/core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7958">
+          <caret line="362" column="8" lean-forward="false" selection-start-line="362" selection-start-column="8" selection-end-line="362" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/statsmodels/tsa/seasonal.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="127" column="8" lean-forward="false" selection-start-line="127" selection-start-column="8" selection-end-line="127" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/spines.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="163" column="21" lean-forward="false" selection-start-line="163" selection-start-column="8" selection-end-line="163" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/backends/backend_qt5.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="213" column="50" lean-forward="false" selection-start-line="213" selection-start-column="50" selection-end-line="213" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/backends/backend_qt5agg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="16" column="49" lean-forward="true" selection-start-line="16" selection-start-column="49" selection-end-line="16" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/MatplotlibWidget_pyqt.py" />
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/builtins.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="529">
+          <caret line="33" column="4" lean-forward="false" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/backend_bases.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="3223" column="0" lean-forward="false" selection-start-line="3223" selection-start-column="0" selection-end-line="3223" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-304">
+          <caret line="2811" column="50" lean-forward="false" selection-start-line="2811" selection-start-column="50" selection-end-line="2811" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/figure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="280" column="17" lean-forward="false" selection-start-line="280" selection-start-column="17" selection-end-line="280" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-2036615904/math.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="80" column="4" lean-forward="false" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/PyQt5/QtCore.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="7474" column="15" lean-forward="true" selection-start-line="7474" selection-start-column="15" selection-end-line="7474" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/PyQt5/QtGui.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="576" column="8" lean-forward="false" selection-start-line="576" selection-start-column="8" selection-end-line="576" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="1169" column="8" lean-forward="false" selection-start-line="1169" selection-start-column="4" selection-end-line="1169" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Attributes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="85" column="39" lean-forward="false" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeSelectionPanel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="14" column="30" lean-forward="false" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/numpy/lib/stride_tricks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="183" column="0" lean-forward="false" selection-start-line="183" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/pandas/io/formats/style.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="981" column="56" lean-forward="false" selection-start-line="981" selection-start-column="56" selection-end-line="981" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/axes/_axes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="2075" column="29" lean-forward="false" selection-start-line="2075" selection-start-column="29" selection-end-line="2075" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/AttributeStats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/SparseInstance.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1311">
+          <caret line="59" column="33" lean-forward="false" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#31#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2461">
+          <caret line="108" column="13" lean-forward="false" selection-start-line="108" selection-start-column="13" selection-end-line="108" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-2036615904/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="3552" column="6" lean-forward="false" selection-start-line="3552" selection-start-column="6" selection-end-line="3552" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Instances.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="26" column="20" lean-forward="false" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeSummaryPanel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="560">
+          <caret line="117" column="61" lean-forward="false" selection-start-line="117" selection-start-column="61" selection-end-line="117" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/scripts/InstanceSummaryPanel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="8" column="14" lean-forward="false" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/axis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="2066" column="0" lean-forward="false" selection-start-line="2066" selection-start-column="0" selection-end-line="2066" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/matplotlib/backends/backend_agg.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1583">
+          <caret line="401" column="0" lean-forward="false" selection-start-line="401" selection-start-column="0" selection-end-line="401" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-2036615904/numpy/core/multiarray.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="53" column="4" lean-forward="false" selection-start-line="53" selection-start-column="4" selection-end-line="53" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeVisualizationPanel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="690">
+          <caret line="105" column="81" lean-forward="false" selection-start-line="105" selection-start-column="81" selection-end-line="105" selection-end-column="81" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+            <element signature="e#7368#13088#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/configuration/test.qss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/apprcc.qrc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="2" column="8" lean-forward="false" selection-start-line="2" selection-start-column="8" selection-end-line="2" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/MatplotlibWidget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2208">
+          <caret line="15" column="26" lean-forward="false" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="26" column="22" lean-forward="false" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+          <folding>
+            <marker date="1548318457108" expanded="true" signature="264:742" ph="..." />
+            <marker date="1548318457108" expanded="true" signature="299:742" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/PyQt5/QtWidgets.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="257">
+          <caret line="298" column="8" lean-forward="false" selection-start-line="298" selection-start-column="8" selection-end-line="298" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CallMain.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="29" column="38" lean-forward="false" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/TreeNodeButton.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="17" column="31" lean-forward="false" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/scripts/GenericObjectEditor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="12" column="20" lean-forward="false" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Preprocess.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="17" column="51" lean-forward="false" selection-start-line="17" selection-start-column="51" selection-end-line="18" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/filters/Filter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/SingleIndex.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="989">
+          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/AttributeInfo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="9" column="72" lean-forward="true" selection-start-line="9" selection-start-column="53" selection-end-line="9" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/filters/attribute/Add.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="17" column="13" lean-forward="false" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Option.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="2" column="30" lean-forward="false" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
