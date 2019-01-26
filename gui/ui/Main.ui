@@ -65,7 +65,7 @@
         <x>10</x>
         <y>160</y>
         <width>491</width>
-        <height>101</height>
+        <height>61</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -78,9 +78,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>20</y>
+         <y>0</y>
          <width>471</width>
-         <height>71</height>
+         <height>61</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
@@ -94,6 +94,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Relation:</string>
             </property>
@@ -101,6 +106,11 @@
           </item>
           <item>
            <widget class="QLabel" name="name_lab">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>None</string>
             </property>
@@ -118,6 +128,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Attributes:</string>
             </property>
@@ -125,6 +140,11 @@
           </item>
           <item>
            <widget class="QLabel" name="attr_lab">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>None</string>
             </property>
@@ -142,6 +162,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Instance:</string>
             </property>
@@ -149,6 +174,11 @@
           </item>
           <item>
            <widget class="QLabel" name="instance_lab">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>None</string>
             </property>
@@ -166,6 +196,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Sum of weight:</string>
             </property>
@@ -173,6 +208,11 @@
           </item>
           <item>
            <widget class="QLabel" name="weight_lab">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>None</string>
             </property>
@@ -200,7 +240,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>270</y>
+        <y>230</y>
         <width>101</width>
         <height>21</height>
        </rect>
@@ -213,9 +253,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>300</y>
+        <y>260</y>
         <width>491</width>
-        <height>391</height>
+        <height>431</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -230,15 +270,20 @@
          <x>11</x>
          <y>48</y>
          <width>471</width>
-         <height>291</height>
+         <height>331</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
        </property>
       </widget>
       <widget class="QPushButton" name="remove_btn">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>350</y>
+         <y>390</y>
          <width>451</width>
          <height>31</height>
         </rect>
@@ -322,19 +367,24 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>70</y>
+         <y>50</y>
          <width>451</width>
-         <height>151</height>
+         <height>171</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
        </property>
       </widget>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>2</y>
+         <y>0</y>
          <width>451</width>
-         <height>60</height>
+         <height>51</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -342,7 +392,7 @@
          <number>8</number>
         </property>
         <property name="topMargin">
-         <number>8</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
          <number>8</number>
@@ -353,85 +403,78 @@
         <property name="verticalSpacing">
          <number>3</number>
         </property>
-        <item row="0" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item row="1" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
           <property name="spacing">
            <number>5</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_10">
+           <widget class="QLabel" name="label_20">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
-             <string>Name:</string>
+             <string>Unique:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="select_attr_name">
-            <property name="text">
-             <string>None</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_9">
-          <property name="spacing">
-           <number>5</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="select_attr_weight_lab">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Weight:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="select_attr_weight">
-            <property name="text">
-             <string>None</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
-          <property name="spacing">
-           <number>5</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_14">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Type:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="select_attr_type">
+           <widget class="QLabel" name="select_attr_unique">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>None</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_18">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Distinct:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="select_attr_distinct">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>None</string>
@@ -453,6 +496,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Missing:</string>
             </property>
@@ -460,6 +508,11 @@
           </item>
           <item>
            <widget class="QLabel" name="select_attr_missing">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>None</string>
             </property>
@@ -467,26 +520,36 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_12">
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
           <property name="spacing">
            <number>5</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_18">
+           <widget class="QLabel" name="select_attr_weight_lab">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
-             <string>Distinct:</string>
+             <string>Weight:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="select_attr_distinct">
+           <widget class="QLabel" name="select_attr_weight">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>None</string>
             </property>
@@ -494,31 +557,78 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
           <property name="spacing">
            <number>5</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_20">
+           <widget class="QLabel" name="label_10">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
             <property name="text">
-             <string>Unique:</string>
+             <string>Name:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="select_attr_unique">
+           <widget class="QLabel" name="select_attr_name">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>None</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_14">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Type:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="select_attr_type">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>None</string>
@@ -670,7 +780,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/apprcc.qrc"/>
+  <include location="../../resources/apprcc.qrc"/>
  </resources>
  <connections/>
 </ui>

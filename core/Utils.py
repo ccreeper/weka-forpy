@@ -107,3 +107,88 @@ class Utils():
             for i in args:
                 string+=" "+str(i)
             print(string)
+
+    @classmethod
+    def getOption(cls,flag:str,options:List[str]):
+        i=cls.getOptionPos(flag,options)
+        if i>-1:
+            if options[i] == '-'+flag:
+                options[i]=""
+                newString=options[i+1]
+                options[i+1]=""
+                return newString
+            if options[i][1]=='-':
+                return ""
+        return ""
+
+    @classmethod
+    def getOptionPos(cls,flag:str,options:List[str]):
+        if options is None:
+            return -1
+        for i in range(len(options)):
+            if len(options[i])>0 and options[i][0]=="-":
+                try:
+                    float(options[i])
+                except ValueError:
+                    if options[i] == '-'+flag:
+                        return i
+                    if options[i][1] == '-':
+                        return -1
+        return -1
+
+    @classmethod
+    def unbackQuoteChars(cls,string:str):
+        charsFind=("\\\\","\\'","\\t","\\n","\\r","\\\"","\\%","\\u001E")
+        charsReplace=('\\','\'','\t','\n','\r','"','%','\u001E')
+        return cls.replaceStrings(string,charsFind,charsReplace)
+
+    @classmethod
+    def backQuoteChars(cls,string:str):
+        charsFind=['\\', '\'', '\t', '\n', '\r', '"', '%', '\u001E']
+        charsReplace=["\\\\", "\\'", "\\t", "\\n", "\\r", "\\\"", "\\%", "\\u001E"]
+        for i in range(len(charsFind)):
+            try:
+                index=string.index(charsFind[i])
+                newStr = ""
+                while True:
+                    if index>0:
+                        newStr+=string[0:index]
+                    newStr+=charsReplace[i]
+                    if (index+1)<len(string):
+                        string=string[index+1:]
+                    else:
+                        string=""
+                    try:
+                        index=string.index(charsFind[i])
+                    except ValueError:
+                        newStr+=string
+                        string=newStr
+                        break
+            except ValueError:
+                continue
+
+    @classmethod
+    def replaceStrings(cls,s:str,charsFind:List[str],charsReplace:List[str]):
+        pos=[0]*len(charsFind)
+        string=s
+        newString=""
+        while len(string)>0:
+            curPos=len(string)
+            index=-1
+            for i in range(len(pos)):
+                try:
+                    pos[i]=string.index(charsFind[i])
+                    if pos[i]<curPos:
+                        index=i
+                        curPos=pos[i]
+                except ValueError:
+                    index=-1
+            if index==-1:
+                newString+=string
+                string=""
+            else:
+                newString+=string[0:pos[index]]
+                newString+=charsReplace[index]
+                string=string[pos[index]+len(charsFind[index]):]
+
+        return newString

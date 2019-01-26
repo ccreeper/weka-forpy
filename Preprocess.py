@@ -2,8 +2,10 @@ from InstanceSummaryPanel import InstanceSummaryPanel
 from AttributeSelectionPanel import AttributeSelectionPanel
 from AttributeSummaryPanel import AttributeSummaryPanel
 from AttributeVisualizationPanel import AttributeVisualizationPanel
-from GenericObjectEditor import GenericObjectEditor
+from ViewerDialog import ViewerDialog
+import cgitb
 import arff
+import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -12,9 +14,10 @@ from Instances import *
 from Main import *
 
 
-class PreprocessPanel(Ui_MainWindow):
-    def __init__(self,MainWindow):
-        super().setupUi(MainWindow)
+class PreprocessPanel(QMainWindow,Ui_MainWindow):
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        super().setupUi(self)
         # self.m_FilterEditor=GenericObjectEditor()
         # self.m_FilterEditor
         self.initSetting()
@@ -31,18 +34,24 @@ class PreprocessPanel(Ui_MainWindow):
             s = file.read().decode('utf-8')
         data = arff.loads(s)
         print(data)
-        self.instance = Instances(data)
+        self.m_Instances = Instances(data)
+        self.setInstances(self.m_Instances)
 
-        #数据集信息面板
-        self.instanceSummaryPanel.setInstance(self.instance)
-        #属性面板
-        self.attributePanel.setInstance(self.instance)
-        #属性详情面板
-        self.attributeSummaryPanel.setInstance(self.instance)
-        #下拉框
-        self.attributeVisualizationPanel.setInstance(self.instance)
+        self.tabWidget.setTabEnabled(1, True)
+        self.tabWidget.setTabEnabled(2, True)
 
-        #UI初始化
+
+    def setInstances(self,inst:Instances):
+        # 数据集信息面板
+        self.instanceSummaryPanel.setInstance(self.m_Instances)
+        # 属性面板
+        self.attributePanel.setInstance(self.m_Instances)
+        # 属性详情面板
+        self.attributeSummaryPanel.setInstance(self.m_Instances)
+        # 下拉框
+        self.attributeVisualizationPanel.setInstance(self.m_Instances)
+
+        # UI初始化
         self.attributeSummaryPanel.setAttribute(0)
         self.attributeVisualizationPanel.setAttribute(0)
 
@@ -50,11 +59,18 @@ class PreprocessPanel(Ui_MainWindow):
         self.save_btn.setEnabled(True)
         self.edit_btn.setEnabled(True)
 
-        self.tabWidget.setTabEnabled(1, True)
-        self.tabWidget.setTabEnabled(2, True)
-
+    def mousePressEvent(self, a0:QMouseEvent):
+        if a0.button()==Qt.LeftButton:
+            self.setFocus()
 
     def initSetting(self):
+        # 窗口中置
+        screen = QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
+
+        # 窗口禁止拉伸
+        self.setFixedSize(self.width(), self.height())
 
         #禁用控件
         self.edit_btn.setEnabled(False)
@@ -86,7 +102,40 @@ class PreprocessPanel(Ui_MainWindow):
     def attachListener(self):
         self.open_btn.clicked.connect(self.openFile)
         self.attributePanel.m_TableModel.m_Table.cellClicked.connect(self.tableCellClick)
+        self.edit_btn.clicked.connect(self.edit)
 
     def tableCellClick(self,row,column):
         self.attributeSummaryPanel.setAttribute(row)
         self.attributeVisualizationPanel.setAttribute(row)
+
+    def edit(self):
+        classIndex=self.attributeVisualizationPanel.getColoringIndex()
+        cpInstance=copy(self.m_Instances)
+        cpInstance.setClassIndex(classIndex)
+        self.dialog=ViewerDialog()
+        self.dialog.setInstances(self.m_Instances)
+        self.dialog.resize(1000,600)
+        self.dialog.show()
+
+
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    cgitb.enable(format='text')
+    app = QApplication(sys.argv)
+    MainWindow = PreprocessPanel()
+
+    styleFile = './configuration/test.qss'
+    with open(styleFile, 'r') as file:
+        styleSheet = file.read()
+        print(styleSheet)
+    MainWindow.setStyleSheet(styleSheet)
+    MainWindow.show()
+
+    sys.exit(app.exec_())

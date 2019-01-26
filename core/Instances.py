@@ -4,6 +4,7 @@ from AttributeStats import AttributeStats
 from Stats import Stats
 from Utils import Utils
 from typing import *
+from copy import *
 
 class Instance():
     def __init__(self,data:List):
@@ -18,14 +19,18 @@ class Instance():
     def weight(self):
         return 1
 
+    #insertAttributeAt
+
 #TODO 将所有数据处理成float,衍生Instance类
 class Instances(object):
-    def __init__(self,data):
+    def __init__(self,data,capacity=None):
         self.index=0
         if isinstance(data,dict):
             self.m_RelationName=data.get("relation")
-            self.m_Attributes=[]
+            self.m_Attributes=[]    #type:List[Attribute]
             self.m_Instances=[] #type:List[Instance]
+            self.m_ClassIndex=0
+            self.m_NamesToAttributeIndices=None     #type:dict()
             for attr in data.get("attributes"):
                 second=attr[1]
                 attribute=None
@@ -40,6 +45,22 @@ class Instances(object):
 
             for item in data.get("data"):
                 self.m_Instances.append(self.loadInstance(item))
+        if isinstance(data,Instances):
+            if capacity is None:
+                capacity=data.numInstances()
+            self.initialize(data,capacity)
+
+    def initialize(self,dataset,capacity:int):
+        if capacity<0:
+            capacity=0
+        self.m_ClassIndex=dataset.m_ClassIndex
+        self.m_RelationName=dataset.m_RelationName
+        self.m_Attributes=dataset.m_Attributes
+        self.m_Instances=[None]*capacity
+        self.m_NamesToAttributeIndices=dataset.m_NamesToAttributeIndices
+
+    def setClassIndex(self,classIndex:int):
+        self.m_ClassIndex=classIndex
 
     def numInstances(self):
         return len(self.m_Instances)
@@ -145,3 +166,44 @@ class Instances(object):
             else:
                 self.m_Instances[start]=inst
                 start+=1
+
+
+    def stringFreeStructure(self):
+        newAtts=[]
+        for att in self.m_Attributes:
+            if att.type() == Attribute.STRING:
+                newAtts.append(Attribute(att.name(),None,att.index()))
+        if len(newAtts) == 0:
+            return Instances(self,0)
+        atts=deepcopy(self.m_Attributes)
+        for att in newAtts:
+            atts[att.index()]=att
+        result=Instances(self,0)
+        result.m_Attributes=atts
+        return result
+
+    def insertAttributeAt(self,att:Attribute,pos:int):
+        att.setIndex(pos)
+        newList=[None]*(len(self.m_Attributes)+1)
+        newMap=dict()
+        for i in range(pos):
+            oldAtt=self.m_Attributes[i]
+            newList.append(oldAtt)
+            newMap.update({oldAtt.name(),i})
+        newList.append(att)
+        newMap.update({att.name(),pos})
+        for i in range(len(self.m_Attributes)):
+            newAtt=self.m_Attributes[i]
+            newAtt.setIndex(i+1)
+            newList.append(newAtt)
+            newMap.update({newAtt.name(),i+1})
+        self.m_Attributes=newList
+        self.m_NamesToAttributeIndices=newMap
+        if self.m_ClassIndex >= pos:
+            self.m_ClassIndex+=1
+
+    def relationName(self):
+        return self.m_RelationName
+
+    def setRelationName(self,name:str):
+        self.m_RelationName=name

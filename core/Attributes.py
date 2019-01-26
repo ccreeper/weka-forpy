@@ -1,4 +1,5 @@
 from AttributeInfo import DateAttributeInfo,NominalAttributeInfo
+from typing import *
 
 class Attribute():
     NUMERIC=0
@@ -6,29 +7,39 @@ class Attribute():
     STRING=2
     DATE=3
 
-    def __init__(self,name:str,other=None):
+    def __init__(self,name:str,other=None,index=None):
         self.m_Name=name
         self.m_Type=Attribute.NUMERIC
         self.m_AttributeInfo=None
-        if isinstance(other,bool):
-            if other:
-                self.m_Type=Attribute.STRING
-                self.m_AttributeInfo= NominalAttributeInfo()
-        elif isinstance(other,str):
-            self.m_Type = Attribute.DATE
-            self.m_AttributeInfo = DateAttributeInfo(other)
-        elif isinstance(other,list):
-            self.m_AttributeInfo=NominalAttributeInfo(other)
-            if other is None:
-                self.m_Type=Attribute.STRING
-            else:
-                self.m_Type=Attribute.NOMINAL
+        self.m_Index=-1
+        self.m_Weight=1.0
+        if other is not None:
+            if isinstance(other,bool):
+                if other:
+                    self.m_Type=Attribute.STRING
+                    self.m_AttributeInfo= NominalAttributeInfo()
+            elif isinstance(other,str):
+                self.m_Type = Attribute.DATE
+                self.m_AttributeInfo = DateAttributeInfo(other)
+            elif isinstance(other,list):
+                self.m_AttributeInfo=NominalAttributeInfo(other)
+                if other is None:
+                    self.m_Type=Attribute.STRING
+                else:
+                    self.m_Type=Attribute.NOMINAL
+            elif isinstance(other,int):
+                self.m_Index=other
+        if index is not None:
+            self.m_Index=index
 
     def name(self):
         return self.m_Name
 
     def type(self):
         return self.m_Type
+
+    def setIndex(self,index:int):
+        self.m_Index=index
 
     def isNominal(self):
         return self.m_Type == self.NOMINAL
@@ -38,6 +49,9 @@ class Attribute():
 
     def isString(self):
         return self.m_Type == self.STRING
+
+    def index(self):
+        return self.m_Index
 
     def numValues(self):
         if not self.isNominal() and not self.isString():
@@ -57,6 +71,12 @@ class Attribute():
             return -1
         result=self.m_AttributeInfo.m_Hashtable.get(value)
         return result
+
+    def weight(self):
+        return self.m_Weight
+
+    def setWeight(self,value:float):
+        self.m_Weight=value
 
     def addStringValue(self,value:str):
         if not self.isString():

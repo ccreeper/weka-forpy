@@ -144,6 +144,8 @@ class AttributeVisualizationPanel():
                 else:
                     self.m_Painter.clear()
 
+    def getColoringIndex(self):
+        return self.m_classIndex
 
 
 

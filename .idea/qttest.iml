@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/filters/attribute" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/filters/instance" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/ui" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

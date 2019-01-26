@@ -75,6 +75,7 @@ class AttributeSelectionPanel():
             self.m_Table.setRowCount(len(data))
             self.m_Table.setHorizontalHeaderLabels(labNames)
             for row in range(len(data)):
+                self.m_Table.setRowHeight(row,25)
                 for column in range(len(data[row])):
                     self.m_Table.setItem(row, column, data[row][column])
 

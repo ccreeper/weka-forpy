@@ -9,6 +9,8 @@ from Instances import *
 from Preprocess import PreprocessPanel
 
 
+#弃用
+
 class MainWindow(QMainWindow):
 
     def __init__(self,parent=None):

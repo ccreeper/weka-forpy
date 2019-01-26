@@ -117,6 +117,7 @@ class AttributeSummaryPanel():
         self.m_StatsTable.setRowCount(len(data))
         self.m_StatsTable.setHorizontalHeaderLabels(labNames)
         for row in range(len(data)):
+            self.m_StatsTable.setRowHeight(row,25)
             for column in range(len(data[row])):
                 self.m_StatsTable.setItem(row,column,data[row][column])
 
