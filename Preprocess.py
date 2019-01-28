@@ -25,7 +25,10 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
         self.attributePanel=AttributeSelectionPanel(self)
         self.attributeSummaryPanel=AttributeSummaryPanel(self)
         self.attributeVisualizationPanel=AttributeVisualizationPanel(self)
+        self.dialog=ViewerDialog()
+        self.dialog.resize(1000,600)
         self.attachListener()
+
     def openFile(self):
         filename = QFileDialog.getOpenFileName(self.tab, '选择文件', '/', 'Arff data files(*.arff);;CSV data files(*.csv)')
         file = open(filename[0], 'rb')
@@ -112,11 +115,8 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
         classIndex=self.attributeVisualizationPanel.getColoringIndex()
         cpInstance=copy(self.m_Instances)
         cpInstance.setClassIndex(classIndex)
-        self.dialog=ViewerDialog()
         self.dialog.setInstances(self.m_Instances)
-        self.dialog.resize(1000,600)
         self.dialog.show()
-
 
 
 

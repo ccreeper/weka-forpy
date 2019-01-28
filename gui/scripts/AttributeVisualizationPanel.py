@@ -96,11 +96,21 @@ class AttributeVisualizationPanel():
                         else:
                             barWidth = 1
                         #计算y轴最大值
-                        dataList=[[] for i in range(self.m_histBarClassCounts[0].numAttributes())]
-                        for m_histBarClassCount in self.m_histBarClassCounts:
-                            if m_histBarClassCount is not None:
-                                for j in range(m_histBarClassCount.numAttributes()):
-                                    dataList[j].append(m_histBarClassCount.value(j))
+                        dataList=None
+                        first=True
+                        nullBarCount=[]
+                        for i in range(len(self.m_histBarClassCounts)):
+                            if self.m_histBarClassCounts[i] is not None:
+                                if first:
+                                    dataList=[[] for i in range(self.m_histBarClassCounts[i].numAttributes())]
+                                    first=False
+                                for j in range(self.m_histBarClassCounts[i].numAttributes()):
+                                    dataList[j].append(self.m_histBarClassCounts[i].value(j))
+                            else:
+                                nullBarCount.append(i)
+                        for i in range(len(nullBarCount)):
+                            for j in range(len(dataList)):
+                                dataList[j].insert(nullBarCount[i],0)
                         dataList=np.array(dataList)
 
                         self.m_Painter.mpl.paintRect(dataList,barWidth,colorList=self.m_colorList)
@@ -118,17 +128,25 @@ class AttributeVisualizationPanel():
                             barWidth=1
                         else:
                             barWidth=(self.m_Painter.width()-6)/len(self.m_histBarClassCounts)
-                        dataList = [[] for i in range(self.m_histBarClassCounts[0].numValues())]
+                        dataList = None
                         newColor=[]
                         first = True
-                        for m_histBarClassCount in self.m_histBarClassCounts:
-                            if m_histBarClassCount is not None:
-                                for j in range(m_histBarClassCount.numValues()):
-                                    Utils.debugOut("histBarClassCount[",j,"]:",m_histBarClassCount.valueSparse(j))
-                                    dataList[j].append(m_histBarClassCount.valueSparse(j))
+                        nullBarCount=[]
+                        for i in range(len(self.m_histBarClassCounts)):
+                            if self.m_histBarClassCounts[i] is not None:
+                                if first:
+                                    dataList=[[] for i in range(self.m_histBarClassCounts[i].numValues())]
+                                for j in range(self.m_histBarClassCounts[i].numValues()):
+                                    Utils.debugOut("histBarClassCount[",j,"]:",self.m_histBarClassCounts[i].valueSparse(j))
+                                    dataList[j].append(self.m_histBarClassCounts[i].valueSparse(j))
                                     if first:
-                                        newColor.append(self.m_colorList[m_histBarClassCount.positionIndex(j)])
+                                        newColor.append(self.m_colorList[self.m_histBarClassCounts[i].positionIndex(j)])
                                 first=False
+                            else:
+                                nullBarCount.append(i)
+                        for i in range(len(nullBarCount)):
+                            for j in range(len(dataList)):
+                                dataList[j].insert(nullBarCount[i],0)
                         dataList=np.array(dataList)
                         Utils.debugOut("AttrVisual_paint_dataList:",dataList)
                         Utils.debugOut("AttrVisual_paint_barWidth:",barWidth)
@@ -179,7 +197,7 @@ class BarCalc(QThread):
             if len(self.m_panel.m_colorList) == 0:
                 self.m_panel.m_colorList.append("black")
 
-            for i in range(len(self.m_panel.m_colorList),self.m_panel.m_data.attribute(self.m_panel.m_attrIndex).
+            for i in range(len(self.m_panel.m_colorList),self.m_panel.m_data.attribute(self.m_panel.m_classIndex).
                     numValues()+1):
                 colorStr=AttributeVisualizationPanel.m_colorNames[(i - 1) % 10]
                 self.m_panel.m_colorList.append(colorStr)
@@ -210,7 +228,7 @@ class BarCalc(QThread):
 
                         #0下标存储缺失数据
                         tempClassCounts=[0.0]*(self.m_panel.m_data.attribute(self.m_panel.m_classIndex).numValues()+1)
-                        tempAttValueIndex=(int)(self.m_panel.m_data.instance(k).value(self.m_panel.m_attrIndex))
+                        tempAttValueIndex=int(self.m_panel.m_data.instance(k).value(self.m_panel.m_attrIndex))
 
                     if self.m_panel.m_data.instance(k).isMissing(self.m_panel.m_classIndex):
                         tempClassCounts[0]+=self.m_panel.m_data.instance(k).weight()

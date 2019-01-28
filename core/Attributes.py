@@ -66,6 +66,13 @@ class Attribute():
             val=self.m_AttributeInfo.m_Values[index]
         return str(val)
 
+    def values(self):
+        if not self.isNominal() and not self.isString():
+            return None
+        else:
+            return self.m_AttributeInfo.m_Values
+
+
     def indexOfValue(self,value:str):
         if not self.isNominal() and not self.isNumeric():
             return -1

@@ -89,15 +89,20 @@ class MyMplCanvas(FigureCanvas):
         if isNumeric:
             width=1
         for i in range(len(dataSet)):
-            colorName=colorList[i]
-            Utils.debugOut("Matplotlib_paintRect_width:",width)
-            Utils.debugOut("Matplotlib_paintRect_colorName:",colorName)
-            a=self.axes.bar(x, dataSet[i],bottom=bottom,color=self.m_defaultColors.get(colorName),width=width)
-            bottom+=dataSet[i]
-            for j in range(len(dataSet[i])):
-                sum[j]+=dataSet[i][j]
-                maxHeight=max(maxHeight,sum[j])
-                height[j]+=a[j].get_height()
+            try:
+                colorName=colorList[i]
+                Utils.debugOut("Matplotlib_paintRect_width:",width)
+                Utils.debugOut("Matplotlib_paintRect_colorName:",colorName)
+                a=self.axes.bar(x, dataSet[i],bottom=bottom,color=self.m_defaultColors.get(colorName),width=width)
+                bottom+=dataSet[i]
+                for j in range(len(dataSet[i])):
+                    sum[j]+=dataSet[i][j]
+                    maxHeight=max(maxHeight,sum[j])
+                    height[j]+=a[j].get_height()
+            except IndexError:
+                print("dataSet.len:",len(dataSet))
+                print("colorList.len:",len(colorList))
+                print("colorList:",colorList)
 
 
         for i in x:
@@ -105,7 +110,7 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes.set_xticks([])
         self.axes.set_yticks([])
-        self.axes.set_ylim(0,maxHeight*1.2)
+        self.axes.set_ylim(0,maxHeight*1.1)
         # 显示范围
         #l=min+width*x-(max-min)/2
         #r=max+width*x-(max-min)/2

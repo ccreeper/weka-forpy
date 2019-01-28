@@ -1,6 +1,7 @@
 
 import time
 from functools import *
+from typing import *
 
 class DateAttributeInfo():
     def __init__(self,dateFormat:str=None):
@@ -11,8 +12,8 @@ class DateAttributeInfo():
 
 
 class NominalAttributeInfo():
-    def __init__(self,attrValue:list=None):
-        self.m_Values = []
+    def __init__(self,attrValue:List[str]=None):
+        self.m_Values = []      #type:List[str]
         self.m_Hashtable = dict()
         if attrValue!=None:
             for i in range(len(attrValue)):

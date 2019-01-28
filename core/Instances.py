@@ -108,7 +108,7 @@ class Instances(object):
     def loadInstance(self,data:List)->Instance:
         result=[]
         for i in range(self.numAttributes()):
-            if data[i] == '?':
+            if data[i] is None:
                 result.append(Utils.missingValue())
             else:
                 if self.attribute(i).type() == Attribute.NOMINAL:
