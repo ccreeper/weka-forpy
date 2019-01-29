@@ -25,8 +25,6 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
         self.attributePanel=AttributeSelectionPanel(self)
         self.attributeSummaryPanel=AttributeSummaryPanel(self)
         self.attributeVisualizationPanel=AttributeVisualizationPanel(self)
-        self.dialog=ViewerDialog()
-        self.dialog.resize(1000,600)
         self.attachListener()
 
     def openFile(self):
@@ -115,8 +113,10 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
         classIndex=self.attributeVisualizationPanel.getColoringIndex()
         cpInstance=copy(self.m_Instances)
         cpInstance.setClassIndex(classIndex)
-        self.dialog.setInstances(self.m_Instances)
-        self.dialog.show()
+        dialog=ViewerDialog(self)
+        dialog.resize(1000,600)
+        dialog.setInstances(self.m_Instances)
+        dialog.show()
 
 
 

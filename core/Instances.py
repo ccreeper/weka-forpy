@@ -207,3 +207,6 @@ class Instances(object):
 
     def setRelationName(self,name:str):
         self.m_RelationName=name
+
+    def delete(self,index:int):
+        self.m_Instances.pop(index)

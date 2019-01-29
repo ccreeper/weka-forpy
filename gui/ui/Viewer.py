@@ -12,7 +12,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(1000, 600)
-        self.viewTable = QtWidgets.QTableWidget(Form)
+        self.viewTable = TableWidget(Form)
         self.viewTable.setGeometry(QtCore.QRect(10, 30, 981, 511))
         font = QtGui.QFont()
         font.setPointSize(7)
@@ -94,3 +94,4 @@ class Ui_Form(object):
         self.Ok.setText(_translate("Form", "Ok"))
         self.Cancel.setText(_translate("Form", "Cancel"))
 
+from TableWidget import TableWidget

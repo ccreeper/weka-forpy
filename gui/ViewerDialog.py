@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from Viewer import Ui_Form
 from ArffPanel import ArffPanel
 from Instances import Instances
+from PyQt5.QtGui import *
 import threading
 
 class ViewerDialog(QMainWindow,Ui_Form):
@@ -21,3 +22,4 @@ class ViewerDialog(QMainWindow,Ui_Form):
 
     def setInstances(self,inst:Instances):
         self.m_BaseTable.setInstances(inst)
+
