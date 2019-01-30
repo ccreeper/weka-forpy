@@ -44,11 +44,12 @@ class Instances(object):
                 self.m_Attributes.append(attribute)
 
             for item in data.get("data"):
-                self.m_Instances.append(self.loadInstance(item))
+                self.m_Instances.append(self.createInstance(item))
         if isinstance(data,Instances):
             if capacity is None:
                 capacity=data.numInstances()
             self.initialize(data,capacity)
+            data.copyInstances(0,data.numInstances(),self)
 
     def initialize(self,dataset,capacity:int):
         if capacity<0:
@@ -56,7 +57,7 @@ class Instances(object):
         self.m_ClassIndex=dataset.m_ClassIndex
         self.m_RelationName=dataset.m_RelationName
         self.m_Attributes=dataset.m_Attributes
-        self.m_Instances=[None]*capacity
+        self.m_Instances=[]
         self.m_NamesToAttributeIndices=dataset.m_NamesToAttributeIndices
 
     def setClassIndex(self,classIndex:int):
@@ -105,7 +106,7 @@ class Instances(object):
             result.addDistinct(key,val[0],val[1])
         return result
 
-    def loadInstance(self,data:List)->Instance:
+    def createInstance(self,data:List)->Instance:
         result=[]
         for i in range(self.numAttributes()):
             if data[i] is None:
@@ -210,3 +211,14 @@ class Instances(object):
 
     def delete(self,index:int):
         self.m_Instances.pop(index)
+
+    def add(self,inst:Instance,index:int=-1):
+        newInstance=copy(inst)
+        if index <0:
+            self.m_Instances.append(newInstance)
+        else:
+            self.m_Instances.insert(index,newInstance)
+
+    def copyInstances(self,fromIndex:int,num:int,dest:'Instances'):
+        for i in range(num):
+            dest.add(self.instance(fromIndex+i))

@@ -21,5 +21,6 @@ class ViewerDialog(QMainWindow,Ui_Form):
     # def showDialog(self,inst:Instances):
 
     def setInstances(self,inst:Instances):
+        self.m_RelationNameLabel.setText(inst.relationName())
         self.m_BaseTable.setInstances(inst)
 

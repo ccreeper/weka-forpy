@@ -66,7 +66,8 @@ class Attribute():
             val=self.m_AttributeInfo.m_Values[index]
         return str(val)
 
-    def values(self):
+    #返回该属性的所有值
+    def values(self)->List[str]:
         if not self.isNominal() and not self.isString():
             return None
         else:

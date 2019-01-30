@@ -111,12 +111,12 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
 
     def edit(self):
         classIndex=self.attributeVisualizationPanel.getColoringIndex()
-        cpInstance=copy(self.m_Instances)
+        cpInstance=Instances(self.m_Instances)
         cpInstance.setClassIndex(classIndex)
-        dialog=ViewerDialog(self)
-        dialog.resize(1000,600)
-        dialog.setInstances(self.m_Instances)
-        dialog.show()
+        self.dialog=ViewerDialog()
+        self.dialog.resize(1000,600)
+        self.dialog.setInstances(cpInstance)
+        self.dialog.show()
 
 
 
