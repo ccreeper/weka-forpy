@@ -2,6 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from Instances import Instances,Instance
+from Utils import Utils
 from typing import *
 
 class TableWidget(QTableWidget):
@@ -13,6 +14,7 @@ class TableWidget(QTableWidget):
 
     def mousePressEvent(self, e: QMouseEvent):
         if e.button() == Qt.RightButton:
+            self.horizontalHeader().mousePressEvent(e)
             return
         elif e.button() == Qt.LeftButton:
             if not self.m_IsMenuClick:

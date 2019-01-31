@@ -2,6 +2,7 @@ from AttributeInfo import DateAttributeInfo,NominalAttributeInfo
 from typing import *
 
 class Attribute():
+    class Type(int):...
     NUMERIC=0
     NOMINAL=1
     STRING=2
@@ -74,10 +75,12 @@ class Attribute():
             return self.m_AttributeInfo.m_Values
 
 
-    def indexOfValue(self,value:str):
+    def indexOfValue(self,value:str)->int:
         if not self.isNominal() and not self.isNumeric():
             return -1
         result=self.m_AttributeInfo.m_Hashtable.get(value)
+        if result is None:
+            result=-1
         return result
 
     def weight(self):

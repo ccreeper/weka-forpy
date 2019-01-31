@@ -12,7 +12,7 @@ from copy import *
 from InsertInstanceDialog import InserInstanceDialog
 import threading
 
-class ArffPanel(QAbstractItemModel):
+class ArffPanel():
     def __init__(self,table:QTableWidget):
         super().__init__()
         self.m_Table=table      #type:TableWidget
@@ -40,6 +40,7 @@ class ArffPanel(QAbstractItemModel):
     def attachMenuItemListener(self):
         self.model.delete_instance_signal.connect(self.deleteInstanceEvent)
         self.model.insert_instance_signal.connect(self.insertInstanceEvent)
+        self.model.update_instance_value_signal.connect(self.updateValueEvent)
 
 
     def setTable(self):
@@ -60,6 +61,7 @@ class ArffPanel(QAbstractItemModel):
         self.headerMenu=QMenu()
         self.setAllValuesToMenuItem=self.headerMenu.addAction(u'Set all values to...')
         self.setMissingValuesToMenuItem=self.headerMenu.addAction(u'Set missing values to...')
+        self.replaceValuesMenuItem=self.headerMenu.addAction(u'Replace values with...')
         self.renameAttributeMenuItem=self.headerMenu.addAction(u'Rename attribute')
         self.deleteAttributeMenuItem=self.headerMenu.addAction(u'Delete attribute')
         self.deleteAttributesMenuItem=self.headerMenu.addAction(u'Delete attributes')
@@ -76,12 +78,12 @@ class ArffPanel(QAbstractItemModel):
         isNull=self.model.getInstance() is None
         hasColumns=not isNull and self.model.getInstance().numAttributes()>0
         hasRows=not isNull and self.model.getInstance().numInstances()>0
-        attSelected=hasRows and self.model.isAttribute(self.m_CurrentCol)
-        isNumeric=attSelected and self.model.getAttributeAt(self.m_CurrentCol).isNumeric()
+        attSelected=hasColumns and self.model.isAttribute(self.m_CurrentCol)
 
         self.searchMenuItem.setEnabled(True)
         self.setAllValuesToMenuItem.setEnabled(attSelected)
         self.setMissingValuesToMenuItem.setEnabled(attSelected)
+        self.replaceValuesMenuItem.setEnabled(attSelected)
         self.renameAttributeMenuItem.setEnabled(attSelected)
         self.deleteAttributeMenuItem.setEnabled(attSelected)
         self.deleteAttributesMenuItem.setEnabled(attSelected)
@@ -122,7 +124,6 @@ class ArffPanel(QAbstractItemModel):
             self.m_Table.setRowHeight(row,30)
 
 
-    #TODO 失去焦点变回原来的Item
     def selectedCombox(self,item:QTableWidgetItem):
         if self.m_CurrentCombobox is not None:
             # newItem=QTableWidgetItem(self.m_Data.attribute(self.m_CurrentItem[1]-1).value(self.m_Data.instance(self.m_CurrentItem[0]).value(self.m_CurrentItem[1]-1)))
@@ -171,11 +172,15 @@ class ArffPanel(QAbstractItemModel):
     #表头菜单
     def generateHeaderMenu(self,pos):
         self.m_Table.setMenuClickNow(True)
+        self.m_CurrentCol=self.m_Table.horizontalHeader().logicalIndexAt(pos)
+        self.setMenu()
         action=self.headerMenu.exec_(self.m_Table.cursor().pos())
         if action == self.setAllValuesToMenuItem:
-            pass
+            self.setValues(self.setAllValuesToMenuItem)
         elif action == self.setMissingValuesToMenuItem:
-            pass
+            self.setValues(self.setMissingValuesToMenuItem)
+        elif action == self.replaceValuesMenuItem:
+            self.setValues(self.replaceValuesMenuItem)
         elif action == self.renameAttributeMenuItem:
             pass
         elif action == self.deleteAttributeMenuItem:
@@ -187,6 +192,7 @@ class ArffPanel(QAbstractItemModel):
         else:
             return
         self.m_Table.setMenuClickNow(False)
+
 
     #删除选中的实例
     def deleteInstance(self):
@@ -237,13 +243,70 @@ class ArffPanel(QAbstractItemModel):
         for i in range(begin,end):
             self.m_Table.item(i,0).setText(str(i+1))
 
+    #修改实例值
+    def setValues(self,menuItem:QAction):
+        if menuItem == self.setAllValuesToMenuItem:
+            title="Set all values..."
+            msg="New value for all values"
+        elif menuItem == self.setMissingValuesToMenuItem:
+            title = "Replace missing values..."
+            msg = "New value for MISSING values"
+        elif menuItem == self.replaceValuesMenuItem:
+            title = "Replace values..."
+            msg = "Old value"
+        else:
+            return
+        value,ok=QInputDialog.getText(self.m_Table,title,msg)
+        if ok:
+            if menuItem == self.replaceValuesMenuItem:
+                valueNew,okAgain=QInputDialog.getText(self.m_Table,title,"New value")
+                if not okAgain:
+                    return
+                if valueNew == "" or valueNew.lower() == "nan" or valueNew.lower() == "none":
+                    valueNew=None
+            updateIndexList=[]
+            if value == "" or value.lower() == "nan" or value.lower() == 'none':
+                value = None
+            for i in range(self.m_Table.rowCount()):
+                if menuItem == self.setAllValuesToMenuItem:
+                    if value != self.model.getInstance().instance(i).value(self.m_CurrentCol):
+                        # self.model.setValueAt(value,i,self.m_CurrentCol)
+                        updateIndexList.append(i)
+                elif menuItem == self.setMissingValuesToMenuItem and self.model.isMissingAt(i,self.m_CurrentCol) and value is not None:
+                    # self.model.setValueAt(value,i,self.m_CurrentCol)
+                    updateIndexList.append(i)
+                elif menuItem == self.replaceValuesMenuItem  and self.model.getValueAt(i,self.m_CurrentCol) is not None\
+                    and str(self.model.getValueAt(i,self.m_CurrentCol)) == value:
+                    # self.model.setValueAt(valueNew,i,self.m_CurrentCol)
+                    updateIndexList.append(i)
+            if menuItem == self.replaceValuesMenuItem:
+                self.model.setValueAt(valueNew,updateIndexList,self.m_CurrentCol)
+            else:
+                self.model.setValueAt(value,updateIndexList,self.m_CurrentCol)
+
+    #修改值回调
+    def updateValueEvent(self,rowIndexList:List[int],columnIndex:int,newValue):
+        for i in rowIndexList:
+            newItem=QTableWidgetItem(newValue)
+            if newValue is None:
+                newItem.setBackground(QBrush(QColor(232,232,232)))
+            self.m_Table.setItem(i,columnIndex,newItem)
+
+
+
+
+
+
 class ArffModel(QObject):
     delete_instance_signal=pyqtSignal(int)
     insert_instance_signal=pyqtSignal(Instances,int)
+    update_instance_value_signal=pyqtSignal(list,int,object)
+
     def __init__(self,data:Instances=None):
         super().__init__()
         self.m_Data=data        #type:Instances
         self.m_UndoList=[]      #type:List
+        self.m_Cache=dict()
 
     def setInstance(self,data:Instances):
         self.m_Data=data
@@ -287,8 +350,72 @@ class ArffModel(QObject):
         self.m_Data.add(inst,index)
         Utils.debugOut("insertDataList:",inst.m_Data)
         self.insert_instance_signal.emit(self.m_Data,index)
-        # self.addUndoPoint()
-        # vals=[]*self.m_Data.numAttributes()
-        # for i in range(self.m_Data.numAttributes()):
-        #     if self.m_Data.attribute(i).
+
+    def setValueAt(self,value,rowIndexList:List,columnIndex:int):
+        self.addUndoPoint()
+        for rowIndex in rowIndexList:
+            oldValue=self.getValueAt(rowIndex,columnIndex)
+            type=self.getType(columnIndex)
+            index=columnIndex-1
+            inst=self.m_Data.instance(rowIndex)
+            att=inst.attribute(index)
+
+            if value is None:
+                inst.setValue(index,Utils.missingValue())
+            else:
+                if type == Attribute.NUMERIC:
+                    inst.setValue(index,float(value))
+                elif type == Attribute.NOMINAL:
+                    if att.indexOfValue(value) > -1:
+                        inst.setValue(index,att.indexOfValue(value))
+                    else:
+                        rowIndexList=[]
+                        break
+                elif type == Attribute.STRING:
+                    inst.setValue(index,value)
+                elif type == Attribute.DATE:
+                    #TODO
+                    pass
+        self.update_instance_value_signal.emit(rowIndexList,columnIndex,value)
+
+
+    def getRowCount(self):
+        return self.m_Data.numInstances()
+
+    def getColumnCount(self):
+        return self.m_Data.numAttributes()+1
+
+    def isMissingAt(self,rowIndex:int,columnIndex:int):
+        res=False
+        if rowIndex>=0 and rowIndex<self.getRowCount() and self.isAttribute(columnIndex):
+            res=self.m_Data.instance(rowIndex).isMissing(columnIndex-1)
+        return res
+
+    def getType(self,columnIndex:int)->Attribute.Type:
+        res=Attribute.STRING
+        if self.isAttribute(columnIndex):
+            res=self.m_Data.attribute(columnIndex-1).type()
+        return res
+
+    def getValueAt(self,rowIndex:int,columnIndex:int):
+        key=str(rowIndex)+'-'+str(columnIndex)
+        res=None
+        if rowIndex>=0 and rowIndex<self.getRowCount() and columnIndex>=0 and columnIndex<self.getColumnCount():
+            if columnIndex == 0:
+                return rowIndex+1
+            else:
+                if self.isMissingAt(rowIndex,columnIndex):
+                    res=None
+                else:
+                    if key in self.m_Cache:
+                        res=self.m_Cache.get(key)
+                    else:
+                        attrType=self.getType(columnIndex)
+                        if attrType == Attribute.NUMERIC:
+                            res=self.m_Data.instance(rowIndex).value(columnIndex-1)
+                        else:
+                            res=self.m_Data.instance(rowIndex).stringValue(columnIndex-1)
+                        self.m_Cache.update({key:res})
+        return res
+
 

@@ -10,6 +10,9 @@ class Instance():
     def __init__(self,data:List):
         self.m_Data=data
 
+    def setDataset(self,inst:'Instances'):
+        self.m_Dataset=inst
+
     def value(self,index:int):
         return self.m_Data[index]
 
@@ -18,6 +21,15 @@ class Instance():
 
     def weight(self):
         return 1
+
+    def stringValue(self,index:int):
+        return self.m_Dataset.attribute(index).value(self.value(index))
+
+    def attribute(self,index:int)->Attribute:
+        return self.m_Dataset.attribute(index)
+
+    def setValue(self,index:int,value):
+        self.m_Data[index]=value
 
     #insertAttributeAt
 
@@ -44,7 +56,7 @@ class Instances(object):
                 self.m_Attributes.append(attribute)
 
             for item in data.get("data"):
-                self.m_Instances.append(self.createInstance(item))
+                self.add(self.createInstance(item))
         if isinstance(data,Instances):
             if capacity is None:
                 capacity=data.numInstances()
@@ -214,6 +226,7 @@ class Instances(object):
 
     def add(self,inst:Instance,index:int=-1):
         newInstance=copy(inst)
+        newInstance.setDataset(self)
         if index <0:
             self.m_Instances.append(newInstance)
         else:
