@@ -28,8 +28,6 @@ class Attribute():
                     self.m_Type=Attribute.STRING
                 else:
                     self.m_Type=Attribute.NOMINAL
-            elif isinstance(other,int):
-                self.m_Index=other
         if index is not None:
             self.m_Index=index
 
@@ -83,6 +81,9 @@ class Attribute():
             result=-1
         return result
 
+    def index(self):
+        return self.m_Index
+
     def weight(self):
         return self.m_Weight
 
@@ -126,3 +127,10 @@ class Attribute():
         else:
             return "???"
 
+    def copy(self,name:str):
+        copy=Attribute(name)
+        copy.m_Index=self.m_Index
+        copy.m_Type=self.m_Type
+        copy.m_AttributeInfo=self.m_AttributeInfo
+        copy.m_Weight=self.m_Weight
+        return copy

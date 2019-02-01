@@ -31,6 +31,10 @@ class Instance():
     def setValue(self,index:int,value):
         self.m_Data[index]=value
 
+    def deleteAttributeAt(self,pos:int):
+        if pos >= 0 and pos < len(self.m_Data):
+            self.m_Data.pop(pos)
+
     #insertAttributeAt
 
 #TODO 将所有数据处理成float,衍生Instance类
@@ -41,8 +45,8 @@ class Instances(object):
             self.m_RelationName=data.get("relation")
             self.m_Attributes=[]    #type:List[Attribute]
             self.m_Instances=[] #type:List[Instance]
-            self.m_ClassIndex=0
-            self.m_NamesToAttributeIndices=None     #type:dict()
+            self.m_ClassIndex=-1
+            self.m_NamesToAttributeIndices=None     #type:Dict
             for attr in data.get("attributes"):
                 second=attr[1]
                 attribute=None
@@ -57,6 +61,12 @@ class Instances(object):
 
             for item in data.get("data"):
                 self.add(self.createInstance(item))
+
+            self.m_NamesToAttributeIndices=dict()
+            for i in range(self.numAttributes()):
+                self.attribute(i).setIndex(i)
+                self.m_NamesToAttributeIndices.update({self.attribute(i).name():i})
+
         if isinstance(data,Instances):
             if capacity is None:
                 capacity=data.numInstances()
@@ -75,6 +85,9 @@ class Instances(object):
     def setClassIndex(self,classIndex:int):
         self.m_ClassIndex=classIndex
 
+    def classIndex(self):
+        return self.m_ClassIndex
+
     def numInstances(self):
         return len(self.m_Instances)
 
@@ -88,8 +101,20 @@ class Instances(object):
     def sumOfWeight(self):
         return len(self.m_Instances)
 
-    def attribute(self,index)->Attribute:
-        return self.m_Attributes[index]
+    @overload
+    def attribute(self,index:int)->Attribute:...
+    @overload
+    def attribute(self,name:str)->Attribute:...
+
+    def attribute(self,a0)->Attribute:
+        if isinstance(a0,int):
+            return self.m_Attributes[a0]
+        elif isinstance(a0,str):
+            index=self.m_NamesToAttributeIndices.get(a0)
+            if index is None:
+                return None
+            return self.m_Attributes[index]
+        return None
 
     def attributeStats(self,index:int)->AttributeStats:
         result=AttributeStats()
@@ -235,3 +260,31 @@ class Instances(object):
     def copyInstances(self,fromIndex:int,num:int,dest:'Instances'):
         for i in range(num):
             dest.add(self.instance(fromIndex+i))
+
+    def renameAttribute(self,attIndex:int,name:str)->bool:
+        existingAtt=self.attribute(name)
+        if existingAtt is not None:
+            return False
+        newAtt=self.attribute(attIndex).copy(name)
+        self.m_NamesToAttributeIndices.pop(self.attribute(attIndex).name())
+        self.m_NamesToAttributeIndices.update({newAtt.name():attIndex})
+        self.m_Attributes.pop(attIndex)
+        self.m_Attributes.insert(attIndex,newAtt)
+        return True
+
+    def deleteAttributeAt(self,position:int):
+        if position<0 or position>=self.numAttributes():
+            return
+        if position == self.m_ClassIndex:
+            return
+        for i in range(position+1,self.numAttributes()):
+            attr=self.attribute(i)
+            attr.setIndex(i-1)
+            self.m_NamesToAttributeIndices.update({attr.name():i-1})
+        self.m_NamesToAttributeIndices.pop(self.attribute(position).name())
+        self.m_Attributes.pop(position)
+        if self.m_ClassIndex > position:
+            self.m_ClassIndex-=1
+
+        for i in range(self.numInstances()):
+            self.instance(i).deleteAttributeAt(position)

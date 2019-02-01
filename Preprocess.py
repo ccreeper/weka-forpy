@@ -122,10 +122,6 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
 
 
 
-
-
-
-
 if __name__ == '__main__':
     cgitb.enable(format='text')
     app = QApplication(sys.argv)

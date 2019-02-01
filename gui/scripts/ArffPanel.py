@@ -10,7 +10,7 @@ from Utils import Utils
 from TableWidget import TableWidget
 from copy import *
 from InsertInstanceDialog import InserInstanceDialog
-import threading
+from SelectListDialog import SelectListDialog
 
 class ArffPanel():
     def __init__(self,table:QTableWidget):
@@ -41,7 +41,9 @@ class ArffPanel():
         self.model.delete_instance_signal.connect(self.deleteInstanceEvent)
         self.model.insert_instance_signal.connect(self.insertInstanceEvent)
         self.model.update_instance_value_signal.connect(self.updateValueEvent)
-
+        self.model.rename_attribute_signal.connect(self.renameEvent)
+        self.model.delete_attribute_signal[int].connect(self.deleteAttributeEvent)
+        self.model.delete_attribute_signal[list].connect(self.deleteAttributeEvent)
 
     def setTable(self):
         self.m_Table.verticalHeader().setVisible(False)
@@ -173,6 +175,7 @@ class ArffPanel():
     def generateHeaderMenu(self,pos):
         self.m_Table.setMenuClickNow(True)
         self.m_CurrentCol=self.m_Table.horizontalHeader().logicalIndexAt(pos)
+        Utils.debugOut("header menu item index:",self.m_Table.horizontalHeader().logicalIndexAt(pos))
         self.setMenu()
         action=self.headerMenu.exec_(self.m_Table.cursor().pos())
         if action == self.setAllValuesToMenuItem:
@@ -182,13 +185,13 @@ class ArffPanel():
         elif action == self.replaceValuesMenuItem:
             self.setValues(self.replaceValuesMenuItem)
         elif action == self.renameAttributeMenuItem:
-            pass
+            self.renameAttribute()
         elif action == self.deleteAttributeMenuItem:
-            pass
+            self.deleteAttribute()
         elif action == self.deleteAttributesMenuItem:
-            pass
+            self.deleteAttributes()
         elif action == self.optimalColumnWidthMenuItem:
-            pass
+            self.setOptimalColWidth()
         else:
             return
         self.m_Table.setMenuClickNow(False)
@@ -284,7 +287,6 @@ class ArffPanel():
             else:
                 self.model.setValueAt(value,updateIndexList,self.m_CurrentCol)
 
-    #修改值回调
     def updateValueEvent(self,rowIndexList:List[int],columnIndex:int,newValue):
         for i in rowIndexList:
             newItem=QTableWidgetItem(newValue)
@@ -292,8 +294,62 @@ class ArffPanel():
                 newItem.setBackground(QBrush(QColor(232,232,232)))
             self.m_Table.setItem(i,columnIndex,newItem)
 
+    #重命名
+    def renameAttribute(self):
+        if self.model.getAttributeAt(self.m_CurrentCol) is None:
+            return
+        newName,ok=QInputDialog.getText(self.m_Table,"Rename attribute...","Enter new Attribute name",text=self.model.getAttributeAt(self.m_CurrentCol).name())
+        if ok:
+            if newName == "":
+                return
+            self.model.renameAttributeAt(self.m_CurrentCol,newName)
+
+    def renameEvent(self,columnIndex:int,newName:str):
+        lab = str(columnIndex) + ":"
+        lab += newName + '\n'
+        lab += Attribute.typeToString(self.model.getInstance().attribute(columnIndex-1).type()).capitalize()
+        self.m_Table.setHorizontalHeaderItem(columnIndex,QTableWidgetItem(lab))
+        self.m_Table.horizontalHeader().resizeSection(columnIndex,self.m_Table.horizontalHeader().sectionSizeFromContents(columnIndex).width())
+
+    #删除列(属性)
+    def deleteAttribute(self):
+        if self.model.getInstance().classIndex() == self.m_CurrentCol-1:
+            QMessageBox.warning(self.m_Table,"Warning","无法删除作为类基准的属性",QMessageBox.Yes,QMessageBox.Yes)
+            return
+        reply=QMessageBox.question(self.m_Table,"Confirm...","确认删除 "+self.model.getAttributeAt(self.m_CurrentCol).name()+" 属性？",QMessageBox.Yes | QMessageBox.No,QMessageBox.No)
+        if reply == QMessageBox.No:
+            return
+        self.model.deleteAttributeAt(self.m_CurrentCol)
+
+    #删除多个属性
+    def deleteAttributes(self):
+        dialog=SelectListDialog(self.m_Table)
+        li=[]
+        for i in range(self.model.getInstance().numAttributes()):
+            li.append(self.model.getInstance().attribute(i).name())
+        dialog.setList(li)
+        dialog.show()
+        dialog.select_attributes_signal.connect(lambda l:self.model.deleteAttributes(l))
 
 
+    def deleteAttributeEvent(self, columnIndex):
+        if isinstance(columnIndex,int):
+            self.m_Table.removeColumn(columnIndex)
+        elif isinstance(columnIndex,list):
+            for i in columnIndex:
+                self.m_Table.removeColumn(i)
+        headerLabels = ["No."]
+        for column in range(self.model.getInstance().numAttributes()):
+            lab = str(column + 1) + ":"
+            lab += self.model.getInstance().attribute(column).name() + '\n'
+            lab += Attribute.typeToString(self.model.getInstance().attribute(column).type()).capitalize()
+            headerLabels.append(lab)
+        self.m_Table.setHorizontalHeaderLabels(headerLabels)
+
+    #调整列宽自适应内容宽度
+    def setOptimalColWidth(self):
+        self.m_Table.horizontalHeader().resizeSection(self.m_CurrentCol,self.m_Table.horizontalHeader().
+                                                      sectionSizeFromContents(self.m_CurrentCol).width())
 
 
 
@@ -301,6 +357,8 @@ class ArffModel(QObject):
     delete_instance_signal=pyqtSignal(int)
     insert_instance_signal=pyqtSignal(Instances,int)
     update_instance_value_signal=pyqtSignal(list,int,object)
+    rename_attribute_signal=pyqtSignal(int,str)
+    delete_attribute_signal=pyqtSignal([int],[list])
 
     def __init__(self,data:Instances=None):
         super().__init__()
@@ -320,7 +378,7 @@ class ArffModel(QObject):
     def isAttribute(self,columnIndex:int):
         return columnIndex>0 and columnIndex<self.m_Data.numAttributes()+1
 
-    def getAttributeAt(self,columnIndex:int):
+    def getAttributeAt(self,columnIndex:int)->Attribute:
         if self.isAttribute(columnIndex):
             return self.m_Data.attribute(columnIndex-1)
 
@@ -417,5 +475,26 @@ class ArffModel(QObject):
                             res=self.m_Data.instance(rowIndex).stringValue(columnIndex-1)
                         self.m_Cache.update({key:res})
         return res
+
+    def renameAttributeAt(self,columnIndex:int,newName:str):
+        if self.isAttribute(columnIndex):
+            self.addUndoPoint()
+            res=self.m_Data.renameAttribute(columnIndex-1,newName)
+            if res:
+                self.rename_attribute_signal.emit(columnIndex,newName)
+
+    def deleteAttributeAt(self,columnIndex:int):
+        if self.isAttribute(columnIndex):
+            self.addUndoPoint()
+            self.m_Data.deleteAttributeAt(columnIndex-1)
+            self.delete_attribute_signal[int].emit(columnIndex)
+
+    def deleteAttributes(self,indexList:List):
+        self.addUndoPoint()
+        Utils.debugOut('will delete attributes index:',indexList)
+        for i in indexList:
+            self.m_Data.deleteAttributeAt(i-1)
+        self.delete_attribute_signal[list].emit(indexList)
+
 
 
