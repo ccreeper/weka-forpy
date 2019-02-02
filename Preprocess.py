@@ -26,6 +26,7 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
         self.attributeSummaryPanel=AttributeSummaryPanel(self)
         self.attributeVisualizationPanel=AttributeVisualizationPanel(self)
         self.attachListener()
+        self.m_Instances=[]     #type:List[Instance]
 
     def openFile(self):
         filename = QFileDialog.getOpenFileName(self.tab, '选择文件', '/', 'Arff data files(*.arff);;CSV data files(*.csv)')
@@ -35,14 +36,15 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
             s = file.read().decode('utf-8')
         data = arff.loads(s)
         print(data)
-        self.m_Instances = Instances(data)
-        self.setInstances(self.m_Instances)
+        inst = Instances(data)
+        self.setInstances(inst)
 
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
 
 
     def setInstances(self,inst:Instances):
+        self.m_Instances=inst
         # 数据集信息面板
         self.instanceSummaryPanel.setInstance(self.m_Instances)
         # 属性面板
@@ -111,15 +113,19 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
 
     def edit(self):
         classIndex=self.attributeVisualizationPanel.getColoringIndex()
-        cpInstance=Instances(self.m_Instances)
+        cpInstance=deepcopy(self.m_Instances)
         cpInstance.setClassIndex(classIndex)
         self.dialog=ViewerDialog()
         self.dialog.resize(1000,600)
         self.dialog.setInstances(cpInstance)
         self.dialog.show()
+        self.dialog.close_signal.connect(self.viewTableCloseEvent)
 
-
-
+    def viewTableCloseEvent(self,inst:Instances):
+        if self.m_Instances.classIndex()<0:
+            inst.setClassIndex(-1)
+        Utils.debugOut("\n\nnewInstance numAttribute:",inst.numAttributes())
+        self.setInstances(inst)
 
 
 if __name__ == '__main__':

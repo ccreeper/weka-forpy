@@ -12,26 +12,20 @@ from copy import *
 from InsertInstanceDialog import InserInstanceDialog
 from SelectListDialog import SelectListDialog
 
-class ArffPanel():
+class ArffPanel(QObject):
+    state_changed_signal=pyqtSignal()
     def __init__(self,table:QTableWidget):
         super().__init__()
         self.m_Table=table      #type:TableWidget
         self.initalize()
         self.setTable()
         self.createMenu()
-        self.setMenu()
         self.attachMenuItemListener()
 
     def initalize(self):
-        #可能没用
-        self.m_Filename=""
-        self.m_Title=""
-        #end
         #当前选中的列
         self.m_CurrentCol = -1
         self.m_LastSearch = ""
-        self.m_LastReplace = ""
-        self.m_ShowAttributeIndex = True
         self.m_Changed = False
         self.m_ChangeListeners = set()
         self.m_CurrentCombobox=None     #type:tuple
@@ -44,11 +38,13 @@ class ArffPanel():
         self.model.rename_attribute_signal.connect(self.renameEvent)
         self.model.delete_attribute_signal[int].connect(self.deleteAttributeEvent)
         self.model.delete_attribute_signal[list].connect(self.deleteAttributeEvent)
+        self.model.undo_signal.connect(self.undoEvent)
+        self.model.state_changed_signal.connect(self.stateChangedEvent)
 
     def setTable(self):
         self.m_Table.verticalHeader().setVisible(False)
         self.m_Table.horizontalHeader().setFixedHeight(40)
-        self.m_Table.setSelectionMode(QAbstractItemView.SingleSelection)
+        # self.m_Table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.m_Table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.m_Table.setShowGrid(False)
         self.m_Table.itemClicked.connect(self.selectedCombox)
@@ -73,6 +69,7 @@ class ArffPanel():
         self.searchMenuItem=self.tableMenu.addAction(u'Search')
         self.clearSearchMenuItem=self.tableMenu.addAction(u'Clear search')
         self.deleteSelectedInstanceMenuItem=self.tableMenu.addAction(u'Delete selected instance')
+        self.deleteAllSelectedInstancesMenuItem=self.tableMenu.addAction(u'Delete All selected instances')
         self.insertNewInstanceMenuItem=self.tableMenu.addAction(u'Insert new instance')
 
 
@@ -90,6 +87,7 @@ class ArffPanel():
         self.deleteAttributeMenuItem.setEnabled(attSelected)
         self.deleteAttributesMenuItem.setEnabled(attSelected)
         self.deleteSelectedInstanceMenuItem.setEnabled(hasRows and self.m_Table.currentItem() is not None)
+        self.deleteAllSelectedInstancesMenuItem.setEnabled(hasRows and len(self.m_Table.selectedIndexes())>0)
 
     def setInstances(self,inst:Instances):
         #封装数据实体
@@ -100,6 +98,13 @@ class ArffPanel():
         self.model.clearUndo()
         self.m_Changed=False
 
+    def getInstance(self):
+        return self.model.getInstance()
+
+    def getSelectedRows(self)->List:
+        res=set(index.row() for index in self.m_Table.selectedIndexes())
+        res=sorted(res,reverse=True)
+        return res
 
     def setModel(self,data:Instances):
         headerLabels=["No."]
@@ -158,6 +163,7 @@ class ArffPanel():
     def generateMenu(self,pos):
         self.m_Table.setMenuClickNow(True)
         Utils.debugOut("currentSelectedRow:",self.m_Table.getSelectedRow())
+        self.setMenu()
         action=self.tableMenu.exec_(self.m_Table.cursor().pos())
         if action == self.searchMenuItem:
             self.search()
@@ -167,6 +173,8 @@ class ArffPanel():
             self.deleteInstance()
         elif action == self.insertNewInstanceMenuItem:
             self.addInstance()
+        elif action == self.deleteAllSelectedInstancesMenuItem:
+            self.deleteInstances()
         else:
             return
         self.m_Table.setMenuClickNow(False)
@@ -203,6 +211,11 @@ class ArffPanel():
         if item is None:
             return
         self.model.deleteInstanceAt(item.row())
+
+    def deleteInstances(self):
+        indices=self.getSelectedRows()
+        self.model.deleteInstances(indices)
+
 
     #删除回调
     def deleteInstanceEvent(self,row:int):
@@ -351,6 +364,19 @@ class ArffPanel():
         self.m_Table.horizontalHeader().resizeSection(self.m_CurrentCol,self.m_Table.horizontalHeader().
                                                       sectionSizeFromContents(self.m_CurrentCol).width())
 
+    def canUndo(self):
+        return self.model.canUndo()
+
+    def undo(self):
+        if self.canUndo():
+            self.model.undo()
+
+    def undoEvent(self,inst:Instances):
+        self.m_CurrentCombobox=None     #tyep:tuple
+        self.setModel(inst)
+
+    def stateChangedEvent(self):
+        self.state_changed_signal.emit()
 
 
 class ArffModel(QObject):
@@ -359,15 +385,19 @@ class ArffModel(QObject):
     update_instance_value_signal=pyqtSignal(list,int,object)
     rename_attribute_signal=pyqtSignal(int,str)
     delete_attribute_signal=pyqtSignal([int],[list])
+    undo_signal=pyqtSignal(Instances)
+    state_changed_signal=pyqtSignal()
 
     def __init__(self,data:Instances=None):
         super().__init__()
         self.m_Data=data        #type:Instances
         self.m_UndoList=[]      #type:List
         self.m_Cache=dict()
+        self.m_IgnoreChanges=False
 
     def setInstance(self,data:Instances):
         self.m_Data=data
+        self.m_Cache.clear()
 
     def clearUndo(self):
         self.m_UndoList.clear()
@@ -385,9 +415,18 @@ class ArffModel(QObject):
     #删除某个索引的实例
     def deleteInstanceAt(self,rowIndex:int):
         if rowIndex<self.m_Data.numInstances():
-            self.addUndoPoint()
+            if not self.m_IgnoreChanges:
+                self.addUndoPoint()
             self.m_Data.delete(rowIndex)
             self.delete_instance_signal.emit(rowIndex)
+
+    def deleteInstances(self,rowIndices:list):
+        self.addUndoPoint()
+        self.m_IgnoreChanges=True
+        for row in rowIndices:
+            self.deleteInstanceAt(row)
+        self.m_IgnoreChanges=False
+
 
     def addUndoPoint(self):
         if self.m_Data is not None:
@@ -395,6 +434,8 @@ class ArffModel(QObject):
             pickle.dump(self.m_Data,temp)
             temp.seek(0)
             self.m_UndoList.append(temp)
+            self.state_changed_signal.emit()
+        Utils.debugOut("Now undo list len:",len(self.m_UndoList))
 
     def insertInstance(self,index:int):
         Utils.debugOut("insert instance position:",index)
@@ -449,7 +490,7 @@ class ArffModel(QObject):
             res=self.m_Data.instance(rowIndex).isMissing(columnIndex-1)
         return res
 
-    def getType(self,columnIndex:int)->Attribute.Type:
+    def getType(self,columnIndex:int):
         res=Attribute.STRING
         if self.isAttribute(columnIndex):
             res=self.m_Data.attribute(columnIndex-1).type()
@@ -496,5 +537,16 @@ class ArffModel(QObject):
             self.m_Data.deleteAttributeAt(i-1)
         self.delete_attribute_signal[list].emit(indexList)
 
+    def canUndo(self):
+        return len(self.m_UndoList)>0
 
+    def undo(self):
+        if self.canUndo():
+            tempFile=self.m_UndoList[-1]
+            self.m_UndoList.pop()
+            data=pickle.load(tempFile)
+            tempFile.close()
+            self.setInstance(data)
+            self.undo_signal.emit(self.m_Data)
+            self.state_changed_signal.emit()
 

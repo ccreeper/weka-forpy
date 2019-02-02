@@ -2,7 +2,6 @@ from AttributeInfo import DateAttributeInfo,NominalAttributeInfo
 from typing import *
 
 class Attribute():
-    class Type(int):...
     NUMERIC=0
     NOMINAL=1
     STRING=2

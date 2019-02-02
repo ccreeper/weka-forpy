@@ -13,8 +13,8 @@
     <SUITE FILE_PATH="coverage/weka_forpy$Utils.coverage" NAME="Utils Coverage Results" MODIFIED="1548405254321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/qttest$MatplotlibWidget.coverage" NAME="MatplotlibWidget Coverage Results" MODIFIED="1548304878894" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui" />
     <SUITE FILE_PATH="coverage/qttest$AttributeInfo.coverage" NAME="AttributeInfo Coverage Results" MODIFIED="1547625079879" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
-    <SUITE FILE_PATH="coverage/weka_forpy$ViewerDialog.coverage" NAME="ViewerDialog Coverage Results" MODIFIED="1548500512994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui" />
-    <SUITE FILE_PATH="coverage/weka_forpy$Preprocess.coverage" NAME="Preprocess Coverage Results" MODIFIED="1549017762390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/weka_forpy$ViewerDialog.coverage" NAME="ViewerDialog Coverage Results" MODIFIED="1549088867943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui" />
+    <SUITE FILE_PATH="coverage/weka_forpy$Preprocess.coverage" NAME="Preprocess Coverage Results" MODIFIED="1549093831700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/qttest$AttributePanel.coverage" NAME="AttributePanel Coverage Results" MODIFIED="1547544681176" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
     <SUITE FILE_PATH="coverage/qttest$Instances.coverage" NAME="Instances Coverage Results" MODIFIED="1547624904312" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/qttest$MyUI.coverage" NAME="MyUI Coverage Results" MODIFIED="1547016168870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -33,7 +33,7 @@
     <SUITE FILE_PATH="coverage/qttest$ExtendUI.coverage" NAME="ExtendUI Coverage Results" MODIFIED="1547378132948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/qttest$InstanceSummaryPanel.coverage" NAME="InstanceSummaryPanel Coverage Results" MODIFIED="1547544684853" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
     <SUITE FILE_PATH="coverage/qttest$AttributeVisualizationPanel.coverage" NAME="AttributeVisualizationPanel Coverage Results" MODIFIED="1548303758219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
-    <SUITE FILE_PATH="coverage/weka_forpy$ArffPanel.coverage" NAME="ArffPanel Coverage Results" MODIFIED="1549016297347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
+    <SUITE FILE_PATH="coverage/weka_forpy$ArffPanel.coverage" NAME="ArffPanel Coverage Results" MODIFIED="1549093485861" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/gui/scripts" />
     <SUITE FILE_PATH="coverage/weka_forpy$Instances.coverage" NAME="Instances Coverage Results" MODIFIED="1549003814311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/qttest$Preprocess.coverage" NAME="Preprocess Coverage Results" MODIFIED="1548316422726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/weka_forpy$Tag.coverage" NAME="Tag Coverage Results" MODIFIED="1548405368487" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
@@ -44,8 +44,18 @@
       <file leaf-file-name="ViewerDialog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui/ViewerDialog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+            <state relative-caret-position="284">
+              <caret line="53" column="24" lean-forward="false" selection-start-line="53" selection-start-column="24" selection-end-line="53" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Viewer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/ui/Viewer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1909">
+              <caret line="83" column="37" lean-forward="false" selection-start-line="83" selection-start-column="37" selection-end-line="83" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -63,11 +73,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ArffPanel.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ArffPanel.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gui/scripts/ArffPanel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
-              <caret line="495" column="36" lean-forward="true" selection-start-line="495" selection-start-column="36" selection-end-line="495" selection-end-column="36" />
+            <state relative-caret-position="151">
+              <caret line="539" column="22" lean-forward="true" selection-start-line="539" selection-start-column="22" selection-end-line="539" selection-end-column="22" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -75,21 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SelectList.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gui/ui/SelectList.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="19" column="35" lean-forward="false" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Preprocess.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Preprocess.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="119" column="0" lean-forward="true" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
+            <state relative-caret-position="391">
+              <caret line="57" column="50" lean-forward="false" selection-start-line="57" selection-start-column="50" selection-end-line="57" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -98,8 +98,18 @@
       <file leaf-file-name="Attributes.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/Attributes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="64" column="0" lean-forward="false" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+            <state relative-caret-position="46">
+              <caret line="3" column="18" lean-forward="false" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AttributeVisualizationPanel.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeVisualizationPanel.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="188">
+              <caret line="40" column="31" lean-forward="false" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -108,30 +118,8 @@
       <file leaf-file-name="TableWidget.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui/TableWidget.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="49" column="79" lean-forward="true" selection-start-line="49" selection-start-column="79" selection-end-line="49" selection-end-column="79" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Instances.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/core/Instances.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-              <folding>
-                <element signature="e#1#33#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AttributeSelectionPanel.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeSelectionPanel.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="23">
-              <caret line="77" column="49" lean-forward="false" selection-start-line="77" selection-start-column="49" selection-end-line="77" selection-end-column="49" />
+            <state relative-caret-position="1012">
+              <caret line="49" column="79" lean-forward="false" selection-start-line="49" selection-start-column="79" selection-end-line="49" selection-end-column="79" />
               <folding />
             </state>
           </provider>
@@ -140,9 +128,21 @@
       <file leaf-file-name="QtWidgets.pyi" pinned="false" current-in-tab="false">
         <entry file="file://D:/Anaconda3/Lib/site-packages/PyQt5/QtWidgets.pyi">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="6506" column="8" lean-forward="false" selection-start-line="6506" selection-start-column="8" selection-end-line="6506" selection-end-column="8" />
+            <state relative-caret-position="180">
+              <caret line="8632" column="8" lean-forward="false" selection-start-line="8632" selection-start-column="8" selection-end-line="8632" selection-end-column="8" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Instances.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/Instances.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="23">
+              <caret line="41" column="8" lean-forward="false" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
+              <folding>
+                <element signature="e#1#33#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -158,12 +158,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>font</find>
-      <find>i</find>
-      <find>BarCalc</find>
-      <find>show()</find>
-      <find>focus</find>
-      <find>?</find>
       <find>['50-59','lt40','20-24','0-2']</find>
       <find>mis</find>
       <find>isMissing</find>
@@ -188,6 +182,12 @@
       <find>mode</find>
       <find>m_ClassIndex</find>
       <find>question</find>
+      <find>m_Ca</find>
+      <find>m_LastSearch</find>
+      <find>m_LastReplace</find>
+      <find>m_ShowAttributeIndex</find>
+      <find>m_Changed</find>
+      <find>setMenu</find>
     </findStrings>
     <replaceStrings>
       <replace>self</replace>
@@ -253,14 +253,14 @@
         <option value="$PROJECT_DIR$/gui/TableComboxItem.py" />
         <option value="$PROJECT_DIR$/gui/scripts/AttributeVisualizationPanel.py" />
         <option value="$PROJECT_DIR$/gui/MatplotlibWidget.py" />
-        <option value="$PROJECT_DIR$/gui/ViewerDialog.py" />
         <option value="$PROJECT_DIR$/gui/InsertInstanceDialog.py" />
         <option value="$PROJECT_DIR$/gui/TableWidget.py" />
-        <option value="$PROJECT_DIR$/core/Attributes.py" />
         <option value="$PROJECT_DIR$/gui/SelectListDialog.py" />
-        <option value="$PROJECT_DIR$/gui/scripts/ArffPanel.py" />
-        <option value="$PROJECT_DIR$/Preprocess.py" />
         <option value="$PROJECT_DIR$/core/Instances.py" />
+        <option value="$PROJECT_DIR$/core/Attributes.py" />
+        <option value="$PROJECT_DIR$/Preprocess.py" />
+        <option value="$PROJECT_DIR$/gui/ViewerDialog.py" />
+        <option value="$PROJECT_DIR$/gui/scripts/ArffPanel.py" />
       </list>
     </option>
   </component>
@@ -291,6 +291,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -328,7 +329,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -483,8 +483,8 @@
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.Preprocess" />
         <item index="1" class="java.lang.String" itemvalue="Python.ArffPanel" />
-        <item index="2" class="java.lang.String" itemvalue="Python.Instances" />
-        <item index="3" class="java.lang.String" itemvalue="Python.ViewerDialog" />
+        <item index="2" class="java.lang.String" itemvalue="Python.ViewerDialog" />
+        <item index="3" class="java.lang.String" itemvalue="Python.Instances" />
         <item index="4" class="java.lang.String" itemvalue="Python.CallMain" />
       </list>
     </recent_temporary>
@@ -524,7 +524,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1502146" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15236051" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3403315" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -711,13 +711,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeVisualizationPanel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1487">
-          <caret line="307" column="37" lean-forward="false" selection-start-line="307" selection-start-column="37" selection-end-line="307" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gui/scripts/GenericObjectEditor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="253">
@@ -750,14 +743,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="161">
           <caret line="15" column="34" lean-forward="false" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gui/ui/Viewer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1909">
-          <caret line="83" column="40" lean-forward="false" selection-start-line="83" selection-start-column="36" selection-end-line="83" selection-end-column="40" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -847,30 +832,87 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="335">
           <caret line="170" column="21" lean-forward="false" selection-start-line="170" selection-start-column="21" selection-end-line="170" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeSelectionPanel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
+        <state relative-caret-position="1656">
           <caret line="77" column="49" lean-forward="false" selection-start-line="77" selection-start-column="49" selection-end-line="77" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/Anaconda3/Lib/site-packages/PyQt5/QtWidgets.pyi">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="6506" column="8" lean-forward="false" selection-start-line="6506" selection-start-column="8" selection-end-line="6506" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/gui/ui/SelectList.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
+        <state relative-caret-position="437">
           <caret line="19" column="35" lean-forward="false" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/TableWidget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1012">
+          <caret line="49" column="79" lean-forward="false" selection-start-line="49" selection-start-column="79" selection-end-line="49" selection-end-column="79" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Instances.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="41" column="8" lean-forward="false" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
+          <folding>
+            <element signature="e#1#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/scripts/AttributeVisualizationPanel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="40" column="31" lean-forward="false" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Attributes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="3" column="18" lean-forward="false" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/ui/Viewer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1909">
+          <caret line="83" column="37" lean-forward="false" selection-start-line="83" selection-start-column="37" selection-end-line="83" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Preprocess.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="57" column="50" lean-forward="false" selection-start-line="57" selection-start-column="50" selection-end-line="57" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/ViewerDialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="53" column="24" lean-forward="false" selection-start-line="53" selection-start-column="24" selection-end-line="53" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Anaconda3/Lib/site-packages/PyQt5/QtWidgets.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="8632" column="8" lean-forward="false" selection-start-line="8632" selection-start-column="8" selection-end-line="8632" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -885,54 +927,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui/ViewerDialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/Attributes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="64" column="0" lean-forward="false" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Preprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="119" column="0" lean-forward="true" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gui/scripts/ArffPanel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="495" column="36" lean-forward="true" selection-start-line="495" selection-start-column="36" selection-end-line="495" selection-end-column="36" />
+        <state relative-caret-position="151">
+          <caret line="539" column="22" lean-forward="true" selection-start-line="539" selection-start-column="22" selection-end-line="539" selection-end-column="22" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gui/TableWidget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="49" column="79" lean-forward="true" selection-start-line="49" selection-start-column="79" selection-end-line="49" selection-end-column="79" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/Instances.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding>
-            <element signature="e#1#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
