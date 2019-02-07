@@ -1,7 +1,12 @@
-from typing import *
 from Instances import Instances
-from OptionHandler import OptionHandler
+from core.OptionHandler import OptionHandler
 from queue import Queue
+from queue import Queue
+
+from Instances import Instances
+
+from core.OptionHandler import OptionHandler
+
 
 class Filter():
     m_Methods = []

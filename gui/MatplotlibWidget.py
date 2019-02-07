@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import *
 import numpy as np
 from typing import *
-from Utils import Utils
+from core.Utils import Utils
 
 class MyMplCanvas(FigureCanvas):
     m_defaultColors = {

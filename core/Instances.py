@@ -1,10 +1,13 @@
 
+from copy import *
+from typing import *
+
 from Attributes import Attribute
-from AttributeStats import AttributeStats
 from Stats import Stats
 from Utils import Utils
-from typing import *
-from copy import *
+
+from core.AttributeStats import AttributeStats
+
 
 class Instance():
     def __init__(self,data:List):

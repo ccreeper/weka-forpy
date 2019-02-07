@@ -1,35 +1,37 @@
-from InstanceSummaryPanel import InstanceSummaryPanel
-from AttributeSelectionPanel import AttributeSelectionPanel
+import arff
 from AttributeSummaryPanel import AttributeSummaryPanel
 from AttributeVisualizationPanel import AttributeVisualizationPanel
-from ViewerDialog import ViewerDialog
-import cgitb
-import arff
-import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
+from InstanceSummaryPanel import InstanceSummaryPanel
 from Instances import *
-from Main import *
+from PyQt5.QtWidgets import *
+from ViewerDialog import ViewerDialog
+from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel
 
 
-class PreprocessPanel(QMainWindow,Ui_MainWindow):
-    def __init__(self,parent=None):
-        super().__init__(parent)
-        super().setupUi(self)
+class PreprocessPanel():
+    def __init__(self,win:'MainWindow'):
         # self.m_FilterEditor=GenericObjectEditor()
         # self.m_FilterEditor
+        self.instanceSummaryPanel=InstanceSummaryPanel(win)
+        self.attributePanel=AttributeSelectionPanel(win)
+        self.attributeSummaryPanel=AttributeSummaryPanel(win)
+        self.attributeVisualizationPanel=AttributeVisualizationPanel(win)
+        self.m_Instances=win.m_Instances     #type:Instances
+        self.m_Explor=win
+        self.m_openBut=win.open_btn
+        self.m_editBut=win.edit_btn
+        self.m_tab=win.tab
+        self.m_tabWidget=win.tabWidget
+        self.m_applyBut=win.apply_btn
+        self.m_saveBut=win.save_btn
+
         self.initSetting()
-        self.instanceSummaryPanel=InstanceSummaryPanel(self)
-        self.attributePanel=AttributeSelectionPanel(self)
-        self.attributeSummaryPanel=AttributeSummaryPanel(self)
-        self.attributeVisualizationPanel=AttributeVisualizationPanel(self)
         self.attachListener()
-        self.m_Instances=[]     #type:List[Instance]
+
+
 
     def openFile(self):
-        filename = QFileDialog.getOpenFileName(self.tab, '选择文件', '/', 'Arff data files(*.arff);;CSV data files(*.csv)')
+        filename = QFileDialog.getOpenFileName(self.m_tab, '选择文件', '/', 'Arff data files(*.arff);;CSV data files(*.csv)')
         file = open(filename[0], 'rb')
         # 解析arff
         with file:
@@ -39,8 +41,8 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
         inst = Instances(data)
         self.setInstances(inst)
 
-        self.tabWidget.setTabEnabled(1, True)
-        self.tabWidget.setTabEnabled(2, True)
+        self.m_tabWidget.setTabEnabled(1, True)
+        self.m_tabWidget.setTabEnabled(2, True)
 
 
     def setInstances(self,inst:Instances):
@@ -58,54 +60,27 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
         self.attributeSummaryPanel.setAttribute(0)
         self.attributeVisualizationPanel.setAttribute(0)
 
-        self.apply_btn.setEnabled(True)
-        self.save_btn.setEnabled(True)
-        self.edit_btn.setEnabled(True)
+        self.m_applyBut.setEnabled(True)
+        self.m_saveBut.setEnabled(True)
+        self.m_editBut.setEnabled(True)
 
-    def mousePressEvent(self, a0:QMouseEvent):
-        if a0.button()==Qt.LeftButton:
-            self.setFocus()
+    # def mousePressEvent(self, a0:QMouseEvent):
+    #     if a0.button()==Qt.LeftButton:
+    #         self.setFocus()
 
     def initSetting(self):
-        # 窗口中置
-        screen = QDesktopWidget().screenGeometry()
-        size = self.geometry()
-        self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
-
-        # 窗口禁止拉伸
-        self.setFixedSize(self.width(), self.height())
-
         #禁用控件
-        self.edit_btn.setEnabled(False)
-        self.save_btn.setEnabled(False)
-        self.apply_btn.setEnabled(False)
-        self.tabWidget.setTabEnabled(1, False)
-        self.tabWidget.setTabEnabled(2, False)
-
-        #表初始化
-        self.attr_table.verticalHeader().setVisible(False)
-        self.attr_table.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
-        self.attr_table.horizontalHeader().setStretchLastSection(True)
-        self.attr_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.attr_table.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.attr_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.attr_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.attr_table.setShowGrid(False)
-
-        self.selected_table.verticalHeader().setVisible(False)
-        self.selected_table.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
-        self.selected_table.horizontalHeader().setStretchLastSection(True)
-        self.selected_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.selected_table.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.selected_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.selected_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.selected_table.setShowGrid(False)
+        self.m_editBut.setEnabled(False)
+        self.m_saveBut.setEnabled(False)
+        self.m_applyBut.setEnabled(False)
+        self.m_tabWidget.setTabEnabled(1, False)
+        self.m_tabWidget.setTabEnabled(2, False)
 
 
     def attachListener(self):
-        self.open_btn.clicked.connect(self.openFile)
+        self.m_openBut.clicked.connect(self.openFile)
         self.attributePanel.m_TableModel.m_Table.cellClicked.connect(self.tableCellClick)
-        self.edit_btn.clicked.connect(self.edit)
+        self.m_editBut.clicked.connect(self.edit)
 
     def tableCellClick(self,row,column):
         self.attributeSummaryPanel.setAttribute(row)
@@ -126,18 +101,3 @@ class PreprocessPanel(QMainWindow,Ui_MainWindow):
             inst.setClassIndex(-1)
         Utils.debugOut("\n\nnewInstance numAttribute:",inst.numAttributes())
         self.setInstances(inst)
-
-
-if __name__ == '__main__':
-    cgitb.enable(format='text')
-    app = QApplication(sys.argv)
-    MainWindow = PreprocessPanel()
-
-    styleFile = './configuration/test.qss'
-    with open(styleFile, 'r') as file:
-        styleSheet = file.read()
-        print(styleSheet)
-    MainWindow.setStyleSheet(styleSheet)
-    MainWindow.show()
-
-    sys.exit(app.exec_())

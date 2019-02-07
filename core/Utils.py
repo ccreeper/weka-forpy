@@ -192,3 +192,39 @@ class Utils():
                 string=string[pos[index]+len(charsFind[index]):]
 
         return newString
+
+    @classmethod
+    def sort(cls,arr:List):
+        index=cls.initialIndex(len(arr))
+        newIndex=[0]*len(arr)
+        helpIndex=[]
+        numEqual=0
+        cls.quickSort(arr,index,0,len(arr)-1)
+        i=0
+        while i<len(index):
+            numEqual=1
+            for j in range(i+1,len(index)):
+                if arr[index[i]]!=arr[index[j]]:
+                    break
+                numEqual+=1
+            if numEqual>1:
+                helpIndex=[]
+                for j in range(numEqual):
+                    helpIndex.append(i+j)
+                index.sort()
+                cls.quickSort(index,helpIndex,0,numEqual-1)
+                for j in range(numEqual):
+                    newIndex[i+j]=index[helpIndex[j]]
+                i+=numEqual
+            else:
+                newIndex[i]=index[i]
+                i+=1
+        return newIndex
+
+
+    @classmethod
+    def initialIndex(cls,size:int):
+        index=[]
+        for i in range(size):
+            index.append(i)
+        return index

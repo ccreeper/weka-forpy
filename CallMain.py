@@ -7,14 +7,17 @@ from PyQt5.QtWidgets import *
 
 from Instances import *
 from Preprocess import PreprocessPanel
+from Main import Ui_MainWindow
 
 
 #弃用
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow,Ui_MainWindow):
 
     def __init__(self,parent=None):
         super().__init__(parent)
+        super().setupUi(self)
+        self.m_Instances=None       #type:Instances
         self.preprocessPanel=PreprocessPanel(self)
         self.initSetting()
 
@@ -31,6 +34,8 @@ class MainWindow(QMainWindow):
     def mousePressEvent(self, a0:QMouseEvent):
         if a0.button()==Qt.LeftButton:
             self.setFocus()
+
+
 
 if __name__ == '__main__':
     cgitb.enable(format='text')

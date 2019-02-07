@@ -1,13 +1,16 @@
 from typing import *
-from Filter import Filter
-from SingleIndex import SingleIndex
+
 from Attributes import Attribute
-from SelectedTag import SelectedTag
-from Option import Option
-from Tag import Tag
 from Instances import Instances
-from Utils import Utils
+from Option import Option
 from OptionHandler import OptionHandler
+from SingleIndex import SingleIndex
+from Tag import Tag
+from Utils import Utils
+
+from core.SelectedTag import SelectedTag
+from filters.Filter import Filter
+
 
 class Add(Filter,OptionHandler):
     TAGS_TYPE=[Tag(Attribute.NUMERIC,"NUM","Numeric attribute"),

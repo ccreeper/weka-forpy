@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from Viewer import Ui_Form
-from ArffPanel import ArffPanel
 from Instances import Instances
+from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import threading
+from PyQt5.QtWidgets import *
+
+from gui.designUI.Viewer import Ui_Form
+from gui.preprocess.ArffPanel import ArffPanel
+
 
 class ViewerDialog(QMainWindow,Ui_Form):
     class DialogResult():...

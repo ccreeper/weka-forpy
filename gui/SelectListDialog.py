@@ -1,9 +1,10 @@
-from SelectList import Ui_Dialog
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 from typing import *
-from Utils import Utils
+
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
+from gui.designUI.SelectList import Ui_Dialog
+
 
 class SelectListDialog(QMainWindow,Ui_Dialog):
     select_attributes_signal=pyqtSignal(list)

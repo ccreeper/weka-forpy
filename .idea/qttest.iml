@@ -2,16 +2,24 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/core" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/gui" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui2" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/configuration" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/temp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/gui/scripts" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/filters" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/model2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/filters2" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/filters/attribute" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/filters/attribute1" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/filters/instance" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gui/ui" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/promoteUI" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/filters/attribute" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/filters" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/common" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/designUI" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/preprocess" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
