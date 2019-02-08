@@ -38,6 +38,19 @@ class Instance():
         if pos >= 0 and pos < len(self.m_Data):
             self.m_Data.pop(pos)
 
+    def classIndex(self):
+        return self.m_Dataset.classIndex()
+
+    def classIsMissing(self):
+        classIndex=self.classIndex()
+        return self.isMissing(classIndex)
+
+    def classValue(self):
+        classIndex=self.classIndex()
+        return self.value(classIndex)
+
+
+
     #insertAttributeAt
 
 #TODO 将所有数据处理成float,衍生Instance类
@@ -76,6 +89,13 @@ class Instances(object):
             self.initialize(data,capacity)
             data.copyInstances(0,data.numInstances(),self)
 
+    def __iter__(self):
+        for instance in self.m_Instances:
+            yield instance
+
+    def __getitem__(self, item):
+        return self.m_Instances[item]
+
     def initialize(self,dataset,capacity:int):
         if capacity<0:
             capacity=0
@@ -90,6 +110,15 @@ class Instances(object):
 
     def classIndex(self):
         return self.m_ClassIndex
+
+    def classAttribute(self)->Attribute:
+        return self.attribute(self.m_ClassIndex)
+
+    def numClasses(self):
+        if not self.classAttribute().isNominal():
+            return 1
+        else:
+            return self.classAttribute().numValues()
 
     def numInstances(self):
         return len(self.m_Instances)
@@ -291,3 +320,4 @@ class Instances(object):
 
         for i in range(self.numInstances()):
             self.instance(i).deleteAttributeAt(position)
+

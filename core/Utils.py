@@ -18,6 +18,25 @@ class Utils():
         return math.isnan(value)
 
     @classmethod
+    def gr(cls,a:float,b:float):
+        return a-b>1e-6
+
+    @classmethod
+    def normalize(cls,numbers:List,sum:float):
+        for i in range(len(numbers)):
+            numbers[i]/=sum
+
+    @classmethod
+    def maxIndex(cls,numList:List):
+        maximun=0
+        maxIndex=0
+        for i in range(len(numList)):
+            if i==0 or numList[i]>maximun:
+                maxIndex=i
+                maximun=numList[i]
+        return maxIndex
+
+    @classmethod
     def missingValue(cls):
         return float("nan")
 

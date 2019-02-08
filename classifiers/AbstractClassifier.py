@@ -12,4 +12,7 @@ class AbstractClassifier(Classifier,CapabilitiesHandler):
 
     def getCapabilities(self):
         result=Capabilities(self)
-        result.
+        result.enableAll()
+        return result
+
+
