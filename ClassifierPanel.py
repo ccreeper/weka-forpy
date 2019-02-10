@@ -1,6 +1,7 @@
 from CallMain import MainWindow
 from GenericObjectEditor import GenericObjectEditor
 from Instances import Instances,Instance
+from classifiers.Classifier import Classifier
 from typing import *
 
 class CalssifierPanel():
@@ -20,5 +21,6 @@ class CalssifierPanel():
         self.m_Instances=win.m_Instances
 
     def initalize(self):
-        self.m_ClassifierEditor.setClassType()
+        self.m_ClassifierEditor.setClassType(Classifier)
+        # self.m_ClassifierEditor.setValue()
 

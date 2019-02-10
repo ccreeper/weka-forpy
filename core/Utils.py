@@ -1,6 +1,7 @@
 import math
 from functools import partial
 from typing import *
+import importlib
 
 
 #TODO  整合
@@ -247,3 +248,12 @@ class Utils():
         for i in range(size):
             index.append(i)
         return index
+
+    @classmethod
+    def loadClassForName(cls,classname:str)->type:
+        imp = importlib.import_module(classname)
+        try:
+            cla = getattr(imp, classname.split('.')[-1])
+            return cla
+        except BaseException:
+            return None

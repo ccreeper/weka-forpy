@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PluginManager import PluginManager
 from Utils import Utils
+from classifiers.AbstractClassifier import AbstractClassifier
 import importlib
 
 class PropertySheetPanel(QWidget):
@@ -16,7 +17,6 @@ class PropertySheetPanel(QWidget):
         self.m_Views=[]     #type:List[QWidget]
 
     def setTarget(self,target:object):
-        componentOffset=0
         layout=QFormLayout()
 
         self.setVisible(False)
@@ -50,24 +50,26 @@ class PropertySheetPanel(QWidget):
             self.m_Labels.append(label)
             self.m_Views.append(view)
         self.setLayout(layout)
+        self.setFixedHeight(35*len(self.m_Properties))
+        self.show()
 
     def setLayout(self, a0: 'QLayout'):
         super().setLayout(a0)
         self.layoutMgr=a0
 
-
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-import sys
-
-
+#Test
+# from PyQt5.QtCore import *
+# from PyQt5.QtWidgets import *
+# import sys
+#
+#
 # class A():
 #     properties=['number','flag']
 #     methods=['Func']
 #     def __init__(self):
 #         self.number=5
 #         self.flag=True
-
+#
 #     def Func(self):
 #         print("A")
 #
@@ -82,7 +84,6 @@ import sys
 #     app = QApplication(sys.argv)
 #     a=A()
 #     win = PropertySheetPanel()
-#     win.resize(500,500)
 #     win.setTarget(a)
 #     win.show()
 #     sys.exit(app.exec_())

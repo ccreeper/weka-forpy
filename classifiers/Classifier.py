@@ -3,7 +3,9 @@ from Instances import Instances,Instance
 from typing import *
 
 class Classifier():
-    def getAllProperties(self):pass
-    def getAllMethods(self):pass
+    @classmethod
+    def getAllProperties(cls):pass
+    @classmethod
+    def getAllMethods(cls):pass
     def buildClassifier(self,data:Instances):pass
     def getCapabilities(self)->Capabilities:pass

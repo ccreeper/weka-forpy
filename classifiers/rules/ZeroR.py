@@ -14,6 +14,12 @@ class ZeroR(AbstractClassifier):
         self.m_Counts=None  #ype:List
         self.m_Class=None   #type:Attribute
 
+    def addPropertiesToList(self):
+        pass
+
+    def addMethodsToList(self):
+        pass
+
     def getCapabilities(self)->Capabilities:
         result=super().getCapabilities()
         result.disableAll()

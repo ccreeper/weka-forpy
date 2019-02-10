@@ -1,5 +1,5 @@
 from PluginManager import PluginManager
-from TreeNodeButton import TreeNodeButton,HierarchyPropertyParser
+from HierarchyPropertyParser import HierarchyPropertyParser
 from typing import *
 import copy
 
@@ -103,7 +103,6 @@ class GenericObjectEditor():
                     hpp.add(className)
 
 
-    #TODO
     def setObject(self,c:object):
         if self.getValue() is not None:
             trueChange= (c != self.getValue())
@@ -111,6 +110,7 @@ class GenericObjectEditor():
             trueChange=True
         self.m_Backup=self.m_Object
         self.m_Object=c
+        print(type(self.m_Object))
         if self.m_EditorComponent is not None:
             self.m_EditorComponent.updateChildPropertySheet()
         if trueChange:
@@ -121,24 +121,41 @@ class GenericObjectEditor():
     def getValue(self):
         return copy.deepcopy(self.m_Object)
 
+    def getCustomEditor(self)->'GOEPanel':
+        if self.m_EditorComponent is None:
+            self.m_EditorComponent=GOEPanel(self)
+        return self.m_EditorComponent
 
+    def getChooseClassPopupMenu(self):
+        self.updateObjectNames()
+        self.m_treeNodeOfCurrentObject=None
+        #直接生成TreeList返回
 
 
 from Editor import Ui_Form
 from PropertySheetPanel import PropertySheetPanel
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 class GOEPanel(QWidget,Ui_Form):
     def __init__(self,editor:GenericObjectEditor,parent=None):
         super().__init__(parent)
         super().setupUi(self)
+        self.m_Backup=copy.deepcopy(editor.m_Object)
         self.m_ClassNameLabel=self.classNameLabel
         self.m_okBut=self.okBtn
         # self.m_ChildPropertySheet=self.propertyWidget
         self.m_Editor=editor
-
-        self.m_ChildPropertySheet=PropertySheetPanel()
+        self.m_ChildPropertySheet=self.propertyWidget
+        print(self.m_ChildPropertySheet.size())
+        self.m_ChildPropertySheet.setEnabled(True)
         #TODO 监听改变
+        if editor.m_ClassType is not None:
+            editor.m_ObjectNames=editor.getClassesFromProperties()
+            if editor.m_Object is not None:
+                editor.updateObjectNames()
+                self.updateChildPropertySheet()
 
 
         #TODO
@@ -146,7 +163,24 @@ class GOEPanel(QWidget,Ui_Form):
         className="None"
         if self.m_Editor.m_Object is not None:
             className = self.m_Editor.m_Object.__class__.__name__
+            print("className:",className)
         self.m_ClassNameLabel.setText(className)
         self.m_ChildPropertySheet.setTarget(self.m_Editor.m_Object)
+        # self.m_ChildPropertySheet.show()
         #TODO 可能需要重新调整大小
 
+
+#Test
+from classifiers.Classifier import Classifier
+from classifiers.rules.ZeroR import ZeroR
+import sys
+if __name__=='__main__':
+    app=QApplication(sys.argv)
+    ce=GenericObjectEditor()
+    ce.setClassType(Classifier)
+    initial=ZeroR()
+    ce.setValue(initial)
+    goe=ce.getCustomEditor()
+    goe.adjustSize()
+    goe.show()
+    sys.exit(app.exec_())
