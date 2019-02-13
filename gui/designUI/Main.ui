@@ -770,25 +770,6 @@
        <string>Choose</string>
       </property>
      </widget>
-     <widget class="QLabel" name="option_classifier">
-      <property name="geometry">
-       <rect>
-        <x>147</x>
-        <y>40</y>
-        <width>801</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>5</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>None</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_12">
       <property name="geometry">
        <rect>
@@ -811,6 +792,22 @@
         <height>51</height>
        </rect>
       </property>
+      <widget class="QPushButton" name="option_classifier">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>9</y>
+         <width>820</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::PreventContextMenu</enum>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QLabel" name="label_13">
       <property name="geometry">
@@ -1043,7 +1040,6 @@
      </widget>
      <zorder>frame_2</zorder>
      <zorder>choose_classifier</zorder>
-     <zorder>option_classifier</zorder>
      <zorder>label_12</zorder>
      <zorder>label_13</zorder>
      <zorder>frame_3</zorder>

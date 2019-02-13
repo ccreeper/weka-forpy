@@ -1,26 +1,48 @@
 from PluginManager import PluginManager
 from HierarchyPropertyParser import HierarchyPropertyParser
+from GOETreeNode import GOETreeNode
+from TreeWidget import TreeWidget
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QObject,pyqtSignal
+import os
+from Utils import Utils
 from typing import *
+from configparser import ConfigParser
+import importlib
 import copy
 
 class GenericObjectEditorHistory():
     def __init__(self):
         self.m_History=[]
 
-class GenericObjectEditor():
-    def __init__(self,canChangeClassInDialog:bool=False):
+class GenericObjectEditor(QObject):
+    classifier_changed=pyqtSignal(str)
+    def __init__(self,canChangeClassInDialog:bool=False,parent=None):
+        super().__init__(parent)
         self.m_canChangeClassInDialog=canChangeClassInDialog
         self.m_History=GenericObjectEditorHistory()
         self.m_Object=None              #type:object
         self.m_Backup=None
-        self.m_EditorComponent=None     #type:GOEPanel
+        self.m_EditorComponent=None     #type:GOEPansel
         self.m_ObjectNames=None         #type:Dict[str,HierarchyPropertyParser]
         self.m_CancelWasPressed=False
+        self.m_treeNodeOfCurrentObject=None     #type:GOETreeNode
+        self.loadProperties()
 
-    #TODO 直接对每个类生成代替
     def setClassType(self,tp:type):
         self.m_ClassType=tp
         self.m_ObjectNames=self.getClassesFromProperties()
+
+    def loadProperties(self):
+        try:
+            cf = ConfigParser()
+            cf.read("./core/config/GenericObject.conf")
+            kvs = cf.items("Classifier")
+            for item in kvs:
+                PluginManager.addPlugin("Classifier",item[1])
+            print(PluginManager.PLUGINS)
+        except BaseException:
+            pass
 
     def getClassesFromProperties(self)->Dict[str,HierarchyPropertyParser]:
         hpps=dict()
@@ -33,6 +55,7 @@ class GenericObjectEditor():
             b+=s+","
         listS=b[0:-1]
         typeOptions=self.sortClassesByRoot(listS)
+        Utils.debugOut("All Class:",typeOptions)
         if typeOptions is not None:
             enm = typeOptions.keys()
             for root in enm:
@@ -90,6 +113,7 @@ class GenericObjectEditor():
         self.setObject(o)
         self.updateObjectNames()
         self.m_CancelWasPressed=False
+        self.classifier_changed.emit(o.__class__.__name__)
 
     def updateObjectNames(self):
         if self.m_ObjectNames is None:
@@ -108,9 +132,8 @@ class GenericObjectEditor():
             trueChange= (c != self.getValue())
         else:
             trueChange=True
-        self.m_Backup=self.m_Object
+        self.m_Backup=copy.deepcopy(self.m_Object)
         self.m_Object=c
-        print(type(self.m_Object))
         if self.m_EditorComponent is not None:
             self.m_EditorComponent.updateChildPropertySheet()
         if trueChange:
@@ -126,10 +149,67 @@ class GenericObjectEditor():
             self.m_EditorComponent=GOEPanel(self)
         return self.m_EditorComponent
 
-    def getChooseClassPopupMenu(self):
+    #getChooseClassPopupMenu
+    def getTreeMenu(self)->QTreeWidget:
         self.updateObjectNames()
         self.m_treeNodeOfCurrentObject=None
-        #直接生成TreeList返回
+        tree=self.createTree(self.m_ObjectNames)
+        if self.m_treeNodeOfCurrentObject is not None:
+            tree.setCurrentItem(self.m_treeNodeOfCurrentObject)
+        else:
+            root=tree.topLevelItem(0)
+            if root != -1:
+                tree.setCurrentItem(root)
+        tree.itemClicked.connect(self.treeValueChanged)
+        return tree
+
+    def treeValueChanged(self,item:GOETreeNode,column:int):
+        if item is None:
+            return
+        if item.isLeaf():
+            self.classSelected(item.getClassnameFromPath())
+
+    def classSelected(self,className:str):
+        if self.m_Object is not None and self.m_Object.__class__.__name__== className:
+            return
+        clsType=Utils.loadClassForName(className)
+        self.setValue(clsType())
+        if self.m_EditorComponent is not None:
+            self.m_EditorComponent.updateChildPropertySheet()
+
+
+
+    def createTree(self,hpps:Dict[str,HierarchyPropertyParser])->QTreeWidget:
+        if len(hpps) >1:
+            superRoot=GOETreeNode("root")
+        else:
+            superRoot=None
+        root=None
+        for hpp in hpps.values():
+            hpp.goToRoot()
+            root=GOETreeNode(hpp.getValue())
+            self.addChildrenToTree(root,hpp)
+            if superRoot is None:
+                superRoot=root
+            else:
+                superRoot.addChild(root)
+        tree=TreeWidget()
+        tree.addTopLevelItem(root)
+        return tree
+
+
+
+    def addChildrenToTree(self,tree:'GOETreeNode',hpp:HierarchyPropertyParser):
+        for i in range(hpp.numChildren()):
+            hpp.goToChild(i)
+            child = GOETreeNode(hpp.getValue())
+            if self.m_Object is not None and self.m_Object.__class__.__name__==hpp.fullValue():
+                self.m_treeNodeOfCurrentObject=child
+            tree.addChild(child)
+            self.addChildrenToTree(child,hpp)
+            hpp.goToParent()
+
+
 
 
 from Editor import Ui_Form
@@ -142,15 +222,18 @@ class GOEPanel(QWidget,Ui_Form):
     def __init__(self,editor:GenericObjectEditor,parent=None):
         super().__init__(parent)
         super().setupUi(self)
-        self.m_Backup=copy.deepcopy(editor.m_Object)
+        self.m_Editor=editor
         self.m_ClassNameLabel=self.classNameLabel
         self.m_okBut=self.okBtn
+        self.m_cancelBut=self.cancelBtn
         # self.m_ChildPropertySheet=self.propertyWidget
-        self.m_Editor=editor
+        self.m_Editor.m_Backup=copy.deepcopy(editor.m_Object)
         self.m_ChildPropertySheet=self.propertyWidget
-        print(self.m_ChildPropertySheet.size())
         self.m_ChildPropertySheet.setEnabled(True)
         #TODO 监听改变
+        self.m_okBut.clicked.connect(self.okButtonClick)
+        self.m_cancelBut.clicked.connect(self.cancelButtonClick)
+
         if editor.m_ClassType is not None:
             editor.m_ObjectNames=editor.getClassesFromProperties()
             if editor.m_Object is not None:
@@ -158,6 +241,20 @@ class GOEPanel(QWidget,Ui_Form):
                 self.updateChildPropertySheet()
 
 
+    def okButtonClick(self):
+        self.m_Editor.m_CancelWasPressed=False
+        self.m_Editor.m_Backup=copy.deepcopy(self.m_Editor.m_Object)
+        self.close()
+
+    def cancelButtonClick(self):
+        self.m_Editor.m_CancelWasPressed=True
+        if self.m_Editor.m_Backup is not None:
+            self.m_Editor.m_Object=copy.deepcopy(self.m_Editor.m_Backup)
+            # m_Support.firePropertyChange("", null, null);
+            self.m_Editor.m_ObjectNames=self.m_Editor.getClassesFromProperties()
+            self.m_Editor.updateObjectNames()
+            self.updateChildPropertySheet()
+        self.close()
         #TODO
     def updateChildPropertySheet(self):
         className="None"
@@ -167,20 +264,19 @@ class GOEPanel(QWidget,Ui_Form):
         self.m_ClassNameLabel.setText(className)
         self.m_ChildPropertySheet.setTarget(self.m_Editor.m_Object)
         # self.m_ChildPropertySheet.show()
-        #TODO 可能需要重新调整大小
 
 
 #Test
-from classifiers.Classifier import Classifier
-from classifiers.rules.ZeroR import ZeroR
-import sys
-if __name__=='__main__':
-    app=QApplication(sys.argv)
-    ce=GenericObjectEditor()
-    ce.setClassType(Classifier)
-    initial=ZeroR()
-    ce.setValue(initial)
-    goe=ce.getCustomEditor()
-    goe.adjustSize()
-    goe.show()
-    sys.exit(app.exec_())
+# from classifiers.Classifier import Classifier
+# from classifiers.rules.ZeroR import ZeroR
+# import sys
+# if __name__=='__main__':
+#     app=QApplication(sys.argv)
+#     ce=GenericObjectEditor()
+#     ce.setClassType(Classifier)
+#     initial=ZeroR()
+#     ce.setValue(initial)
+#     goe=ce.getCustomEditor()
+#     goe.adjustSize()
+#     goe.show()
+#     sys.exit(app.exec_())

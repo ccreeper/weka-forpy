@@ -1,12 +1,14 @@
-from CallMain import MainWindow
 from GenericObjectEditor import GenericObjectEditor
 from Instances import Instances,Instance
+from PropertyPanel import PropertyPanel
 from classifiers.Classifier import Classifier
+from classifiers.rules.ZeroR import ZeroR
 from typing import *
 
-class CalssifierPanel():
-    def __init__(self,win:MainWindow):
+class ClassifierPanel():
+    def __init__(self,win:'MainWindow'):
         self.m_ClassifierEditor=GenericObjectEditor()
+        self.m_ClassificationOutputPanel=PropertyPanel(win,self.m_ClassifierEditor)
         self.m_Explor=win
         #TODO 中间条
         # self.m_CEPanel
@@ -20,7 +22,12 @@ class CalssifierPanel():
         self.m_CVText=win.cross_value
         self.m_Instances=win.m_Instances
 
+        self.initalize()
+
     def initalize(self):
         self.m_ClassifierEditor.setClassType(Classifier)
+        self.m_ClassifierEditor.setValue(ZeroR())
+
+
         # self.m_ClassifierEditor.setValue()
 

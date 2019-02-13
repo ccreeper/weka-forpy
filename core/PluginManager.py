@@ -5,11 +5,12 @@ from typing import *
 class PluginManager():
     PLUGINS=dict()  #type:dict[str,dict[str,type]]
     @classmethod
-    def addPlugin(cls, packageName:str, className:str):
-        imp=importlib.import_module(packageName+"."+className)
-        cla=getattr(imp,className)
+    def addPlugin(cls, interfaceName:str, className:str):
+        imp=importlib.import_module(className)
+        clsName=className.split(".")[-1]
+        cla=getattr(imp,clsName)
         dt=dict({className:cla})
-        cls.PLUGINS.update({packageName:dt})
+        cls.PLUGINS.update({interfaceName:dt})
 
     @classmethod
     def getPluginNamesOfType(cls,modelName:str)->List[str] :

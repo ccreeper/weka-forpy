@@ -23,10 +23,16 @@ class HierarchyPropertyParser():
         self.goToRoot()
 
     def goToChild(self,pos:int):
-        if self.m_Current.children is None or pos == 0 or pos >= len(self.m_Current.children):
+        if self.m_Current.children is None or pos < 0 or pos >= len(self.m_Current.children):
+            sys.stderr.write("pos",str(pos))
             raise Exception("Position out of range or leaf reached")
         self.m_Current=self.m_Current.children[pos]
 
+    def fullValue(self)->str:
+        if self.m_Current == self.m_Root:
+            return str(self.m_Root.value)
+        else:
+            return self.m_Current.context+self.m_Seperator+str(self.m_Current.value)
 
     def numChildren(self):
         if self.m_Current.children is None:
@@ -42,6 +48,10 @@ class HierarchyPropertyParser():
     def getSeperator(self):
         return self.m_Seperator
 
+    def goToParent(self):
+        if self.m_Current.parent is not None:
+            self.m_Current=self.m_Current.parent
+
     def build(self,p:str,delim:str):
         st=p.split(delim)
         for property in st:
@@ -50,6 +60,9 @@ class HierarchyPropertyParser():
                 return
             self.add(property)
         self.goToRoot()
+
+    def isLeafReached(self):
+        return self.m_Current.children is None
 
     def isHierachic(self,string:str):
         try:

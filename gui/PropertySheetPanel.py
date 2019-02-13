@@ -16,9 +16,18 @@ class PropertySheetPanel(QWidget):
         self.m_Labels=[]        #type:List[QLabel]
         self.m_Views=[]     #type:List[QWidget]
 
+    #TODO
     def setTarget(self,target:object):
-        layout=QFormLayout()
-
+        print("target:",target.doNotCheckCapabilities)
+        if self.layout() is None:
+            layout=QFormLayout()
+            self.setLayout(layout)
+        else:
+            layout=self.layout()
+        for i in range(layout.rowCount()):
+            layout.removeRow(i)
+        self.m_Labels.clear()
+        self.m_Views.clear()
         self.setVisible(False)
         self.m_NumEditable=0
         self.m_Target=target
@@ -32,26 +41,32 @@ class PropertySheetPanel(QWidget):
         for i in range(len(self.m_Properties)):
             name=self.m_Properties[sortedPropOrderings[i]]
             try:
-                property=getattr(target,self.m_Properties[sortedPropOrderings[i]])
+                property=getattr(target,name)
             except AttributeError:
                 continue
+
+            print("name:", name, "type:", type(property))
             label=QLabel(name)
-            if type(property) is bool:
+            if isinstance(property,bool):
                 view=QComboBox()
                 view.addItems(['True','False'])
                 if property:
                     view.setCurrentIndex(0)
                 else:
                     view.setCurrentIndex(1)
+                print("isName:",name)
+                view.currentIndexChanged[str].connect(lambda option:setattr(target,name,True) if option=="True" else setattr(target,name,False))
             else:
                 view=QLineEdit()
                 view.setText(str(property))
+                view.textChanged.connect(lambda text:print("text:",text))
             layout.addRow(label,view)
             self.m_Labels.append(label)
             self.m_Views.append(view)
-        self.setLayout(layout)
         self.setFixedHeight(35*len(self.m_Properties))
+        self.repaint()
         self.show()
+
 
     def setLayout(self, a0: 'QLayout'):
         super().setLayout(a0)

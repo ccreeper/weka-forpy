@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 
 from Instances import *
 from Preprocess import PreprocessPanel
+from ClassifierPanel import ClassifierPanel
 from Main import Ui_MainWindow
 
 
@@ -19,6 +20,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         super().setupUi(self)
         self.m_Instances=None       #type:Instances
         self.preprocessPanel=PreprocessPanel(self)
+        self.classifierPanel=ClassifierPanel(self)
         self.initSetting()
 
 
