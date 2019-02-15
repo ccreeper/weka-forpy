@@ -282,7 +282,7 @@ class Instances(object):
         self.m_Instances.pop(index)
 
     def add(self,inst:Instance,index:int=-1):
-        newInstance=copy(inst)
+        newInstance=deepcopy(inst)
         newInstance.setDataset(self)
         if index <0:
             self.m_Instances.append(newInstance)
@@ -321,3 +321,16 @@ class Instances(object):
         for i in range(self.numInstances()):
             self.instance(i).deleteAttributeAt(position)
 
+    def equalHeaders(self,dataset:'Instances'):
+        return self.equalHeadersMsg(dataset) == None
+
+    def equalHeadersMsg(self,dataset:'Instances'):
+        if self.m_ClassIndex != dataset.m_ClassIndex:
+            return "Class index differ: " + str(self.m_ClassIndex + 1) + " != "+ str(dataset.m_ClassIndex + 1)
+        if len(self.m_Attributes) != len(dataset.m_Attributes):
+            return "Different number of attributes: " + str(len(self.m_Attributes)) + " != "+ str(len(dataset.m_Attributes))
+        for i in range(len(self.m_Attributes)):
+            msg=self.attribute(i).equalsMsg(dataset.attribute(i))
+            if msg != None:
+                return "Attributes differ at position " + str(i + 1) + ":\n" + msg
+        return None

@@ -1,78 +1,85 @@
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PluginManager import PluginManager
 from Utils import Utils
-from classifiers.AbstractClassifier import AbstractClassifier
-import importlib
+import copy
 
 class PropertySheetPanel(QWidget):
-    def __init__(self,parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.m_env=self.width()
-        self.m_Properties=None
-        self.m_Methods=None
-        self.m_Editors=[]
-        self.m_Labels=[]        #type:List[QLabel]
-        self.m_Views=[]     #type:List[QWidget]
+        self.m_env = self.width()
+        self.m_Properties = None
+        self.m_Methods = None
+        self.m_Editors = []
+        self.m_Labels = []  # type:List[QLabel]
+        self.m_Views = []  # type:List[QWidget]
 
-    #TODO
-    def setTarget(self,target:object):
-        print("target:",target.doNotCheckCapabilities)
+    def setTarget(self, target: object):
         if self.layout() is None:
-            layout=QFormLayout()
+            layout = QFormLayout()
             self.setLayout(layout)
         else:
-            layout=self.layout()
-        for i in range(layout.rowCount()):
-            layout.removeRow(i)
+            layout = self.layout()
+        while layout.rowCount() > 0:
+            layout.removeRow(0)
         self.m_Labels.clear()
         self.m_Views.clear()
         self.setVisible(False)
-        self.m_NumEditable=0
-        self.m_Target=target
-        #忽略类型，直接固定的接口，接口包括返回所有属性name的List和所有方法name的List
-        self.m_Properties= target.getAllProperties()
-        self.m_Methods=target.getAllMethods()
-        propOrdering=[0]*len(self.m_Properties)
+        self.m_NumEditable = 0
+        self.m_Target = target
+        # 忽略类型，直接固定的接口，接口包括返回所有属性name的List和所有方法name的List
+        self.m_Properties = target.getAllProperties()
+        self.m_Methods = target.getAllMethods()
+        propOrdering = [0] * len(self.m_Properties)
         for i in range(len(self.m_Properties)):
-            propOrdering[i]=float("inf")
-        sortedPropOrderings=Utils.sort(propOrdering)
+            propOrdering[i] = float("inf")
+        sortedPropOrderings = Utils.sort(propOrdering)
+
+        def setValue(name: str,attrType:type):
+            if attrType is bool:
+                def callSet(option:str):
+                    if option.lower() == "true":
+                        setattr(target,name,True)
+                    else:
+                        setattr(target,name,False)
+            else:
+                def callSet(option):
+                    setattr(target, name, option)
+            return callSet
+
         for i in range(len(self.m_Properties)):
-            name=self.m_Properties[sortedPropOrderings[i]]
+            name = self.m_Properties[sortedPropOrderings[i]]
             try:
-                property=getattr(target,name)
+                property = getattr(target, name)
             except AttributeError:
                 continue
 
             print("name:", name, "type:", type(property))
-            label=QLabel(name)
-            if isinstance(property,bool):
-                view=QComboBox()
-                view.addItems(['True','False'])
+            label = QLabel(name)
+            func = setValue(name,type(property))
+            if isinstance(property, bool):
+                view = QComboBox()
+                view.addItems(['False', 'True'])
                 if property:
-                    view.setCurrentIndex(0)
-                else:
                     view.setCurrentIndex(1)
-                print("isName:",name)
-                view.currentIndexChanged[str].connect(lambda option:setattr(target,name,True) if option=="True" else setattr(target,name,False))
+                else:
+                    view.setCurrentIndex(0)
+                view.currentIndexChanged[str].connect(copy.deepcopy(func))
             else:
-                view=QLineEdit()
+                view = QLineEdit()
                 view.setText(str(property))
-                view.textChanged.connect(lambda text:print("text:",text))
-            layout.addRow(label,view)
+                view.textChanged.connect(copy.deepcopy(func))
+            layout.addRow(label, view)
             self.m_Labels.append(label)
             self.m_Views.append(view)
-        self.setFixedHeight(35*len(self.m_Properties))
+        self.setFixedHeight(35 * len(self.m_Properties))
+        Utils.debugOut("layout row count:", layout.rowCount())
         self.repaint()
         self.show()
 
-
     def setLayout(self, a0: 'QLayout'):
         super().setLayout(a0)
-        self.layoutMgr=a0
+        self.layoutMgr = a0
 
-#Test
+# Test
 # from PyQt5.QtCore import *
 # from PyQt5.QtWidgets import *
 # import sys

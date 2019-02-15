@@ -133,3 +133,19 @@ class Attribute():
         copy.m_AttributeInfo=self.m_AttributeInfo
         copy.m_Weight=self.m_Weight
         return copy
+
+    def equalsMsg(self,other:'Attribute')->str:
+        if other is None:
+            return "Comparing with null object"
+        if other.__class__ != self.__class__:
+            return "Object has wrong class"
+        if self.m_Name != other.m_Name:
+            return "Names differ: " + self.m_Name + " != " + other.m_Name
+        if self.isNominal() and other.isNominal():
+            if len(self.m_AttributeInfo.m_Values) != len(other.m_AttributeInfo.m_Values):
+                return "Different number of labels: " + str(len(self.m_AttributeInfo.m_Values)) + " != "+ str(len(other.m_AttributeInfo.m_Values))
+            for i in range(len(self.m_AttributeInfo.m_Values)):
+                if self.m_AttributeInfo.m_Values[i] != other.m_AttributeInfo.m_Values[i]:
+                    return "Labels differ at position " + str((i + 1)) + ": "+ self.m_AttributeInfo.m_Values[i] + " != " + other.m_AttributeInfo.m_Values[i]
+        return None
+

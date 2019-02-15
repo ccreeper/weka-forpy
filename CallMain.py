@@ -37,6 +37,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         if a0.button()==Qt.LeftButton:
             self.setFocus()
 
+    def getPreprocessPanel(self):
+        return self.preprocessPanel
 
 
 if __name__ == '__main__':

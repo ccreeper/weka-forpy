@@ -17,6 +17,7 @@ class PropertyPanel():
         self.m_Editor.classifier_changed.connect(self.classifierChangedEvent)
 
     def chooseClick(self):
+
         self.m_ChooseBut.setTree(self.m_Editor.getTreeMenu())
         self.m_ChooseBut.showPopupMenu()
 
@@ -32,4 +33,12 @@ class PropertyPanel():
     def classifierChangedEvent(self,clsName):
         self.m_OptionBut.setText(clsName)
         self.m_ChooseBut.hidePopupMenu()
+
+    def addToHistory(self,obj:object=None):
+        if obj is None:
+            return self.addToHistory(self.m_Editor.getValue())
+        if isinstance(self.m_Editor,GenericObjectEditor) and obj is not None:
+            self.m_Editor.getHistory().add(obj)
+            return True
+        return False
 

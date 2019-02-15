@@ -158,12 +158,12 @@ class Utils():
 
     @classmethod
     def unbackQuoteChars(cls,string:str):
-        charsFind=("\\\\","\\'","\\t","\\n","\\r","\\\"","\\%","\\u001E")
-        charsReplace=('\\','\'','\t','\n','\r','"','%','\u001E')
+        charsFind=["\\\\","\\'","\\t","\\n","\\r","\\\"","\\%","\\u001E"]
+        charsReplace=['\\','\'','\t','\n','\r','"','%','\u001E']
         return cls.replaceStrings(string,charsFind,charsReplace)
 
     @classmethod
-    def backQuoteChars(cls,string:str):
+    def backQuoteChars(cls,string:str)->str:
         charsFind=['\\', '\'', '\t', '\n', '\r', '"', '%', '\u001E']
         charsReplace=["\\\\", "\\'", "\\t", "\\n", "\\r", "\\\"", "\\%", "\\u001E"]
         for i in range(len(charsFind)):
@@ -186,6 +186,7 @@ class Utils():
                         break
             except ValueError:
                 continue
+        return string
 
     @classmethod
     def replaceStrings(cls,s:str,charsFind:List[str],charsReplace:List[str]):
@@ -257,3 +258,21 @@ class Utils():
             return cla
         except BaseException:
             return None
+
+    @classmethod
+    def joinOptions(cls,optionArray:List[str]):
+        optionString=""
+        for element in optionArray:
+            if element == "":
+                continue
+            escape=False
+            for i in range(len(element)):
+                if element[i].isspace() or element[i] == '"' or element[i] == "'":
+                    escape=True
+                    break
+            if escape:
+                optionString+='"'+cls.backQuoteChars(element)+'"'
+            else:
+                optionString+=element
+            optionString+=" "
+        return optionString.strip()
