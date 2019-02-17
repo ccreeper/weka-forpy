@@ -451,7 +451,7 @@ class Ui_MainWindow(object):
         self.frame_4.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_4.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_4.setObjectName("frame_4")
-        self.resultList = QtWidgets.QListWidget(self.frame_4)
+        self.resultList = ResultHistoryPanel(self.frame_4)
         self.resultList.setGeometry(QtCore.QRect(10, 10, 301, 321))
         self.resultList.setObjectName("resultList")
         self.label_17 = QtWidgets.QLabel(self.tab_2)
@@ -544,4 +544,5 @@ class Ui_MainWindow(object):
 
 from MatplotlibWidget import MatplotlibWidget
 from TreeNodeButton import TreeNodeButton
+from classifier.ResultHistoryPanel import ResultHistoryPanel
 import apprcc_rc

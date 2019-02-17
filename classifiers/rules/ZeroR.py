@@ -14,6 +14,13 @@ class ZeroR(AbstractClassifier):
         self.m_Counts=None  #ype:List
         self.m_Class=None   #type:Attribute
 
+    def __str__(self):
+        if self.m_Class is None:
+            return "ZeroR: No model built yet."
+        if self.m_Counts is None:
+            return "ZeroR predicts class value: " + str(self.m_ClassValue)
+        return "ZeroR predicts class value: " + self.m_Class.value(int(self.m_ClassValue))
+
     def addPropertiesToList(self):
         pass
 

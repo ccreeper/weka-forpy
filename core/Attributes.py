@@ -126,7 +126,9 @@ class Attribute():
         else:
             return "???"
 
-    def copy(self,name:str):
+    def copy(self,name:str=None):
+        if name is None:
+            return self.copy(self.m_Name)
         copy=Attribute(name)
         copy.m_Index=self.m_Index
         copy.m_Type=self.m_Type

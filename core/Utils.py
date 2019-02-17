@@ -276,3 +276,45 @@ class Utils():
                 optionString+=element
             optionString+=" "
         return optionString.strip()
+
+    @classmethod
+    def splitOptions(cls,quotedOptionString:str,toReplace:List[str],replacements:List[str])->List[str]:
+        optionsVec=[]
+        string=quotedOptionString
+        while True:
+            i=0
+            while i < len(string) and string[i].isspace():
+                i+=1
+            string=string[i:]
+            if len(string) == 0:
+                break
+            if string[0] == '"':
+                i=1
+                while i<len(string):
+                    if string[i] == string[0]:
+                        break
+                    if string[i] == '\\':
+                        i+=1
+                        if i >= len(string):
+                            raise Exception("String should not finish with \\")
+                    i+=1
+                if i >= len(string):
+                    raise Exception("Quote parse error.")
+                optStr=string[1:i]
+                if toReplace is not None and replacements is not None:
+                    optStr=cls.replaceStrings(optStr,toReplace,replacements)
+                else:
+                    optStr=cls.unbackQuoteChars(optStr)
+                optionsVec.append(optStr)
+                string=string[i+1:]
+            else:
+                i=0
+                while i<len(string) and not string[i].isspace():
+                    i+=1
+                optStr=string[0:i]
+                optionsVec.append(optStr)
+                string=string[i:]
+        options=[""]*len(optionsVec)
+        for i in range(len(optionsVec)):
+            options[i]=optionsVec[i]
+        return options

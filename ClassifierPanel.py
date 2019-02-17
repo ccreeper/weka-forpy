@@ -9,6 +9,9 @@ from classifier.SetInstancesPanel import SetInstancesPanel
 from OptionHandler import OptionHandler
 from Thread import Thread
 from Utils import Utils
+from classifiers.Evaluation import Evaluation
+from classifier.ResultHistoryPanel import ResultHistoryPanel
+from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
 from typing import *
 # import CallMain
 import time
@@ -35,12 +38,16 @@ class ClassifierPanel():
         self.m_StartBut=win.start_btn           #type:QPushButton
         self.m_StopBut=win.stop_btn             #type:QPushButton
         self.m_ClassCombo=win.classifier_combobox       #type:QComboBox
+        self.m_History=win.resultList           #type:ResultHistoryPanel
+        self.m_selectedEvalMetrics=Evaluation.getAllEvaluationMetricNames() #type:List[str]
         self.m_TestClassIndex=-1
         self.mutex=QMutex()
         self.initalize()
 
     #TODO 未完成
     def initalize(self):
+        self.m_selectedEvalMetrics.remove("Coverage")
+        self.m_selectedEvalMetrics.remove("Region size")
         self.m_OutText.setReadOnly(True)
         self.m_ClassifierEditor.setClassType(Classifier)
         self.m_ClassifierEditor.setValue(ZeroR())
@@ -82,7 +89,6 @@ class ClassifierPanel():
     #TODO
     def threadClassifierRun(self):
         self.m_CEPanel.addToHistory()
-        #CostMatrix costMatrix
         inst=Instances(self.m_Instances)
         trainTimeStart=trainTimeElapsed=testTimeStart=testTimeElapsed=0
 
@@ -94,9 +100,10 @@ class ClassifierPanel():
         numFolds=10
         classIndex=self.m_ClassCombo.currentIndex()
         inst.setClassIndex(classIndex)
-        classifier=self.m_ClassifierEditor.getValue()
+        classifier=self.m_ClassifierEditor.getValue()           #type:Classifier
         template=copy.deepcopy(classifier)
         name=time.strftime("%H:%M:%S - ")
+        outPutResult=""
 
         if self.m_CVBut.isChecked():
             testMode=1
@@ -104,9 +111,9 @@ class ClassifierPanel():
             if numFolds<=1:
                 raise Exception("Number of folds must be greater than 1")
             elif self.m_TrainBut.isChecked():
-                testMode=3
+                testMode=2
             elif self.m_TestSplitBut.isChecked():
-                testMode=4
+                testMode=3
                 # if source is None:
                 #     raise Exception("No user test set has been specified")
                 if not inst.equalHeaders(userTestStructure):
@@ -121,6 +128,66 @@ class ClassifierPanel():
             cmd = classifier.__module__
             if isinstance(classifier,OptionHandler):
                 cmd+=" "+Utils.joinOptions(classifier.getOptions())
+            plotInstances=ClassifierErrorsPlotInstances()
+            plotInstances.setInstances(userTestStructure if testMode == 4 else inst)
+            plotInstances.setClassifier(classifier)
+            plotInstances.setClassIndex(inst.classIndex())
+            plotInstances.setPointSizeProportionalToMargin(False)
+            outPutResult+="=== Run information ===\n\n"
+            outPutResult+="Scheme:       " + cname
+            if isinstance(classifier,OptionHandler):
+                o=classifier.getOptions()
+                outPutResult+=" "+Utils.joinOptions(o)
+            outPutResult+="\n"
+            outPutResult+="Relation:     " + inst.relationName() + '\n'
+            outPutResult+="Instances:    " + inst.numInstances() + '\n'
+            outPutResult+="Attributes:   " + inst.numAttributes() + '\n'
+            if inst.numAttributes()<100:
+                for i in range(inst.numAttributes()):
+                    outPutResult+="              " + inst.attribute(i).name()+ '\n'
+            else:
+                outPutResult+="              [list of attributes omitted]\n"
+            outPutResult+="Test mode:    "
+            if testMode == 1:
+                outPutResult+=str(numFolds) + "-fold cross-validation\n"
+            elif testMode == 2:
+                outPutResult+="evaluate on training data\n"
+            elif testMode == 3:
+                outPutResult+="user supplied test set: "+ str(userTestStructure.numInstances()) + " instances\n"
+            outPutResult+="\n"
+            self.m_History.addResult(name,outPutResult)
+            self.m_History.setSingle(name)
+            if testMode == 2  or testMode == 3:
+                trainTimeStart=time.time()
+                classifier.buildClassifier(inst)
+                trainTimeElapsed=time.time()-trainTimeStart
+            outPutResult+="=== Classifier model (full training set) ===\n\n"
+            outPutResult+=classifier+'\n'
+            outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)
+            self.m_History.updateResult(name)
+            #TODO 1486 绘图
+            if testMode == 2:
+                evaluation=Evaluation(inst)
+                evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
+                evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
+                plotInstances.setUp()
+                testTimeStart=time.time()
+                #TODO 待定
+                # if isinstance(classifier,BatchPredictor)
+                # else:
+                for jj in range(inst.numInstances()):
+                    plotInstances.
+                #TODO m_selectedEvalMetrics
 
-            #TODO 1405
+    #TODO
+    def setupEval(self,evaluation:Evaluation,classifier:Classifier,inst:Instances,plotInstances:ClassifierErrorsPlotInstances,onlySetPriors:bool):
+        evaluation.setPriors(inst)
+        if not onlySetPriors:
+            if plotInstances is not None:
+                plotInstances.setInstances(inst)
+                plotInstances.setClassifier(classifier)
+                plotInstances.setClassIndex(inst.classIndex())
+                plotInstances.setEvaluation(evaluation)
+        return evaluation
+
 

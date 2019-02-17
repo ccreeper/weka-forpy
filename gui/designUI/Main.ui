@@ -988,7 +988,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QListWidget" name="resultList">
+      <widget class="ResultHistoryPanel" name="resultList">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1070,6 +1070,11 @@
    <class>TreeNodeButton</class>
    <extends>QPushButton</extends>
    <header>TreeNodeButton</header>
+  </customwidget>
+  <customwidget>
+   <class>ResultHistoryPanel</class>
+   <extends>QListWidget</extends>
+   <header location="global">classifier.ResultHistoryPanel</header>
   </customwidget>
  </customwidgets>
  <resources>

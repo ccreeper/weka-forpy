@@ -55,17 +55,16 @@ class Instance():
 
 #TODO 将所有数据处理成float,衍生Instance类
 class Instances(object):
-    def __init__(self,data,capacity=None):
+    def __init__(self, a0, a1=None,a2=None):
         self.index=0
-        if isinstance(data,dict):
-            self.m_RelationName=data.get("relation")
+        if isinstance(a0, dict) and a1 is None and a2 is None:
+            self.m_RelationName=a0.get("relation")
             self.m_Attributes=[]    #type:List[Attribute]
             self.m_Instances=[] #type:List[Instance]
             self.m_ClassIndex=-1
             self.m_NamesToAttributeIndices=None     #type:Dict
-            for attr in data.get("attributes"):
+            for attr in a0.get("attributes"):
                 second=attr[1]
-                attribute=None
                 if isinstance(second,str):
                     if second.lower()=="numeric" or second.lower()=="real":
                         attribute=Attribute(attr[0])
@@ -75,19 +74,39 @@ class Instances(object):
                     attribute=Attribute(attr[0],attr[1])
                 self.m_Attributes.append(attribute)
 
-            for item in data.get("data"):
+            for item in a0.get("data"):
                 self.add(self.createInstance(item))
 
             self.m_NamesToAttributeIndices=dict()
             for i in range(self.numAttributes()):
                 self.attribute(i).setIndex(i)
                 self.m_NamesToAttributeIndices.update({self.attribute(i).name():i})
-
-        if isinstance(data,Instances):
-            if capacity is None:
-                capacity=data.numInstances()
-            self.initialize(data,capacity)
-            data.copyInstances(0,data.numInstances(),self)
+        elif isinstance(a0, Instances) and isinstance(a1,int) and a2 is None:
+            self.initialize(a0, a1)
+        elif isinstance(a0,Instances) and a1 is None and a2 is None:
+            self.__init__(a0)
+            a0.copyInstances(0, a0.numInstances(), self)
+        elif isinstance(a0,Instances) and isinstance(a1,int) and isinstance(a2,int):
+            self.__init__(a0,a2)
+            a0.copyInstances(a1,a2,self)
+        elif isinstance(a0,str) and isinstance(a1,List[Attribute]) and isinstance(a2,int):
+            names=set()
+            nonUniqueNames=""
+            for att in a1:
+                if att.name() in names:
+                    nonUniqueNames+="'"+att.name()+"'"
+                names.add(att.name())
+            if len(names) != len(a1):
+                raise Exception("Attribute names are not unique!"+ " Causes: " + nonUniqueNames)
+            names.clear()
+            self.m_RelationName=a0
+            self.m_ClassIndex=-1
+            self.m_Attributes=a1
+            self.m_NamesToAttributeIndices=dict()
+            for i in range(self.numAttributes()):
+                self.attribute(i).setIndex(i)
+                self.m_NamesToAttributeIndices.update({self.attribute(i).name(),i})
+            self.m_Instances=[None]*a2
 
     def __iter__(self):
         for instance in self.m_Instances:

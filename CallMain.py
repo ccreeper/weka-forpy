@@ -41,6 +41,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         return self.preprocessPanel
 
 
+
 if __name__ == '__main__':
     cgitb.enable(format='text')
     app = QApplication(sys.argv)
