@@ -10,20 +10,39 @@ from core.AttributeStats import AttributeStats
 
 
 class Instance():
-    def __init__(self,data:List):
-        self.m_Data=data
+    def __init__(self, a0,a1):
+        if isinstance(a0, list):
+            self.m_AttValues=a0
+            self.m_Weight=1
+        elif isinstance(a0, Instance):
+            self.m_AttValues=a0.m_AttValues
+            self.m_Weight=a0.weight()
+            self.m_Dataset=None         #type:Instances
+        elif isinstance(a0,float) and isinstance(a1,list):
+            self.m_AttValues=a1
+            self.m_Weight=a0
+            self.m_Dataset=None
 
     def setDataset(self,inst:'Instances'):
         self.m_Dataset=inst
 
+    def setClassMissing(self):
+        classIndex=self.classIndex()
+        if classIndex < 0:
+            raise Exception("Class is not set!")
+        self.setMissing(classIndex)
+
+    def setMissing(self,attIndex):
+        self.setValue(attIndex,Utils.missingValue())
+
     def value(self,index:int):
-        return self.m_Data[index]
+        return self.m_AttValues[index]
 
     def isMissing(self,attrIndex:int):
-        return Utils.isMissingValue(self.m_Data[attrIndex])
+        return Utils.isMissingValue(self.m_AttValues[attrIndex])
 
     def weight(self):
-        return 1
+        return self.m_Weight
 
     def stringValue(self,index:int):
         return self.m_Dataset.attribute(index).value(self.value(index))
@@ -32,11 +51,11 @@ class Instance():
         return self.m_Dataset.attribute(index)
 
     def setValue(self,index:int,value):
-        self.m_Data[index]=value
+        self.m_AttValues[index]=value
 
     def deleteAttributeAt(self,pos:int):
-        if pos >= 0 and pos < len(self.m_Data):
-            self.m_Data.pop(pos)
+        if pos >= 0 and pos < len(self.m_AttValues):
+            self.m_AttValues.pop(pos)
 
     def classIndex(self):
         return self.m_Dataset.classIndex()
@@ -49,6 +68,19 @@ class Instance():
         classIndex=self.classIndex()
         return self.value(classIndex)
 
+    def copy(self):
+        result=Instance(self)
+        result.m_Dataset=self.m_Dataset
+        return result
+
+    def dataset(self):
+        return self.m_Dataset
+
+    def classAttribute(self)->Attribute:
+        return self.m_Dataset.classAttribute()
+
+    def numClasses(self):
+        return self.m_Dataset.numClasses()
 
 
     #insertAttributeAt
@@ -353,3 +385,4 @@ class Instances(object):
             if msg != None:
                 return "Attributes differ at position " + str(i + 1) + ":\n" + msg
         return None
+

@@ -9,3 +9,4 @@ class Classifier():
     def getAllMethods(cls):pass
     def buildClassifier(self,data:Instances):pass
     def getCapabilities(self)->Capabilities:pass
+    def distributionForInstance(self,instance:Instance):pass

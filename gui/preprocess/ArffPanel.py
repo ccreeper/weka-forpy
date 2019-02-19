@@ -449,7 +449,7 @@ class ArffModel(QObject):
     def submitEvent(self,inst:Instance,index:int):
         self.addUndoPoint()
         self.m_Data.add(inst,index)
-        Utils.debugOut("insertDataList:",inst.m_Data)
+        Utils.debugOut("insertDataList:", inst.m_AttValues)
         self.insert_instance_signal.emit(self.m_Data,index)
 
     def setValueAt(self,value,rowIndexList:List,columnIndex:int):

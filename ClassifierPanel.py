@@ -1,21 +1,24 @@
-from GenericObjectEditor import GenericObjectEditor
-from Instances import Instances,Instance
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PropertyPanel import PropertyPanel
-from classifiers.Classifier import Classifier
-from classifiers.rules.ZeroR import ZeroR
-from classifier.SetInstancesPanel import SetInstancesPanel
-from OptionHandler import OptionHandler
-from Thread import Thread
-from Utils import Utils
-from classifiers.Evaluation import Evaluation
-from classifier.ResultHistoryPanel import ResultHistoryPanel
-from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
-from typing import *
+import copy
 # import CallMain
 import time
-import copy
+from typing import *
+
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
+from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
+from GenericObjectEditor import GenericObjectEditor
+from Instances import Instances
+from OptionHandler import OptionHandler
+from PropertyPanel import PropertyPanel
+from Thread import Thread
+from Utils import Utils
+from classifier.ResultHistoryPanel import ResultHistoryPanel
+from classifier.SetInstancesPanel import SetInstancesPanel
+from classifiers.Classifier import Classifier
+from classifiers.evaluation.Evaluation import Evaluation
+from classifiers.rules.ZeroR import ZeroR
+
 
 class ClassifierPanel():
     def __init__(self,win:'CallMain.MainWindow'):
@@ -176,7 +179,12 @@ class ClassifierPanel():
                 # if isinstance(classifier,BatchPredictor)
                 # else:
                 for jj in range(inst.numInstances()):
-                    plotInstances.
+                    plotInstances.process(inst.instance(jj),classifier,evaluation)
+                testTimeElapsed=time.time()-testTimeStart
+                outPutResult+="=== Evaluation on training set ===\n"
+            elif testMode == 1:
+
+                #TODO 1564
                 #TODO m_selectedEvalMetrics
 
     #TODO

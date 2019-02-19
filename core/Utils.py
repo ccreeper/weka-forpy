@@ -318,3 +318,42 @@ class Utils():
         for i in range(len(optionsVec)):
             options[i]=optionsVec[i]
         return options
+
+    @classmethod
+    def log2(cls,a):
+        return math.log(a)/math.log(2)
+
+    @classmethod
+    def replaceMissingWithMAX_VALUE(cls,array:List):
+        for i in range(len(array)):
+            if cls.isMissingValue(array[i]):
+                array[i]=float("inf")
+
+    @classmethod
+    def stableSort(cls,array:List):
+        index=cls.initialIndex(len(array))
+        if len(array) > 1:
+            newIndex=[0]*len(array)
+            array=array[:]
+            cls.replaceMissingWithMAX_VALUE(array)
+            cls.quickSort(array,index,0,len(array)-1)
+            i=0
+            while i<len(index):
+                numEqual=1
+                for j in range(i+1,len(index)):
+                    if array[index[i]] == array[index[j]]:
+                        break
+                    numEqual+=1
+                if numEqual > 1:
+                    helpIndex=[0]*numEqual
+                    for j in range(numEqual):
+                        helpIndex[j]=i+j
+                    cls.quickSort(index,helpIndex,0,numEqual-1)
+                    for j in range(numEqual):
+                        newIndex[i+j]=index[helpIndex[j]]
+                    i+=numEqual
+                else:
+                    newIndex[i]=index[i]
+                    i+=1
+            return newIndex
+        return index

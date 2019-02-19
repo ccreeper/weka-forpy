@@ -1,9 +1,13 @@
 from typing import *
+
 from AbstractPlotInstances import AbstractPlotInstances
-from classifiers.Evaluation import Evaluation
-from Instances import Instances,Instance
 from Attributes import Attribute
+from Instances import Instances, Instance
+from Utils import Utils
 from classifiers.Classifier import Classifier
+from classifiers.evaluation.Evaluation import Evaluation
+from gui.classifier.Plot2D import Plot2D
+
 
 class ClassifierErrorsPlotInstances(AbstractPlotInstances):
     def __init__(self):
@@ -63,5 +67,74 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
             self.m_PlotInstances.setClassIndex(self.m_ClassIndex+1)
 
     def process(self,toPredict:Instance,classifier:Classifier,evaluation:Evaluation):
+        probActual=probNext=pred=0
+        mappedClass=-1
+        classMissing=toPredict.copy()
+        classMissing.setDataset(toPredict.dataset())
+        #TODO InputMappedClassifier    465
+        if toPredict.classAttribute().isNominal():
+            preds=classifier.distributionForInstance(classMissing)
+            if sum(preds) == 0:
+                pred=Utils.missingValue()
+                probActual=Utils.missingValue()
+            else:
+                pred=Utils.maxIndex(preds)
+                if not Utils.isMissingValue(toPredict.classIndex()):
+                    probActual=preds[int(toPredict.classValue())]
+                else:
+                    probActual=preds[Utils.maxIndex(preds)]
+            for i in range(toPredict.classAttribute().numValues()):
+                if i != int(toPredict.classValue()) and preds[i] > probNext:
+                    probNext=preds[i]
+            evaluation.evaluationForSingleInstance(preds,toPredict,True)
+        else:
+            pred=evaluation.evaluateModelOnceAndRecordPrediction(classifier,toPredict)
 
-        #TODO
+        if not self.m_SaveForVisualization:
+            return
+        if self.m_PlotInstances is not None:
+            isNominal=toPredict.classAttribute().isNominal()
+            values=[0]*self.m_PlotInstances.numAttributes()
+            for i in range(self.m_PlotInstances.numAttributes()):
+                if i<toPredict.classIndex():
+                    values[i]=toPredict.value(i)
+                elif i == toPredict.classIndex():
+                    if isNominal:
+                        values[i]=probActual-probNext
+                        values[i+1]=pred
+                        values[i+2]=toPredict.value(i)
+                        i+=2
+                    else:
+                        values[i]=pred
+                        values[i+1]=toPredict.value(i)
+                        i+=1
+                else:
+                    if isNominal:
+                        values[i]=toPredict.value(i-2)
+                    else:
+                        values[i]=toPredict.value(i-1)
+            self.m_PlotInstances.add(Instance(1,values))
+            if toPredict.classAttribute().isNominal():
+                if toPredict.isMissing(toPredict.classIndex()) or Utils.isMissingValue(pred):
+                    self.m_PlotShapes.append(Plot2D.MISSING_SHAPE)
+                elif pred != toPredict.classValue():
+                    self.m_PlotShapes.append(Plot2D.ERROR_SHAPE)
+                else:
+                    self.m_PlotShapes.append(Plot2D.CONST_AUTOMATIC_SHAPE)
+                if self.m_pointSizeProportionalToMargin:
+                    self.m_PlotSizes.append(probActual-probNext)
+                else:
+                    sizeAdj=0
+                    if pred != toPredict.classValue():
+                        sizeAdj=1
+                    self.m_PlotSizes.append(Plot2D.DEFAULT_SHAPE_SIZE.value+sizeAdj)
+            else:
+                errd=None
+                if not toPredict.isMissing(toPredict.classIndex()) and not Utils.isMissingValue(pred):
+                    errd=pred-toPredict.classValue()
+                    self.m_PlotShapes.append(Plot2D.CONST_AUTOMATIC_SHAPE)
+                else:
+                    self.m_PlotShapes.append(Plot2D.MISSING_SHAPE)
+                self.m_PlotSizes.append(errd)
+
+
