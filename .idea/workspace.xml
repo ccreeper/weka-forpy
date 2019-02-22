@@ -53,42 +53,21 @@
       <file leaf-file-name="ClassifierPanel.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ClassifierPanel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="177" column="9" lean-forward="false" selection-start-line="177" selection-start-column="9" selection-end-line="177" selection-end-column="9" />
+            <state relative-caret-position="260">
+              <caret line="92" column="17" lean-forward="false" selection-start-line="92" selection-start-column="17" selection-end-line="92" selection-end-column="17" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#3801#11482#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ZeroR.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/classifiers/rules/ZeroR.py">
+      <file leaf-file-name="ResultHistoryPanel.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/classifier/ResultHistoryPanel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="21" column="70" lean-forward="true" selection-start-line="21" selection-start-column="70" selection-end-line="21" selection-end-column="70" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ClassifierErrorsPlotInstances.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gui/ClassifierErrorsPlotInstances.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1025">
-              <caret line="128" column="8" lean-forward="true" selection-start-line="128" selection-start-column="8" selection-end-line="128" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Plot2D.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gui/classifier/Plot2D.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="10" column="24" lean-forward="true" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+            <state relative-caret-position="178">
+              <caret line="28" column="8" lean-forward="false" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -97,24 +76,24 @@
       <file leaf-file-name="Evaluation.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classifiers/evaluation/Evaluation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="23">
-              <caret line="148" column="23" lean-forward="false" selection-start-line="148" selection-start-column="23" selection-end-line="148" selection-end-column="23" />
+            <state relative-caret-position="951">
+              <caret line="309" column="0" lean-forward="false" selection-start-line="309" selection-start-column="0" selection-end-line="309" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <element signature="e#5277#6174#0" expanded="false" />
-                <element signature="e#5319#5766#0" expanded="false" />
-                <element signature="e#5801#6150#0" expanded="false" />
-                <element signature="e#6227#7234#0" expanded="false" />
+                <element signature="e#5342#6239#0" expanded="false" />
+                <element signature="e#5384#5831#0" expanded="false" />
+                <element signature="e#5866#6215#0" expanded="false" />
+                <element signature="e#6292#7299#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UnivariateKernelEstimator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/estimators/UnivariateKernelEstimator.py">
+      <file leaf-file-name="ThresholdCurve.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/classifiers/evaluation/ThresholdCurve.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="32" column="51" lean-forward="false" selection-start-line="32" selection-start-column="51" selection-end-line="32" selection-end-column="51" />
+            <state relative-caret-position="324">
+              <caret line="163" column="34" lean-forward="true" selection-start-line="163" selection-start-column="34" selection-end-line="163" selection-end-column="34" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -122,26 +101,51 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IntervalEstimator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/classifiers/IntervalEstimator.py">
+      <file leaf-file-name="Utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="92">
-              <caret line="4" column="77" lean-forward="false" selection-start-line="4" selection-start-column="77" selection-end-line="4" selection-end-column="77" />
+            <state relative-caret-position="830">
+              <caret line="67" column="40" lean-forward="true" selection-start-line="67" selection-start-column="40" selection-end-line="67" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TwoClassStats.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/classifiers/evaluation/TwoClassStats.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="334">
+              <caret line="21" column="39" lean-forward="true" selection-start-line="21" selection-start-column="39" selection-end-line="21" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Attributes.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/Attributes.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding>
-                <element signature="e#0#20#0" expanded="true" />
+                <element signature="e#0#64#0" expanded="true" />
+                <element signature="e#219#1297#0" expanded="false" />
+                <element signature="e#461#601#0" expanded="false" />
+                <element signature="e#662#772#0" expanded="false" />
+                <element signature="e#834#950#0" expanded="false" />
+                <element signature="e#1011#1058#0" expanded="false" />
+                <element signature="e#1127#1177#0" expanded="false" />
+                <element signature="e#1247#1297#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NumericPrediction.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/classifiers/evaluation/NumericPrediction.py">
+      <file leaf-file-name="AttributeInfo.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/AttributeInfo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="13" column="8" lean-forward="false" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#56#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="169">
+              <caret line="14" column="8" lean-forward="false" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="8" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -149,8 +153,8 @@
       <file leaf-file-name="Prediction.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classifiers/evaluation/Prediction.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="5" column="28" lean-forward="true" selection-start-line="5" selection-start-column="28" selection-end-line="5" selection-end-column="28" />
+            <state relative-caret-position="46">
+              <caret line="2" column="19" lean-forward="false" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -159,13 +163,14 @@
       <file leaf-file-name="Instances.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/Instances.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="16" column="38" lean-forward="true" selection-start-line="16" selection-start-column="38" selection-end-line="16" selection-end-column="38" />
+            <state relative-caret-position="169">
+              <caret line="183" column="51" lean-forward="true" selection-start-line="183" selection-start-column="51" selection-end-line="183" selection-end-column="51" />
               <folding>
-                <element signature="e#2462#3495#0" expanded="false" />
-                <element signature="e#3691#3765#0" expanded="false" />
-                <element signature="e#3863#3924#0" expanded="false" />
-                <element signature="e#4028#4760#0" expanded="false" />
+                <element signature="e#1#19#0" expanded="true" />
+                <element signature="e#2475#3508#0" expanded="false" />
+                <element signature="e#3704#3778#0" expanded="false" />
+                <element signature="e#3876#3937#0" expanded="false" />
+                <element signature="e#4041#4773#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -182,16 +187,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>gr</find>
-      <find>m_ClassType</find>
-      <find>getClassesFromProperties</find>
-      <find>updateObjectNames</find>
-      <find>batchSize</find>
-      <find>m_ObjectNames</find>
-      <find>getChooseClassPopupMenu</find>
-      <find>tree</find>
-      <find>adjust</find>
-      <find>Capabilities.conf</find>
       <find>classSelected</find>
       <find>se</find>
       <find>self.m_Backup</find>
@@ -212,17 +207,25 @@
       <find>SelectItems</find>
       <find>classifier</find>
       <find>setMetricsToDisplay</find>
+      <find>m_metricsToDisplay</find>
+      <find>add</find>
+      <find>new Attribute</find>
+      <find>.append</find>
+      <find>+=</find>
+      <find>(' '</find>
+      <find>)+</find>
+      <find>+</find>
+      <find>,-1)</find>
+      <find>name</find>
     </findStrings>
     <replaceStrings>
       <replace>string=string+</replace>
       <replace>str(</replace>
-      <replace>+</replace>
       <replace>m_StatsTable</replace>
       <replace>m_treeView</replace>
       <replace>column</replace>
       <replace>232,232,232</replace>
       <replace>self.headerMenu</replace>
-      <replace>se</replace>
       <replace>self.tableMenu</replace>
       <replace>self.model.getInstance()</replace>
       <replace>Capability</replace>
@@ -236,6 +239,14 @@
       <replace>self.tree</replace>
       <replace>root</replace>
       <replace>element</replace>
+      <replace>se</replace>
+      <replace>self.m_metricsToDisplay</replace>
+      <replace>append</replace>
+      <replace>Attribute</replace>
+      <replace>+=</replace>
+      <replace>' '</replace>
+      <replace>+</replace>
+      <replace>)+</replace>
     </replaceStrings>
     <dirStrings>
       <dir>F:\15005\python\weka-forpy\core\config</dir>
@@ -247,10 +258,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/core/Capabilities.conf" />
-        <option value="$PROJECT_DIR$/core/CapabilitiesHandler.py" />
-        <option value="$PROJECT_DIR$/classifiers/UpdateableClassifier.py" />
-        <option value="$PROJECT_DIR$/clusterers/UpdateableClusterer.py" />
         <option value="$PROJECT_DIR$/core/Capability.py" />
         <option value="$PROJECT_DIR$/core/CapabilitiesIgnorer.py" />
         <option value="$PROJECT_DIR$/core/MultiInstanceCapabilitiesHandler.py" />
@@ -280,11 +287,9 @@
         <option value="$PROJECT_DIR$/gui/common/Evaluation.py" />
         <option value="$PROJECT_DIR$/CallMain.py" />
         <option value="$PROJECT_DIR$/gui/ExplorerDefaults.py" />
-        <option value="$PROJECT_DIR$/core/Attributes.py" />
         <option value="$PROJECT_DIR$/gui/AbstractPlotInstances.py" />
         <option value="$PROJECT_DIR$/classifiers/Classifier.py" />
         <option value="$PROJECT_DIR$/classifiers/AbstractClassifier.py" />
-        <option value="$PROJECT_DIR$/core/Utils.py" />
         <option value="$PROJECT_DIR$/classifiers/Prediction.py" />
         <option value="$PROJECT_DIR$/classifiers/NominalPrediction.py" />
         <option value="$PROJECT_DIR$/classifiers/Evaluation.py" />
@@ -292,11 +297,17 @@
         <option value="$PROJECT_DIR$/classifiers/ConditionalDensityEstimator.py" />
         <option value="$PROJECT_DIR$/classifiers/IntervalEstimator.py" />
         <option value="$PROJECT_DIR$/estimators/UnivariateKernelEstimator.py" />
-        <option value="$PROJECT_DIR$/classifiers/evaluation/Evaluation.py" />
-        <option value="$PROJECT_DIR$/core/Instances.py" />
         <option value="$PROJECT_DIR$/gui/Plot2D.py" />
         <option value="$PROJECT_DIR$/gui/classifier/Plot2D.py" />
         <option value="$PROJECT_DIR$/gui/ClassifierErrorsPlotInstances.py" />
+        <option value="$PROJECT_DIR$/classifiers/evaluation/NominalPrediction.py" />
+        <option value="$PROJECT_DIR$/classifiers/evaluation/Prediction.py" />
+        <option value="$PROJECT_DIR$/core/Attributes.py" />
+        <option value="$PROJECT_DIR$/classifiers/evaluation/TwoClassStats.py" />
+        <option value="$PROJECT_DIR$/core/Instances.py" />
+        <option value="$PROJECT_DIR$/classifiers/evaluation/ThresholdCurve.py" />
+        <option value="$PROJECT_DIR$/core/Utils.py" />
+        <option value="$PROJECT_DIR$/classifiers/evaluation/Evaluation.py" />
         <option value="$PROJECT_DIR$/ClassifierPanel.py" />
       </list>
     </option>
@@ -307,7 +318,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="-8" />
     <option name="width" value="960" />
     <option name="height" value="1088" />
@@ -327,8 +338,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -352,6 +363,11 @@
               <item name="weka-forpy" type="462c0819:PsiDirectoryNode" />
               <item name="classifiers" type="462c0819:PsiDirectoryNode" />
               <item name="rules" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="weka-forpy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="weka-forpy" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="weka-forpy" type="b2602c69:ProjectViewProjectNode" />
@@ -382,7 +398,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../test2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="SearchEverywhereHistoryKey" value="attributeStats&#9;null&#9;null" />
   </component>
   <component name="RecentsManager">
@@ -577,27 +593,26 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="0" width="960" height="1088" extended-state="0" />
-    <editor active="true" />
+    <frame x="-8" y="0" width="960" height="1088" extended-state="1" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3194131" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36648044" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36685082" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3194131" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3403315" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39889503" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3403315" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928178" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
     </layout>
@@ -613,27 +628,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="35" />
+      <option name="time" value="36" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/core/Thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="3" column="22" lean-forward="true" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-2036615904/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="3639" column="8" lean-forward="false" selection-start-line="3639" selection-start-column="8" selection-end-line="3639" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gui/TreeNodeButton.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="69">
@@ -700,13 +699,6 @@
           <folding>
             <element signature="e#0#11#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/AttributeInfo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="15" column="13" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -837,16 +829,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui/classifier/ResultHistoryPanel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
-          <caret line="28" column="33" lean-forward="false" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#20#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gui/common/Evaluation.py" />
     <entry file="file://$PROJECT_DIR$/CallMain.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -862,14 +844,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="69">
           <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/Attributes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="713">
-          <caret line="32" column="8" lean-forward="false" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -898,14 +872,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/Utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
-          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/AbstractClassifier.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="690">
@@ -930,17 +896,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/NominalPrediction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="14" column="30" lean-forward="false" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -949,22 +904,14 @@
         <state relative-caret-position="92">
           <caret line="4" column="59" lean-forward="false" selection-start-line="4" selection-start-column="59" selection-end-line="4" selection-end-column="59" />
           <folding>
-            <element signature="e#0#20#0" expanded="true" />
+            <element signature="e#0#20#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/Prediction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="5" column="28" lean-forward="true" selection-start-line="5" selection-start-column="28" selection-end-line="5" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/evaluation/NumericPrediction.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
+        <state relative-caret-position="253">
           <caret line="13" column="8" lean-forward="false" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
           <folding>
             <element signature="e#0#56#0" expanded="true" />
@@ -974,65 +921,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/classifiers/IntervalEstimator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
+        <state relative-caret-position="69">
           <caret line="4" column="77" lean-forward="false" selection-start-line="4" selection-start-column="77" selection-end-line="4" selection-end-column="77" />
           <folding>
-            <element signature="e#0#20#0" expanded="true" />
+            <element signature="e#0#20#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/estimators/UnivariateKernelEstimator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
+        <state relative-caret-position="713">
           <caret line="32" column="51" lean-forward="false" selection-start-line="32" selection-start-column="51" selection-end-line="32" selection-end-column="51" />
           <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/Evaluation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
-          <caret line="148" column="23" lean-forward="false" selection-start-line="148" selection-start-column="23" selection-end-line="148" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#5277#6174#0" expanded="false" />
-            <element signature="e#5319#5766#0" expanded="false" />
-            <element signature="e#5801#6150#0" expanded="false" />
-            <element signature="e#6227#7234#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gui/classifier/Plot2D.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="10" column="24" lean-forward="true" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gui/ClassifierErrorsPlotInstances.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1025">
-          <caret line="128" column="8" lean-forward="true" selection-start-line="128" selection-start-column="8" selection-end-line="128" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/Instances.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="16" column="38" lean-forward="true" selection-start-line="16" selection-start-column="38" selection-end-line="16" selection-end-column="38" />
-          <folding>
-            <element signature="e#2462#3495#0" expanded="false" />
-            <element signature="e#3691#3765#0" expanded="false" />
-            <element signature="e#3863#3924#0" expanded="false" />
-            <element signature="e#4028#4760#0" expanded="false" />
+            <element signature="e#0#20#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1040,17 +942,141 @@
     <entry file="file://$PROJECT_DIR$/classifiers/rules/ZeroR.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
-          <caret line="21" column="70" lean-forward="true" selection-start-line="21" selection-start-column="70" selection-end-line="21" selection-end-column="70" />
+          <caret line="21" column="70" lean-forward="false" selection-start-line="21" selection-start-column="70" selection-end-line="21" selection-end-column="70" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/ClassifierErrorsPlotInstances.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="128" column="8" lean-forward="false" selection-start-line="128" selection-start-column="8" selection-end-line="128" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#20#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/classifier/Plot2D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="10" column="24" lean-forward="false" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/NominalPrediction.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="421">
+          <caret line="29" column="34" lean-forward="false" selection-start-line="29" selection-start-column="34" selection-end-line="29" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/AttributeInfo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="14" column="8" lean-forward="false" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Attributes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#64#0" expanded="true" />
+            <element signature="e#219#1297#0" expanded="false" />
+            <element signature="e#461#601#0" expanded="false" />
+            <element signature="e#662#772#0" expanded="false" />
+            <element signature="e#834#950#0" expanded="false" />
+            <element signature="e#1011#1058#0" expanded="false" />
+            <element signature="e#1127#1177#0" expanded="false" />
+            <element signature="e#1247#1297#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/Prediction.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="2" column="19" lean-forward="false" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/TwoClassStats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="334">
+          <caret line="21" column="39" lean-forward="true" selection-start-line="21" selection-start-column="39" selection-end-line="21" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/ThresholdCurve.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="163" column="34" lean-forward="true" selection-start-line="163" selection-start-column="34" selection-end-line="163" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/classifier/ResultHistoryPanel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="28" column="8" lean-forward="false" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="830">
+          <caret line="67" column="40" lean-forward="true" selection-start-line="67" selection-start-column="40" selection-end-line="67" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/evaluation/Evaluation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="951">
+          <caret line="309" column="0" lean-forward="false" selection-start-line="309" selection-start-column="0" selection-end-line="309" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#5342#6239#0" expanded="false" />
+            <element signature="e#5384#5831#0" expanded="false" />
+            <element signature="e#5866#6215#0" expanded="false" />
+            <element signature="e#6292#7299#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/Instances.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="183" column="51" lean-forward="true" selection-start-line="183" selection-start-column="51" selection-end-line="183" selection-end-column="51" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+            <element signature="e#2475#3508#0" expanded="false" />
+            <element signature="e#3704#3778#0" expanded="false" />
+            <element signature="e#3876#3937#0" expanded="false" />
+            <element signature="e#4041#4773#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ClassifierPanel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="177" column="9" lean-forward="false" selection-start-line="177" selection-start-column="9" selection-end-line="177" selection-end-column="9" />
+        <state relative-caret-position="260">
+          <caret line="92" column="17" lean-forward="false" selection-start-line="92" selection-start-column="17" selection-end-line="92" selection-end-column="17" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#3801#11482#0" expanded="false" />
           </folding>
         </state>
       </provider>

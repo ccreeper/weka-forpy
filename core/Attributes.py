@@ -7,28 +7,35 @@ class Attribute():
     STRING=2
     DATE=3
 
-    def __init__(self,name:str,other=None,index=None):
-        self.m_Name=name
+    def __init__(self, name:str, a0=None, a1=None):
         self.m_Type=Attribute.NUMERIC
         self.m_AttributeInfo=None
         self.m_Index=-1
         self.m_Weight=1.0
-        if other is not None:
-            if isinstance(other,bool):
-                if other:
-                    self.m_Type=Attribute.STRING
-                    self.m_AttributeInfo= NominalAttributeInfo()
-            elif isinstance(other,str):
-                self.m_Type = Attribute.DATE
-                self.m_AttributeInfo = DateAttributeInfo(other)
-            elif isinstance(other,list):
-                self.m_AttributeInfo=NominalAttributeInfo(other)
-                if other is None:
-                    self.m_Type=Attribute.STRING
-                else:
-                    self.m_Type=Attribute.NOMINAL
-        if index is not None:
-            self.m_Index=index
+        if a0 is None and a1 is None:
+            self.m_Name=name
+        elif isinstance(a0,bool) and a1 is None:
+            self.m_Name=name
+            if a0:
+                self.m_AttributeInfo=NominalAttributeInfo()
+                self.m_Type=Attribute.STRING
+        elif isinstance(a0,str) and a1 is None:
+            self.m_Name=name
+            self.m_Type=Attribute.DATE
+            self.m_AttributeInfo=DateAttributeInfo(a0)
+        elif isinstance(a0,list) and a1 is None:
+            self.m_Name=name
+            self.m_Type=Attribute.NOMINAL
+            self.m_AttributeInfo=NominalAttributeInfo(a0)
+        elif isinstance(a0,int) and a1 is None:
+            self.__init__(name)
+            self.m_Index=a0
+        elif isinstance(a0,str) and isinstance(a1,int):
+            self.__init__(name,a0)
+            self.m_Index=a1
+        elif isinstance(a0,list) and isinstance(a1,int):
+            self.__init__(name,a0)
+            self.m_Index=a1
 
     def name(self):
         return self.m_Name

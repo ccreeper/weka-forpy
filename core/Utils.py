@@ -42,8 +42,35 @@ class Utils():
         return float("nan")
 
     @classmethod
-    def doubleToString(cls,number:float,len:int):
-        return str(round(number,len))
+    def doubleToString(cls, number:float, a0:int,a1=None):
+        if a1 is None:
+            return str(round(number, a0))
+        else:
+            tempString=cls.doubleToString(number,a0)
+            if a1 >= a0:
+                return tempString
+            result=[]
+            for i in range(a0):
+                result.append(" ")
+            if a1 > 0 :
+                try:
+                    dotPosition=tempString.index('.')
+                    result[a0-a1-1]='.'
+                except ValueError:
+                    dotPosition = len(tempString)
+            else:
+                dotPosition=len(tempString)
+            offset=a0-a1-dotPosition
+            if a1 > 0:
+                offset-=1
+            if offset<0:
+                return tempString
+            for i in range(dotPosition):
+                result[offset+i]=tempString[i]
+            for i in range(dotPosition+1,len(tempString)):
+                result[offset+i]=tempString[i]
+            return "".join(result)
+
 
     @classmethod
     def initialIndex(cls,size:int):
@@ -215,7 +242,7 @@ class Utils():
         return newString
 
     @classmethod
-    def sort(cls,arr:List):
+    def sort(cls,arr:List)->List:
         index=cls.initialIndex(len(arr))
         newIndex=[0]*len(arr)
         helpIndex=[]

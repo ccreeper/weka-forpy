@@ -7,7 +7,7 @@ from Stats import Stats
 from Utils import Utils
 
 from core.AttributeStats import AttributeStats
-
+import random
 
 class Instance():
     def __init__(self, a0,a1):
@@ -180,6 +180,14 @@ class Instances(object):
     def instance(self,index:int)->Instance:
         return self.m_Instances[index]
 
+    def randomize(self,randSeed:int):
+        for j in range(self.numInstances()-1,0,-1):
+            self.swap(j,random.randint(0,j+1))
+
+    def swap(self,i:int,j:int):
+        inst=self.m_Instances[i]
+        self.m_Instances[i]=self.m_Instances[j]
+        self.m_Instances[j]=inst
     #权重涉及到稀疏数据的流处理，故不做打算，默认权重为1.0
     def sumOfWeight(self):
         return len(self.m_Instances)
@@ -386,3 +394,74 @@ class Instances(object):
                 return "Attributes differ at position " + str(i + 1) + ":\n" + msg
         return None
 
+    def stratify(self,numFlods:int):
+        if numFlods<=1:
+            raise Exception("Number of folds must be greater than 1")
+        if self.m_ClassIndex < 0:
+            raise Exception("Class index is negative (not set)!")
+        if self.classAttribute().isNominal():
+            index=1
+            while index< self.numInstances():
+                instance1=self.instance(index-1)
+                for j in range(index,self.numInstances()):
+                    instance2=self.instance(j)
+                    if instance1.classValue() == instance2.classValue() or (instance1.classIsMissing() and instance2.classIsMissing()):
+                        self.swap(index,j)
+                        index+=1
+                index+=1
+            self.stratStep(numFlods)
+
+    def stratStep(self,numFolds:int):
+        newVec=[] #type:List[Instance]
+        start=0
+        while len(newVec) < self.numInstances():
+            j=start
+            while j<self.numInstances():
+                newVec.append(self.instance(j))
+                j=j+numFolds
+            start+=1
+        self.m_Instances=newVec
+
+    def trainCV(self,numFolds:int,numFlod:int,randomSeed:int=None)->'Instances':
+        if randomSeed is None:
+            if numFolds < 2:
+                raise Exception("Number of folds must be at least 2!")
+            if numFolds > self.numInstances():
+                raise Exception("Can't have more folds than instances!")
+            numInstForFold=self.numInstances()//numFolds
+            if numFlod <self.numInstances()%numFolds:
+                numInstForFold+=1
+                offset=numFlod
+            else:
+                offset=self.numInstances()%numFolds
+            train=Instances(self,self.numInstances()-numInstForFold)
+            first=numFlod*(self.numInstances()//numFolds)+offset
+            self.copyInstances(0,first,train)
+            self.copyInstances(first+numInstForFold,self.numInstances()-first-numInstForFold,train)
+            return train
+        else:
+            train=self.trainCV(numFolds,numFlod)
+            train.randomize(randomSeed)
+            return train
+
+    def testCV(self,numFolds:int,numFold:int)->'Instances':
+        if numFolds < 2:
+            raise Exception("Number of folds must be at least 2!")
+        if numFolds > self.numInstances():
+            raise Exception("Can't have more folds than instances!")
+        numInstForFold=self.numInstances()//numFolds
+        if numFold <self.numInstances()%numFolds:
+            numInstForFold+=1
+            offset=numFold
+        else:
+            offset=self.numInstances()%numFolds
+        test=Instances(self,numInstForFold)
+        first=numFold*(self.numInstances()//numFolds)+offset
+        self.copyInstances(first,numInstForFold,test)
+        return test
+
+    def attributeToDoubleArray(self,index:int):
+        result=[]
+        for i in range(self.numInstances()):
+            result.append(self.instance(i).value(index))
+        return result

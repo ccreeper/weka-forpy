@@ -10,6 +10,7 @@ from classifiers.evaluation.NominalPrediction import NominalPrediction
 from classifiers.evaluation.NumericPrediction import NumericPrediction
 from classifiers.Classifier import Classifier
 from classifiers.ConditionalDensityEstimator import ConditionalDensityEstimator
+from classifiers.evaluation.ThresholdCurve import ThresholdCurve
 from classifiers.IntervalEstimator import IntervalEstimator
 from estimators.UnivariateKernelEstimator import UnivariateKernelEstimator
 
@@ -274,6 +275,368 @@ class Evaluation():
         bin=int((margin+1)/2*self.k_MarginResolution)
         self.m_MarginCounts[bin]+=weight
 
+    def toMatrixString(self,title="=== Confusion Matrix ===\n"):
+        text=""
+        IDChars =['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                  'n','o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        fractional=False
+        if not self.m_ClassIsNominal:
+            raise Exception("Evaluation: No confusion matrix possible!")
+        maxval=0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                current=self.m_ConfusionMatrix[i][j]
+                if current < 0:
+                    current*=-10
+                if current > maxval:
+                    maxval=current
+                fract=current-np.rint(current)
+                if not fractional and math.log(fract)/math.log(10)>=-2:
+                    fractional=True
+        IDWidth=1+max(int(math.log(maxval)/math.log(10)+3 if fractional else 0),
+                      int(math.log(self.m_NumClasses)/math.log(len(IDChars))))
+        text+=title+'\n'
+        for i in range(self.m_NumClasses):
+            if fractional:
+                text+=" "+self.num2ShortID(i,IDChars,IDWidth-3)+"   "
+            else:
+                text+=" "+self.num2ShortID(i,IDChars,IDWidth)
+        text+="   <-- classified as\n"
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                text+=" "+Utils.doubleToString(self.m_ConfusionMatrix[i][j], IDWidth,2 if fractional else 0)
+            text+=" | "+self.num2ShortID(i,IDChars,IDWidth)+" = "+self.m_ClassNames[i]+"\n"
+        return text
+
+    def toClassDetailsString(self,title:str="=== Detailed Accuracy By Class ===\n"):
+        if not self.m_ClassIsNominal:
+            raise Exception("Evaluation: No per class statistics possible!")
+        displayTP = "tp rate" in self.m_metricsToDisplay
+        displayFP ="fp rate" in self.m_metricsToDisplay
+        displayP = "precision" in self.m_metricsToDisplay
+        displayR = "recall" in self.m_metricsToDisplay
+        displayFM = "f-measure" in self.m_metricsToDisplay
+        displayMCC ="mcc" in self.m_metricsToDisplay
+        displayROC = "roc area" in self.m_metricsToDisplay
+        displayPRC ="prc area" in self.m_metricsToDisplay
+
+        text=title+"\n                 "\
+        +  "TP Rate  " if displayTP else "" +  "FP Rate  " if displayFP else ""\
+        +  "Precision  " if displayP else "" +  "Recall   " if displayR else ""\
+        +  "F-Measure  " if displayFM else "" +  "MCC      " if displayMCC else ""\
+        +  "ROC Area  " if displayROC else "" +  "PRC Area  " if displayPRC else ""\
+        +  "Class\n"
+        for i in range(self.m_NumClasses):
+            text+="                 "
+            if displayTP:
+                tpr=self.truePositiveRate(i)
+                if Utils.isMissingValue(tpr):
+                    text+="?        "
+                else:
+                    text+="{:-9.3f}".format(tpr)
+            if displayFP:
+                fpr=self.falsePositiveRate(i)
+                if Utils.isMissingValue(fpr):
+                    text+="?        "
+                else:
+                    text+="{:-9.3f}".format(fpr)
+            if displayP:
+                p=self.precision(i)
+                if Utils.isMissingValue(p):
+                    text+="?        "
+                else:
+                    text+="{:-11.3f}".format(p)
+            if displayR:
+                r=self.recall(i)
+                if Utils.isMissingValue(r):
+                    text+="?        "
+                else:
+                    text+="{:-9.3f}".format(r)
+            if displayFM:
+                fm=self.fMeasure(i)
+                if Utils.isMissingValue(fm):
+                    text+="?        "
+                else:
+                    text+="{:-11.3f}".format(fm)
+            if displayMCC:
+                mat=self.matthewsCorrelationCoefficient(i)
+                if Utils.isMissingValue(mat):
+                    text+="?        "
+                else:
+                    text+="{:-9.3f}".format(mat)
+            if displayROC:
+                rocVal=self.areaUnderROC(i)
+                if Utils.isMissingValue(rocVal):
+                    text += "?        "
+                else:
+                    text+="{:-10.3f}".format(rocVal)
+            if displayPRC:
+                prcVal=self.areaUnderPRC(i)
+                if Utils.isMissingValue(prcVal):
+                    text += "?        "
+                else:
+                    text+="{:-10.3f}".format(prcVal)
+            text+=self.m_ClassNames[i]+"\n"
+        text+="Weighted Avg.    "
+        if displayTP:
+            wtpr=self.weightedTruePositiveRate()
+            if Utils.isMissingValue(wtpr):
+                text+="?        "
+            else:
+                text+="{:-9.3f}".format(wtpr)
+        if displayFP:
+            wfpr=self.weightedFalsePositiveRate()
+            if Utils.isMissingValue(wfpr):
+                text+="?        "
+            else:
+                text+="{:-9.3f}".format(wfpr)
+        if displayP:
+            wp=self.weightedPrecision()
+            if Utils.isMissingValue(wp):
+                text+="?        "
+            else:
+                text+="{:-11.3f}".format(wp)
+        if displayR:
+            wr=self.weightedRecall()
+            if Utils.isMissingValue(wr):
+                text+="?        "
+            else:
+                text+="{:-9.3f}".format(wr)
+        if displayFM:
+            wf=self.weightedFMeasure()
+            if Utils.isMissingValue(wf):
+                text+="?        "
+            else:
+                text+="{:-11.3f}".format(wf)
+        if displayMCC:
+            wmc=self.weightedMatthewsCorrelation()
+            if Utils.isMissingValue(wmc):
+                text+="?        "
+            else:
+                text+="{:-9.3f}".format(wmc)
+        if displayROC:
+            wroc=self.weightedAreaUnderROC()
+            if Utils.isMissingValue(wroc):
+                text+="?        "
+            else:
+                text+="{:-10.3f}".format(wroc)
+        if displayPRC:
+            wprc=self.weightedAreaUnderPRC()
+            if Utils.isMissingValue(wprc):
+                text+="?        "
+            else:
+                text+="{:-10.3f}".format(wprc)
+        text+="\n"
+        return text
+
+    def areaUnderPRC(self,classIndex:int):
+        if self.m_Predictions is None:
+            return Utils.missingValue()
+        else:
+            tc=ThresholdCurve()
+            result=tc.getCurve(self.m_Predictions,classIndex)
+            return ThresholdCurve.getPRCArea(result)
+
+    def areaUnderROC(self,classIndex:int):
+        if self.m_Predictions is None:
+            return Utils.missingValue()
+        else:
+            tc=ThresholdCurve()
+            result=tc.getCurve(self.m_Predictions,classIndex)
+            return ThresholdCurve.getROCArea(result)
+
+    def matthewsCorrelationCoefficient(self,classIndex:int):
+        numTP=self.numTruePositives(classIndex)
+        numTN=self.numTrueNegatives(classIndex)
+        numFP=self.numFalsePositives(classIndex)
+        numFN=self.numFalseNegatives(classIndex)
+        n=numTP*numTN-numFP*numFN
+        d=(numTP+numFP)*(numTP+numFN)*(numTN+numFP)*(numTN+numFN)
+        d=math.sqrt(d)
+        return n/d
+
+    def numTruePositives(self,classIndex:int):
+        correct=0
+        for j in range(self.m_NumClasses):
+            if j == classIndex:
+                correct+=self.m_ConfusionMatrix[classIndex][j]
+        return correct
+
+    def numFalseNegatives(self,classIndex:int):
+        incorrect=0
+        for i in range(self.m_NumClasses):
+            if i == classIndex:
+                for j in range(self.m_NumClasses):
+                    if j != classIndex:
+                        incorrect+=self.m_ConfusionMatrix[i][j]
+        return incorrect
+
+    def numFalsePositives(self,classIndex:int):
+        incorrect=0
+        for i in range(self.m_NumClasses):
+            if i != classIndex:
+                for j in range(self.m_NumClasses):
+                    if j == classIndex:
+                        incorrect+=self.m_ConfusionMatrix[i][j]
+        return incorrect
+
+    def numTrueNegatives(self,classIndex:int):
+        correct=0
+        for i in range(self.m_NumClasses):
+            if i != classIndex:
+                for j in range(self.m_NumClasses):
+                    if j != classIndex:
+                        correct+=self.m_ConfusionMatrix[i][j]
+        return correct
+
+    def fMeasure(self,classIndex:int):
+        precision=self.precision(classIndex)
+        recall=self.recall(classIndex)
+        if precision == 0 and recall == 0:
+            return 0
+        return 2*precision*recall/(precision+recall)
+
+    def recall(self,classIndex:int):
+        return self.truePositiveRate(classIndex)
+
+    def precision(self,classIndex:int):
+        correct=total=0
+        for i in range(self.m_NumClasses):
+            if i == classIndex:
+                correct+=self.m_ConfusionMatrix[i][classIndex]
+            total+=self.m_ConfusionMatrix[i][classIndex]
+        return correct/total
+
+    def truePositiveRate(self,classIndex:int):
+        correct=total=0
+        for j in range(self.m_NumClasses):
+            if j == classIndex:
+                correct+=self.m_ConfusionMatrix[classIndex][j]
+            total+=self.m_ConfusionMatrix[classIndex][j]
+        return correct/total
+
+    def falsePositiveRate(self,classIndex:int):
+        incorrect=total=0
+        for i in range(self.m_NumClasses):
+            if i != classIndex:
+                for j in range(self.m_NumClasses):
+                    if j == classIndex:
+                        incorrect+=self.m_ConfusionMatrix[i][j]
+                    total+=self.m_ConfusionMatrix[i][j]
+        return incorrect/total
+
+    def weightedTruePositiveRate(self):
+        classCounts=[0]*self.m_NumClasses
+        classCountSum=0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                classCounts[i]+=self.m_ConfusionMatrix[i][j]
+            classCountSum+=classCounts[i]
+        truePosTotal=0
+        for i in range(self.m_NumClasses):
+            temp=self.truePositiveRate(i)
+            if classCounts[i]>0:
+                truePosTotal+=temp*classCounts[i]
+        return truePosTotal/classCountSum
+
+    def weightedFalsePositiveRate(self):
+        classCounts=[0]*self.m_NumClasses
+        classCountSum=0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                classCounts[i]+=self.m_ConfusionMatrix[i][j]
+            classCountSum+=classCounts[i]
+        falsePosTotal=0
+        for i in range(self.m_NumClasses):
+            temp=self.falsePositiveRate(i)
+            if classCounts[i]>0:
+                falsePosTotal+=temp*classCounts[i]
+        return falsePosTotal/classCountSum
+
+    def weightedPrecision(self):
+        classCounts=[0]*self.m_NumClasses
+        classCountSum=0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                classCounts[i]+=self.m_ConfusionMatrix[i][j]
+            classCountSum+=classCounts[i]
+        precisionTotal=0
+        for i in range(self.m_NumClasses):
+            temp=self.precision(i)
+            if classCounts[i]>0:
+                precisionTotal+=temp*classCounts[i]
+        return precisionTotal/classCountSum
+
+    def weightedRecall(self):
+        return self.weightedTruePositiveRate()
+
+    def weightedFMeasure(self):
+        classCounts = [0] * self.m_NumClasses
+        classCountSum = 0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                classCounts[i] += self.m_ConfusionMatrix[i][j]
+            classCountSum += classCounts[i]
+        fMeasureTotal = 0
+        for i in range(self.m_NumClasses):
+            temp = self.fMeasure(i)
+            if classCounts[i] > 0:
+                fMeasureTotal += temp * classCounts[i]
+        return fMeasureTotal / classCountSum
+
+    def weightedMatthewsCorrelation(self):
+        classCounts = [0] * self.m_NumClasses
+        classCountSum = 0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                classCounts[i] += self.m_ConfusionMatrix[i][j]
+            classCountSum += classCounts[i]
+        mccTotal = 0
+        for i in range(self.m_NumClasses):
+            temp = self.matthewsCorrelationCoefficient(i)
+            if classCounts[i] > 0:
+                mccTotal += temp * classCounts[i]
+        return mccTotal / classCountSum
+
+    def weightedAreaUnderROC(self):
+        classCounts = [0] * self.m_NumClasses
+        classCountSum = 0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                classCounts[i] += self.m_ConfusionMatrix[i][j]
+            classCountSum += classCounts[i]
+        aucTotal = 0
+        for i in range(self.m_NumClasses):
+            temp = self.areaUnderROC(i)
+            if classCounts[i] > 0:
+                aucTotal += temp * classCounts[i]
+        return aucTotal / classCountSum
+
+    def weightedAreaUnderPRC(self):
+        classCounts = [0] * self.m_NumClasses
+        classCountSum = 0
+        for i in range(self.m_NumClasses):
+            for j in range(self.m_NumClasses):
+                classCounts[i] += self.m_ConfusionMatrix[i][j]
+            classCountSum += classCounts[i]
+        auprcTotal = 0
+        for i in range(self.m_NumClasses):
+            temp = self.areaUnderPRC(i)
+            if classCounts[i] > 0:
+                auprcTotal += temp * classCounts[i]
+        return auprcTotal / classCountSum
+
+    def num2ShortID(self,num:int,IDChars:List[str],IDWidth:int):
+        ID=[]
+        i=0
+        for i in range(IDWidth-1,-1,-1):
+            ID.append(IDChars[num%len(IDChars)])
+            num=num/len(IDChars)-1
+            if num <0 :
+                break
+        for i in range(i-1,-1,-1):
+            ID.append(' ')
+        return "".join(ID)
 
     @classmethod
     def getAllEvaluationMetricNames(cls):

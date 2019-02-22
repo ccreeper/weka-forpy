@@ -19,6 +19,8 @@ from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from classifiers.rules.ZeroR import ZeroR
 
+import random
+
 
 class ClassifierPanel():
     def __init__(self,win:'CallMain.MainWindow'):
@@ -37,7 +39,7 @@ class ClassifierPanel():
         self.m_CVText=win.cross_value           #type:QLineEdit
         self.m_Instances=win.m_Instances        #type:Instances
         self.m_SetTestFrame=None                #type:SetInstancesPanel
-        self.m_Thread=None                      #type:Thread
+        self.m_RunThread=None                      #type:Thread
         self.m_StartBut=win.start_btn           #type:QPushButton
         self.m_StopBut=win.stop_btn             #type:QPushButton
         self.m_ClassCombo=win.classifier_combobox       #type:QComboBox
@@ -81,15 +83,15 @@ class ClassifierPanel():
         self.m_CVText.setEnabled(self.m_CVBut.isChecked())
 
     def startClassifier(self):
-        if self.m_Thread is None:
+        if self.m_RunThread is None:
             self.mutex.lock()
             self.m_StartBut.setEnabled(False)
             self.m_StopBut.setEnabled(True)
             self.mutex.unlock()
 
             # self.m_Thread=Thread()
+            #TODO
 
-    #TODO
     def threadClassifierRun(self):
         self.m_CEPanel.addToHistory()
         inst=Instances(self.m_Instances)
@@ -107,6 +109,7 @@ class ClassifierPanel():
         template=copy.deepcopy(classifier)
         name=time.strftime("%H:%M:%S - ")
         outPutResult=""
+        evaluation=None     #type:Evaluation
 
         if self.m_CVBut.isChecked():
             testMode=1
@@ -175,7 +178,7 @@ class ClassifierPanel():
                 evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
                 plotInstances.setUp()
                 testTimeStart=time.time()
-                #TODO 待定
+                #TODO
                 # if isinstance(classifier,BatchPredictor)
                 # else:
                 for jj in range(inst.numInstances()):
@@ -183,12 +186,69 @@ class ClassifierPanel():
                 testTimeElapsed=time.time()-testTimeStart
                 outPutResult+="=== Evaluation on training set ===\n"
             elif testMode == 1:
+                rnd=1
+                inst.randomize(rnd)
+                if inst.attribute(classIndex).isNominal():
+                    inst.stratify(numFolds)
+                evaluation=Evaluation(inst)
+                evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
+                evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
+                plotInstances.setUp()
+                for fold in range(numFolds):
+                    train=inst.trainCV(numFolds,fold,rnd)
+                    evaluation=self.setupEval(evaluation,classifier,train,plotInstances,True)
+                    evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
+                    current=copy.deepcopy(classifier)
+                    current.buildClassifier(train)
+                    test=inst.testCV(numFolds,fold)
+                    # TODO
+                    # if isinstance(classifier,BatchPredictor)
+                    # else:
+                    for jj in range(test.numInstances()):
+                        plotInstances.process(test.instance(jj),current,evaluation)
+                if inst.attribute(classIndex).isNominal():
+                    outPutResult+="=== Stratified cross-validation ===\n"
+                else:
+                    outPutResult+="=== Cross-validation ===\n"
+            elif testMode == 3:
+                evaluation=Evaluation(inst)
+                evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
+                plotInstances.setInstances(userTestStructure)
+                evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
+                plotInstances.setUp()
+                # TODO
+                # if isinstance(classifier,BatchPredictor)
+                testTimeStart=time.time()
+                for i in range(userTestStructure.numInstances()):
+                    instance=userTestStructure.instance(i)
+                    # if isinstance(classifier,BatchPredictor)
+                    #else
+                    plotInstances.process(instance,classifier,evaluation)
+                # if isinstance(classifier,BatchPredictor)
+                testTimeElapsed=time.time()-testTimeStart
+                outPutResult+="=== Evaluation on test set ===\n"
+            if testMode != 1:
+                mode=""
+                if testMode == 2:
+                    mode="training data"
+                elif testMode == 3:
+                    mode="supplied test set"
+                outPutResult+="\nTime taken to test model on " + mode + ": "+ Utils.doubleToString(testTimeElapsed / 1000.0, 2)+ " seconds\n\n"
+            if inst.attribute(classIndex).isNominal():
+                outPutResult+=evaluation.toClassDetailsString()+'\n'
+                outPutResult+=evaluation.toMatrixString()+'\n'
+            self.m_History.updateResult(name)
+            self.mutex.lock()
+            self.m_StartBut.setEnabled(True)
+            self.m_StopBut.setEnabled(False)
+            self.m_RunThread=None
+            self.mutex.unlock()
 
-                #TODO 1564
-                #TODO m_selectedEvalMetrics
 
     #TODO
     def setupEval(self,evaluation:Evaluation,classifier:Classifier,inst:Instances,plotInstances:ClassifierErrorsPlotInstances,onlySetPriors:bool):
+        # if isinstance(classifier,InputMappedClassifier)...
+        #else
         evaluation.setPriors(inst)
         if not onlySetPriors:
             if plotInstances is not None:

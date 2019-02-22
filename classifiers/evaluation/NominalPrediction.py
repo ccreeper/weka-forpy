@@ -25,3 +25,6 @@ class NominalPrediction(Prediction):
             self.m_Predicted=predictedClass
         else:
             self.m_Predicted=Utils.missingValue()
+
+    def distribution(self):
+        return self.m_Distribution
