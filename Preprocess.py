@@ -16,12 +16,12 @@ class PreprocessPanel():
         self.attributePanel=AttributeSelectionPanel(win)
         self.attributeSummaryPanel=AttributeSummaryPanel(win)
         self.attributeVisualizationPanel=AttributeVisualizationPanel(win)
-        self.m_Instances=win.m_Instances     #type:Instances
+        self.m_Instances=None     #type:Instances
         self.m_Explor=win
         self.m_openBut=win.open_btn
         self.m_editBut=win.edit_btn
         self.m_tab=win.tab
-        self.m_tabWidget=win.tabWidget
+        self.m_tabWidget=win.tabWidget      #type:QTabWidget
         self.m_applyBut=win.apply_btn
         self.m_saveBut=win.save_btn
 
@@ -81,6 +81,10 @@ class PreprocessPanel():
         self.m_openBut.clicked.connect(self.openFile)
         self.attributePanel.m_TableModel.m_Table.cellClicked.connect(self.tableCellClick)
         self.m_editBut.clicked.connect(self.edit)
+        self.m_tabWidget.currentChanged.connect(self.tabChangedListener)
+
+    def tabChangedListener(self,index:int):
+        self.m_Explor.getClassiferPanel().setInstances(self.m_Instances)
 
     def tableCellClick(self,row,column):
         self.attributeSummaryPanel.setAttribute(row)

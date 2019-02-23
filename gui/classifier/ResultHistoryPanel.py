@@ -4,14 +4,17 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 class ResultHistoryPanel(QListWidget):
-    def __init__(self,text:QTextEdit,parent=None):
+    def __init__(self,parent=None):
         super().__init__(parent)
-        self.m_SingleText=text
+        self.m_SingleText=None      #type:QTextEdit
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.m_Results=dict()       #type:Dict[str,str]
         self.m_SingleName=""
         self.itemClicked.connect(self.valueChanged)
 
+
+    def bindSingleText(self,text:QTextEdit):
+        self.m_SingleText=text
 
     def keyPressEvent(self, e: QKeyEvent):
         if e.key() == Qt.Key_Delete:
@@ -30,7 +33,9 @@ class ResultHistoryPanel(QListWidget):
         buff=self.m_Results.get(name)
         if buff is not None:
             self.m_SingleName=name
-            self.m_SingleText.setText(buff)
+            if self.m_SingleText is not None:
+                # self.m_SingleText.setText(buff)
+                print("buff", buff)
 
     def addResult(self,name:str,result:str):
         nameCp=name
@@ -49,13 +54,18 @@ class ResultHistoryPanel(QListWidget):
             self.m_SingleText.setText(buff)
         #TODO 更新separate window文本
 
+import cgitb
+cgitb.enable(format='text')
 # import sys
 # if __name__=="__main__":
 #     app=QApplication(sys.argv)
-#     text=QTextEdit()
-#     win=ResultHistoryPanel(text)
+#     win=ResultHistoryPanel()
+#     text=QTextEdit(win)
+#     win.bindSingleText(text)
 #     items=['a','b','c','d','e','f','g','h','i','j','k','l']
 #     win.addItems(items)
 #     win.show()
+#     win.addResult('a','zxczxcxzczxcxcxzczxc')
+#     win.setSingle('a')
 #     sys.exit(app.exec_())
 

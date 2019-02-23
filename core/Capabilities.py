@@ -11,7 +11,8 @@ from Attributes import Attribute
 import importlib
 import sys
 
-class CapabilityError(Exception):
+
+class CapabilityError(BaseException):
     def __init__(self,errorInfo):
         super().__init__(self)
         self.errorInfo=errorInfo
@@ -182,12 +183,10 @@ class Capabilities():
         return self.m_Owner
 
     def testWithFail(self,data:Instances):
-        print("Numeric is in cap",CapabilityEnum.NUMERIC_ATTRIBUTES in self.m_Capabilities)
-        print("ID",id(CapabilityEnum.NUMERIC_ATTRIBUTES))
         if not self.testInstances(data):
             raise self.m_FailReason
 
-    def testAttribute(self,att:Attribute,isClass:bool=False):
+    def testAttribute(self,att:Attribute,isClass:bool=False)->bool:
         if self.doNotCheckCapabilities():
             return True
         result=True
@@ -227,6 +226,7 @@ class Capabilities():
             else:
                 self.m_FailReason=CapabilityError("Cannot handle multi-valued nominal " + errorStr + "!")
                 result=False
+
             return result
         elif att.type() == Attribute.NUMERIC:
             if isClass:
@@ -236,6 +236,7 @@ class Capabilities():
             if not self.handles(cap):
                 self.m_FailReason=CapabilityError("Cannot handle numeric " + errorStr + "!")
                 return False
+
         elif att.type() == Attribute.DATE:
             if isClass:
                 cap=CapabilityEnum.DATE_CLASS
@@ -255,6 +256,7 @@ class Capabilities():
         else:
             self.m_FailReason=CapabilityError("Cannot handle unknown attribute type '" + att.type()+ "'!")
             return False
+        return result
 
 
 
@@ -394,8 +396,6 @@ class Capability():
     def __str__(self):
         return self.m_Display
 
-mutex=QMutex()
-mutex.lock()
 class CapabilityEnum(Enum):
     NOMINAL_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Nominal attributes")
     BINARY_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Binary attributes")
@@ -417,4 +417,5 @@ class CapabilityEnum(Enum):
     RELATIONAL_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Relational class")
     MISSING_CLASS_VALUES = Capability(Capabilities.CLASS_CAPABILITY, "Missing class values")
     ONLY_MULTIINSTANCE = Capability(Capabilities.OTHER_CAPABILITY, "Only multi-Instance data")
-mutex.unlock()
+
+print('ID',id(CapabilityEnum.NUMERIC_ATTRIBUTES))

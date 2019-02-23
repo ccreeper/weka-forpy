@@ -18,11 +18,9 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self,parent=None):
         super().__init__(parent)
         super().setupUi(self)
-        self.m_Instances=None       #type:Instances
         self.preprocessPanel=PreprocessPanel(self)
         self.classifierPanel=ClassifierPanel(self)
         self.initSetting()
-
 
     def initSetting(self):
         #窗口中置
@@ -40,6 +38,8 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def getPreprocessPanel(self):
         return self.preprocessPanel
 
+    def getClassiferPanel(self):
+        return self.classifierPanel
 
 
 if __name__ == '__main__':

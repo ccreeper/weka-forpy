@@ -2,7 +2,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from HierarchyPropertyParser import HierarchyPropertyParser
-from Capabilities import Capabilities
 from CapabilitiesHandler import CapabilitiesHandler
 from Utils import Utils
 from typing import *

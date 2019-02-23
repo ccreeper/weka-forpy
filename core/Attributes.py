@@ -121,17 +121,20 @@ class Attribute():
             return "unknow"
 
     @classmethod
-    def typeToStringShort(self,type:int):
-        if type == Attribute.NUMERIC:
-            return "Num"
-        elif type == Attribute.STRING:
-            return "Str"
-        elif type == Attribute.NOMINAL:
-            return "Nom"
-        elif type ==Attribute.DATE:
-            return "Dat"
-        else:
-            return "???"
+    def typeToStringShort(self, attr)->str:
+        if isinstance(attr, Attribute):
+            return self.typeToStringShort(attr.type())
+        elif isinstance(attr,int):
+            if attr == Attribute.NUMERIC:
+                return "Num"
+            elif attr == Attribute.STRING:
+                return "Str"
+            elif attr == Attribute.NOMINAL:
+                return "Nom"
+            elif attr ==Attribute.DATE:
+                return "Dat"
+            else:
+                return "???"
 
     def copy(self,name:str=None):
         if name is None:

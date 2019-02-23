@@ -1,4 +1,3 @@
-from Capabilities import Capabilities
 from Instances import Instances,Instance
 from typing import *
 
@@ -8,5 +7,5 @@ class Classifier():
     @classmethod
     def getAllMethods(cls):pass
     def buildClassifier(self,data:Instances):pass
-    def getCapabilities(self)->Capabilities:pass
+    def getCapabilities(self):pass
     def distributionForInstance(self,instance:Instance):pass

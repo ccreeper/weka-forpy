@@ -10,17 +10,23 @@ from core.AttributeStats import AttributeStats
 import random
 
 class Instance():
-    def __init__(self, a0,a1):
-        if isinstance(a0, list):
+    def __init__(self,a0,a1=None):
+        if isinstance(a0, list) and a1 is None:
             self.m_AttValues=a0
             self.m_Weight=1
-        elif isinstance(a0, Instance):
+        elif isinstance(a0, Instance) and a1 is None:
             self.m_AttValues=a0.m_AttValues
             self.m_Weight=a0.weight()
             self.m_Dataset=None         #type:Instances
         elif isinstance(a0,float) and isinstance(a1,list):
             self.m_AttValues=a1
             self.m_Weight=a0
+            self.m_Dataset=None
+        elif isinstance(a0,int) and a1 is None:
+            self.m_AttValues=[]
+            for i in range(a0):
+                self.m_AttValues.append(Utils.missingValue())
+            self.m_Weight=1
             self.m_Dataset=None
 
     def setDataset(self,inst:'Instances'):
@@ -116,7 +122,7 @@ class Instances(object):
         elif isinstance(a0, Instances) and isinstance(a1,int) and a2 is None:
             self.initialize(a0, a1)
         elif isinstance(a0,Instances) and a1 is None and a2 is None:
-            self.__init__(a0)
+            self.__init__(a0,a0.numInstances())
             a0.copyInstances(0, a0.numInstances(), self)
         elif isinstance(a0,Instances) and isinstance(a1,int) and isinstance(a2,int):
             self.__init__(a0,a2)

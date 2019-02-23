@@ -1,6 +1,6 @@
 from classifiers.Classifier import Classifier
 from classifiers.AbstractClassifier import AbstractClassifier
-from Capabilities import Capabilities,CapabilityEnum
+from core.Capabilities import Capabilities,CapabilityEnum
 from Attributes import Attribute
 from Instances import Instances,Instance
 from Utils import Utils
