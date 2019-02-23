@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 class ResultHistoryPanel(QListWidget):
+    outtext_write_signal=pyqtSignal(str)
     def __init__(self,parent=None):
         super().__init__(parent)
         self.m_SingleText=None      #type:QTextEdit
@@ -12,9 +13,6 @@ class ResultHistoryPanel(QListWidget):
         self.m_SingleName=""
         self.itemClicked.connect(self.valueChanged)
 
-
-    def bindSingleText(self,text:QTextEdit):
-        self.m_SingleText=text
 
     def keyPressEvent(self, e: QKeyEvent):
         if e.key() == Qt.Key_Delete:
@@ -33,9 +31,7 @@ class ResultHistoryPanel(QListWidget):
         buff=self.m_Results.get(name)
         if buff is not None:
             self.m_SingleName=name
-            if self.m_SingleText is not None:
-                # self.m_SingleText.setText(buff)
-                print("buff", buff)
+            self.outtext_write_signal.emit(buff)
 
     def addResult(self,name:str,result:str):
         nameCp=name
@@ -51,11 +47,9 @@ class ResultHistoryPanel(QListWidget):
         if buff is None:
             return
         if self.m_SingleName == name:
-            self.m_SingleText.setText(buff)
+            self.outtext_write_signal.emit(buff)
         #TODO 更新separate window文本
 
-import cgitb
-cgitb.enable(format='text')
 # import sys
 # if __name__=="__main__":
 #     app=QApplication(sys.argv)

@@ -127,7 +127,7 @@ class Instances(object):
         elif isinstance(a0,Instances) and isinstance(a1,int) and isinstance(a2,int):
             self.__init__(a0,a2)
             a0.copyInstances(a1,a2,self)
-        elif isinstance(a0,str) and isinstance(a1,List[Attribute]) and isinstance(a2,int):
+        elif isinstance(a0,str) and isinstance(a1,list) and isinstance(a2,int):
             names=set()
             nonUniqueNames=""
             for att in a1:
@@ -143,7 +143,7 @@ class Instances(object):
             self.m_NamesToAttributeIndices=dict()
             for i in range(self.numAttributes()):
                 self.attribute(i).setIndex(i)
-                self.m_NamesToAttributeIndices.update({self.attribute(i).name(),i})
+                self.m_NamesToAttributeIndices.update({self.attribute(i).name():i})
             self.m_Instances=[None]*a2
 
     def __iter__(self):

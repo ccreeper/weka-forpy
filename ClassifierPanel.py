@@ -44,11 +44,14 @@ class ClassifierPanel():
         self.m_ClassCombo=win.classifier_combobox       #type:QComboBox
         # 结果列表
         self.m_History=win.resultList           #type:ResultHistoryPanel
-        self.m_History.bindSingleText(self.m_OutText)
+        self.m_History.outtext_write_signal.connect(self.updateOutputText)
         self.m_selectedEvalMetrics=Evaluation.getAllEvaluationMetricNames() #type:List[str]
         self.m_TestClassIndex=-1
         self.mutex=QMutex()
         self.initalize()
+
+    def updateOutputText(self,text:str):
+        self.m_OutText.setText(text)
 
     #TODO 未完成
     def initalize(self):
@@ -199,6 +202,7 @@ class ClassifierPanel():
         outPutResult+="=== Classifier model (full training set) ===\n\n"
         outPutResult+=str(classifier)+"\n"
         outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)
+
         self.m_History.updateResult(name)
         #TODO 1486 绘图
 
