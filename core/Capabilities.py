@@ -2,6 +2,7 @@ from typing import *
 from enum import Enum
 from CapabilitiesHandler import CapabilitiesHandler
 from configparser import ConfigParser
+from PyQt5.QtCore import *
 import classifiers.UpdateableClassifier
 import clusterers.UpdateableClusterer
 from Instances import Instances
@@ -112,7 +113,10 @@ class Capabilities():
             self.disableDependency(CapabilityEnum.UNARY_CLASS)
         elif c == CapabilityEnum.UNARY_CLASS:
             self.disableDependency(CapabilityEnum.EMPTY_NOMINAL_CLASS)
-        self.m_Dependencies.remove(c)
+        try:
+            self.m_Dependencies.remove(c)
+        except KeyError:
+            pass
 
     def disable(self, c: 'CapabilityEnum'):
         if c == CapabilityEnum.NOMINAL_ATTRIBUTES:
@@ -127,7 +131,10 @@ class Capabilities():
             self.disable(CapabilityEnum.UNARY_CLASS)
         elif c == CapabilityEnum.UNARY_CLASS:
             self.disable(CapabilityEnum.EMPTY_NOMINAL_CLASS)
-        self.m_Capabilities.remove(c)
+        try:
+            self.m_Capabilities.remove(c)
+        except KeyError:
+            pass
 
     def enableAllClassDependencies(self):
         for cap in CapabilityEnum:
@@ -175,12 +182,19 @@ class Capabilities():
         return self.m_Owner
 
     def testWithFail(self,data:Instances):
+        print("Numeric is in cap",CapabilityEnum.NUMERIC_ATTRIBUTES in self.m_Capabilities)
+        print("ID",id(CapabilityEnum.NUMERIC_ATTRIBUTES))
         if not self.testInstances(data):
             raise self.m_FailReason
 
     def testAttribute(self,att:Attribute,isClass:bool=False):
         if self.doNotCheckCapabilities():
             return True
+        result=True
+        if isClass:
+            errorStr="class"
+        else:
+            errorStr="attributes"
         if att.type() == Attribute.NOMINAL:
             if isClass:
                 cap=CapabilityEnum.NOMINAL_CLASS
@@ -193,20 +207,34 @@ class Capabilities():
                 capUnary=CapabilityEnum.UNARY_ATTRIBUTES
                 capEmpty=CapabilityEnum.EMPTY_NOMINAL_ATTRIBUTES
             if self.handles(cap) and att.numValues() >2:
-                return False
+                return result
             elif self.handles(capBinary) and att.numValues() == 2:
-                return False
+                return result
             elif self.handles(capUnary) and att.numValues() == 1:
-                return False
+                return result
             elif self.handles(capEmpty) and att.numValues() == 0:
-                return False
-            return False
+                return result
+
+            if att.numValues() == 0:
+                self.m_FailReason=CapabilityError("Cannot handle empty nominal " + errorStr + "!")
+                result=False
+            if att.numValues() == 1:
+                self.m_FailReason=CapabilityError("Cannot handle unary " + errorStr + "!")
+                result=False
+            elif att.numValues() == 2:
+                self.m_FailReason=CapabilityError("Cannot handle binary " + errorStr + "!")
+                result=False
+            else:
+                self.m_FailReason=CapabilityError("Cannot handle multi-valued nominal " + errorStr + "!")
+                result=False
+            return result
         elif att.type() == Attribute.NUMERIC:
             if isClass:
                 cap=CapabilityEnum.NUMERIC_CLASS
             else:
                 cap=CapabilityEnum.NUMERIC_ATTRIBUTES
             if not self.handles(cap):
+                self.m_FailReason=CapabilityError("Cannot handle numeric " + errorStr + "!")
                 return False
         elif att.type() == Attribute.DATE:
             if isClass:
@@ -214,6 +242,7 @@ class Capabilities():
             else:
                 cap=CapabilityEnum.DATE_ATTRIBUTES
             if not self.handles(cap):
+                self.m_FailReason=CapabilityError("Cannot handle date " + errorStr + "!")
                 return False
         elif att.type() == Attribute.STRING:
             if isClass:
@@ -221,15 +250,17 @@ class Capabilities():
             else:
                 cap=CapabilityEnum.STRING_ATTRIBUTES
             if not self.handles(cap):
+                self.m_FailReason=CapabilityError("Cannot handle string " + errorStr + "!")
                 return False
         else:
+            self.m_FailReason=CapabilityError("Cannot handle unknown attribute type '" + att.type()+ "'!")
             return False
+
 
 
     def testInstances(self,data:Instances,*args):
         if len(args) == 0:
-            self.testInstances(data,0,data.numAttributes()-1)
-            return
+            return self.testInstances(data,0,data.numAttributes()-1)
         fromIndex=args[0]
         toIndex=args[1]
         if self.doNotCheckCapabilities():
@@ -363,25 +394,27 @@ class Capability():
     def __str__(self):
         return self.m_Display
 
-
+mutex=QMutex()
+mutex.lock()
 class CapabilityEnum(Enum):
-    NOMINAL_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Nominal attributes"),
-    BINARY_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Binary attributes"),
-    UNARY_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Unary attributes"),
-    EMPTY_NOMINAL_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY,"Empty nominal attributes"),
-    NUMERIC_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Numeric attributes"),
-    DATE_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Date attributes"),
-    STRING_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "String attributes"),
-    RELATIONAL_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY,"Relational attributes"),
-    MISSING_VALUES = Capability(Capabilities.ATTRIBUTE_CAPABILITY, "Missing values"),
-    NO_CLASS = Capability(Capabilities.CLASS_CAPABILITY, "No class"),
-    NOMINAL_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "Nominal class"),
-    BINARY_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Binary class"),
-    UNARY_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "Unary class"),
-    EMPTY_NOMINAL_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Empty nominal class"),
-    NUMERIC_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "Numeric class"),
-    DATE_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Date class"),
-    STRING_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "String class"),
-    RELATIONAL_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Relational class"),
-    MISSING_CLASS_VALUES = Capability(Capabilities.CLASS_CAPABILITY, "Missing class values"),
+    NOMINAL_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Nominal attributes")
+    BINARY_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Binary attributes")
+    UNARY_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Unary attributes")
+    EMPTY_NOMINAL_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY,"Empty nominal attributes")
+    NUMERIC_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Numeric attributes")
+    DATE_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "Date attributes")
+    STRING_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY, "String attributes")
+    RELATIONAL_ATTRIBUTES = Capability(Capabilities.ATTRIBUTE + Capabilities.ATTRIBUTE_CAPABILITY,"Relational attributes")
+    MISSING_VALUES = Capability(Capabilities.ATTRIBUTE_CAPABILITY, "Missing values")
+    NO_CLASS = Capability(Capabilities.CLASS_CAPABILITY, "No class")
+    NOMINAL_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "Nominal class")
+    BINARY_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Binary class")
+    UNARY_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "Unary class")
+    EMPTY_NOMINAL_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Empty nominal class")
+    NUMERIC_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "Numeric class")
+    DATE_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Date class")
+    STRING_CLASS = Capability(Capabilities.CLASS + Capabilities.CLASS_CAPABILITY, "String class")
+    RELATIONAL_CLASS = Capability(Capabilities.ATTRIBUTE + Capabilities.CLASS_CAPABILITY, "Relational class")
+    MISSING_CLASS_VALUES = Capability(Capabilities.CLASS_CAPABILITY, "Missing class values")
     ONLY_MULTIINSTANCE = Capability(Capabilities.OTHER_CAPABILITY, "Only multi-Instance data")
+mutex.unlock()
