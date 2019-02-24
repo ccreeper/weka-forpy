@@ -1,4 +1,4 @@
-from Instances import Instance
+from Instances import Instances,Instance
 
 class UpdateableClusterer():
     def updateClusterer(self,instance:Instance):pass

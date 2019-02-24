@@ -28,3 +28,12 @@ class NominalPrediction(Prediction):
 
     def distribution(self):
         return self.m_Distribution
+
+    def predicted(self):
+        return self.m_Predicted
+
+    def actual(self):
+        return self.m_Actual
+
+    def weight(self):
+        return self.m_Weight

@@ -1,7 +1,7 @@
 
 from typing import *
 
-from Instances import Instances
+from Instances import Instances,Instance
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *

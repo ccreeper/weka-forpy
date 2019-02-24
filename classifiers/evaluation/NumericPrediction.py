@@ -13,3 +13,6 @@ class NumericPrediction(Prediction):
 
     def setPredictionIntervals(self,predInt:List[List]):
         self.m_PredictionIntervals=copy.deepcopy(predInt)
+
+    def weight(self):
+        return self.m_Weight

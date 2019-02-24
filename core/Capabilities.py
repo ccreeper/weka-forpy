@@ -5,7 +5,7 @@ from configparser import ConfigParser
 from PyQt5.QtCore import *
 import classifiers.UpdateableClassifier
 import clusterers.UpdateableClusterer
-from Instances import Instances
+from Instances import Instances,Instance
 from CapabilitiesIgnorer import CapabilitiesIgnorer
 from Attributes import Attribute
 import importlib

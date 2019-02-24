@@ -4,7 +4,7 @@ from typing import *
 
 import numpy as np
 from Attributes import Attribute
-from Instances import Instances
+from Instances import Instances,Instance
 from PyQt5.QtCore import *
 from SparseInstance import SparseInstance
 from Utils import Utils

@@ -42,10 +42,13 @@ class ResultHistoryPanel(QListWidget):
         self.addItem(nameCp)
         self.m_Results.update({nameCp:result})
 
-    def updateResult(self,name:str):
+    def updateResult(self,name:str,result:str=None):
         buff=self.m_Results.get(name)
         if buff is None:
             return
+        if result is not None:
+            buff=result
+            self.m_Results.update({name:result})
         if self.m_SingleName == name:
             self.outtext_write_signal.emit(buff)
         #TODO 更新separate window文本

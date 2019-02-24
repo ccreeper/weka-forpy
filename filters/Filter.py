@@ -1,9 +1,7 @@
-from Instances import Instances
+from Instances import Instances,Instance
 from core.OptionHandler import OptionHandler
 from queue import Queue
 from queue import Queue
-
-from Instances import Instances
 
 from core.OptionHandler import OptionHandler
 

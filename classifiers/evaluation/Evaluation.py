@@ -291,6 +291,8 @@ class Evaluation():
                 if current > maxval:
                     maxval=current
                 fract=current-np.rint(current)
+                if fract == 0:
+                    fract=float('inf')
                 if not fractional and math.log(fract)/math.log(10)>=-2:
                     fractional=True
         IDWidth=1+max(int(math.log(maxval)/math.log(10)+3 if fractional else 0),
@@ -301,7 +303,7 @@ class Evaluation():
                 text+=" "+self.num2ShortID(i,IDChars,IDWidth-3)+"   "
             else:
                 text+=" "+self.num2ShortID(i,IDChars,IDWidth)
-        text+="   <-- classified as\n"
+        text+="<-- classified as\n"
         for i in range(self.m_NumClasses):
             for j in range(self.m_NumClasses):
                 text+=" "+Utils.doubleToString(self.m_ConfusionMatrix[i][j], IDWidth,2 if fractional else 0)
@@ -321,111 +323,111 @@ class Evaluation():
         displayPRC ="prc area" in self.m_metricsToDisplay
 
         text=title+"\n                 "\
-        +  "TP Rate  " if displayTP else "" +  "FP Rate  " if displayFP else ""\
-        +  "Precision  " if displayP else "" +  "Recall   " if displayR else ""\
-        +  "F-Measure  " if displayFM else "" +  "MCC      " if displayMCC else ""\
-        +  "ROC Area  " if displayROC else "" +  "PRC Area  " if displayPRC else ""\
+        +  ("TP Rate     "   if displayTP else "")   +   ("FP Rate     " if displayFP else "")\
+        +  ("Precision   "   if displayP else "")    +   ("Recall      " if displayR else "")\
+        +  ("F-Measure   "   if displayFM else "")   +   ("MCC         " if displayMCC else "")\
+        +  ("ROC Area    "   if displayROC else "")  +   ("PRC Area    " if displayPRC else "")\
         +  "Class\n"
         for i in range(self.m_NumClasses):
             text+="                 "
             if displayTP:
                 tpr=self.truePositiveRate(i)
                 if Utils.isMissingValue(tpr):
-                    text+="?        "
+                    text+="?           "
                 else:
-                    text+="{:-9.3f}".format(tpr)
+                    text+="{:<12.3f}".format(tpr)
             if displayFP:
                 fpr=self.falsePositiveRate(i)
                 if Utils.isMissingValue(fpr):
-                    text+="?        "
+                    text+="?           "
                 else:
-                    text+="{:-9.3f}".format(fpr)
+                    text+="{:<12.3f}".format(fpr)
             if displayP:
                 p=self.precision(i)
                 if Utils.isMissingValue(p):
-                    text+="?        "
+                    text+="?           "
                 else:
-                    text+="{:-11.3f}".format(p)
+                    text+="{:<12.3f}".format(p)
             if displayR:
                 r=self.recall(i)
                 if Utils.isMissingValue(r):
-                    text+="?        "
+                    text+="?           "
                 else:
-                    text+="{:-9.3f}".format(r)
+                    text+="{:<12.3f}".format(r)
             if displayFM:
                 fm=self.fMeasure(i)
                 if Utils.isMissingValue(fm):
-                    text+="?        "
+                    text+="?           "
                 else:
-                    text+="{:-11.3f}".format(fm)
+                    text+="{:<12.3f}".format(fm)
             if displayMCC:
                 mat=self.matthewsCorrelationCoefficient(i)
                 if Utils.isMissingValue(mat):
-                    text+="?        "
+                    text+="?           "
                 else:
-                    text+="{:-9.3f}".format(mat)
+                    text+="{:<12.3f}".format(mat)
             if displayROC:
                 rocVal=self.areaUnderROC(i)
                 if Utils.isMissingValue(rocVal):
-                    text += "?        "
+                    text += "?           "
                 else:
-                    text+="{:-10.3f}".format(rocVal)
+                    text+="{:<12.3f}".format(rocVal)
             if displayPRC:
                 prcVal=self.areaUnderPRC(i)
                 if Utils.isMissingValue(prcVal):
-                    text += "?        "
+                    text += "?           "
                 else:
-                    text+="{:-10.3f}".format(prcVal)
+                    text+="{:<12.3f}".format(prcVal)
             text+=self.m_ClassNames[i]+"\n"
         text+="Weighted Avg.    "
         if displayTP:
             wtpr=self.weightedTruePositiveRate()
             if Utils.isMissingValue(wtpr):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-9.3f}".format(wtpr)
+                text+="{:<12.3f}".format(wtpr)
         if displayFP:
             wfpr=self.weightedFalsePositiveRate()
             if Utils.isMissingValue(wfpr):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-9.3f}".format(wfpr)
+                text+="{:<12.3f}".format(wfpr)
         if displayP:
             wp=self.weightedPrecision()
             if Utils.isMissingValue(wp):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-11.3f}".format(wp)
+                text+="{:<12.3f}".format(wp)
         if displayR:
             wr=self.weightedRecall()
             if Utils.isMissingValue(wr):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-9.3f}".format(wr)
+                text+="{:<12.3f}".format(wr)
         if displayFM:
             wf=self.weightedFMeasure()
             if Utils.isMissingValue(wf):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-11.3f}".format(wf)
+                text+="{:<12.3f}".format(wf)
         if displayMCC:
             wmc=self.weightedMatthewsCorrelation()
             if Utils.isMissingValue(wmc):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-9.3f}".format(wmc)
+                text+="{:<12.3f}".format(wmc)
         if displayROC:
             wroc=self.weightedAreaUnderROC()
             if Utils.isMissingValue(wroc):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-10.3f}".format(wroc)
+                text+="{:<12.3f}".format(wroc)
         if displayPRC:
             wprc=self.weightedAreaUnderPRC()
             if Utils.isMissingValue(wprc):
-                text+="?        "
+                text+="?           "
             else:
-                text+="{:-10.3f}".format(wprc)
+                text+="{:<12.3f}".format(wprc)
         text+="\n"
         return text
 
@@ -453,7 +455,7 @@ class Evaluation():
         n=numTP*numTN-numFP*numFN
         d=(numTP+numFP)*(numTP+numFN)*(numTN+numFP)*(numTN+numFN)
         d=math.sqrt(d)
-        return n/d
+        return Utils.division(n,d)
 
     def numTruePositives(self,classIndex:int):
         correct=0
@@ -505,7 +507,7 @@ class Evaluation():
             if i == classIndex:
                 correct+=self.m_ConfusionMatrix[i][classIndex]
             total+=self.m_ConfusionMatrix[i][classIndex]
-        return correct/total
+        return Utils.division(correct,total)
 
     def truePositiveRate(self,classIndex:int):
         correct=total=0
@@ -513,7 +515,7 @@ class Evaluation():
             if j == classIndex:
                 correct+=self.m_ConfusionMatrix[classIndex][j]
             total+=self.m_ConfusionMatrix[classIndex][j]
-        return correct/total
+        return Utils.division(correct,total)
 
     def falsePositiveRate(self,classIndex:int):
         incorrect=total=0
@@ -523,7 +525,7 @@ class Evaluation():
                     if j == classIndex:
                         incorrect+=self.m_ConfusionMatrix[i][j]
                     total+=self.m_ConfusionMatrix[i][j]
-        return incorrect/total
+        return Utils.division(incorrect,total)
 
     def weightedTruePositiveRate(self):
         classCounts=[0]*self.m_NumClasses
@@ -537,7 +539,7 @@ class Evaluation():
             temp=self.truePositiveRate(i)
             if classCounts[i]>0:
                 truePosTotal+=temp*classCounts[i]
-        return truePosTotal/classCountSum
+        return Utils.division(truePosTotal,classCountSum)
 
     def weightedFalsePositiveRate(self):
         classCounts=[0]*self.m_NumClasses
@@ -551,7 +553,7 @@ class Evaluation():
             temp=self.falsePositiveRate(i)
             if classCounts[i]>0:
                 falsePosTotal+=temp*classCounts[i]
-        return falsePosTotal/classCountSum
+        return Utils.division(falsePosTotal,classCountSum)
 
     def weightedPrecision(self):
         classCounts=[0]*self.m_NumClasses
@@ -565,7 +567,7 @@ class Evaluation():
             temp=self.precision(i)
             if classCounts[i]>0:
                 precisionTotal+=temp*classCounts[i]
-        return precisionTotal/classCountSum
+        return Utils.division(precisionTotal,classCountSum)
 
     def weightedRecall(self):
         return self.weightedTruePositiveRate()
@@ -582,7 +584,7 @@ class Evaluation():
             temp = self.fMeasure(i)
             if classCounts[i] > 0:
                 fMeasureTotal += temp * classCounts[i]
-        return fMeasureTotal / classCountSum
+        return Utils.division(fMeasureTotal,classCountSum)
 
     def weightedMatthewsCorrelation(self):
         classCounts = [0] * self.m_NumClasses
@@ -596,7 +598,7 @@ class Evaluation():
             temp = self.matthewsCorrelationCoefficient(i)
             if classCounts[i] > 0:
                 mccTotal += temp * classCounts[i]
-        return mccTotal / classCountSum
+        return Utils.division(mccTotal,classCountSum)
 
     def weightedAreaUnderROC(self):
         classCounts = [0] * self.m_NumClasses
@@ -610,7 +612,7 @@ class Evaluation():
             temp = self.areaUnderROC(i)
             if classCounts[i] > 0:
                 aucTotal += temp * classCounts[i]
-        return aucTotal / classCountSum
+        return Utils.division(aucTotal,classCountSum)
 
     def weightedAreaUnderPRC(self):
         classCounts = [0] * self.m_NumClasses
@@ -624,7 +626,7 @@ class Evaluation():
             temp = self.areaUnderPRC(i)
             if classCounts[i] > 0:
                 auprcTotal += temp * classCounts[i]
-        return auprcTotal / classCountSum
+        return Utils.division(auprcTotal,classCountSum)
 
     def num2ShortID(self,num:int,IDChars:List[str],IDWidth:int):
         ID=[]
@@ -635,8 +637,247 @@ class Evaluation():
             if num <0 :
                 break
         for i in range(i-1,-1,-1):
-            ID.append(' ')
+            ID.insert(0," ")
         return "".join(ID)
+
+    def toSummaryString(self,printComplexityStatistics:bool,title:str="=== Summary ===\n"):
+        if printComplexityStatistics and self.m_NoPriors:
+            printComplexityStatistics=False
+        text=title+'\n'
+        if self.m_WithClass > 0:
+            if self.m_ClassIsNominal:
+                displayCorrect="correct" in self.m_metricsToDisplay
+                displayIncorrect="incorrect" in self.m_metricsToDisplay
+                displayKappa="kappa" in self.m_metricsToDisplay
+
+                if displayCorrect:
+                    text+="Correctly Classified Instances     "
+                    text+=Utils.doubleToString(self.correct(), 12, 4) + "     "+ Utils.doubleToString(self.pctCorrect(), 12, 4) + " %\n"
+                if displayIncorrect:
+                    text+="Incorrectly Classified Instances   "
+                    text+=Utils.doubleToString(self.incorrect(), 12, 4) + "     "+ Utils.doubleToString(self.pctIncorrect(), 12, 4) + " %\n"
+                if displayKappa:
+                    text+="Kappa statistic                    "
+                    text+=Utils.doubleToString(self.kappa(), 12, 4) + "\n"
+                if printComplexityStatistics:
+                    displayKBRelative="kb relative" in self.m_metricsToDisplay
+                    displayKBInfo="kb information" in self.m_metricsToDisplay
+                    if displayKBRelative:
+                        text+="K&B Relative Info Score            "
+                        text+=Utils.doubleToString(self.KBRelativeInformation(), 12, 4)+ " %\n"
+                    if displayKBInfo:
+                        text+="K&B Information Score              "
+                        text+=Utils.doubleToString(self.KBInformation(), 12, 4)+ " bits"
+                        text+=Utils.doubleToString(self.KBMeanInformation(), 12, 4)+ " bits/instance\n"
+                #if self.m_pluginMetrics != null:
+            else:
+                displayCorrelation="correlation" in self.m_metricsToDisplay
+                if displayCorrelation:
+                    text+="Correlation coefficient            "
+                    text+=Utils.doubleToString(self.correlationCoefficient(), 12, 4)+ "\n"
+                # if self.m_pluginMetrics != null:
+            if printComplexityStatistics and self.m_ComplexityStatisticsAvailable:
+                displayComplexityOrder0="complexity 0" in self.m_metricsToDisplay
+                displayComplexityScheme="complexity scheme" in self.m_metricsToDisplay
+                displayComplexityImprovement="complexity improvement" in self.m_metricsToDisplay
+                if displayComplexityOrder0:
+                    text+="Class complexity | order 0         "
+                    text+=Utils.doubleToString(self.SFPriorEntropy(), 12, 4) + " bits"
+                    text+=Utils.doubleToString(self.SFMeanPriorEntropy(), 12, 4)+ " bits/instance\n"
+                if displayComplexityScheme:
+                    text+="Class complexity | scheme          "
+                    text+=Utils.doubleToString(self.SFSchemeEntropy(), 12, 4)+ " bits"
+                    text+=Utils.doubleToString(self.SFMeanSchemeEntropy(), 12, 4)+ " bits/instance\n"
+                if displayComplexityImprovement:
+                    text+="Complexity improvement     (Sf)    "
+                    text+=Utils.doubleToString(self.SFEntropyGain(), 12, 4) + " bits"
+                    text+=Utils.doubleToString(self.SFMeanEntropyGain(), 12, 4)+ " bits/instance\n"
+            displayMAE = "mae" in self.m_metricsToDisplay
+            displayRMSE = "rmse" in self.m_metricsToDisplay
+            displayRAE = "rae" in self.m_metricsToDisplay
+            displayRRSE = "rrse" in self.m_metricsToDisplay
+            if displayMAE:
+                text+="Mean absolute error                "
+                text+=Utils.doubleToString(self.meanAbsoluteError(), 12, 4) + "\n"
+            if displayRMSE:
+                text+="Root mean squared error            "
+                text+=Utils.doubleToString(self.rootMeanSquaredError(), 12, 4)+ "\n"
+            if not self.m_NoPriors:
+                if displayRAE:
+                    text+="Relative absolute error            "
+                    text+=Utils.doubleToString(self.relativeAbsoluteError(), 12, 4)+ " %\n"
+                if displayRRSE:
+                    text+="Root relative squared error        "
+                    text+=Utils.doubleToString(self.rootRelativeSquaredError(), 12, 4)+ " %\n"
+            if self.m_CoverageStatisticsAvailable:
+                displayCoverage="coverage" in self.m_metricsToDisplay
+                displayRegionSize="region size" in self.m_metricsToDisplay
+                if displayCoverage:
+                    text+="Coverage of cases "+ Utils.doubleToString(self.m_ConfLevel, 4, 2) + " level)     "
+                    text+=Utils.doubleToString(self.coverageOfTestCasesByPredictedRegions(), 12, 4) + " %\n"
+                if not self.m_NoPriors:
+                    if displayRegionSize:
+                        text+="Mean rel. region size ("+ Utils.doubleToString(self.m_ConfLevel, 4, 2) + " level) "
+                        text+=Utils.doubleToString(self.sizeOfPredictedRegions(), 12, 4) + " %\n"
+        if Utils.gr(self.unclassified(),0):
+            text+="UnClassified Instances             "
+            text+=Utils.doubleToString(self.unclassified(), 12, 4) + "     "+ Utils.doubleToString(self.pctUnclassified(), 12, 4) + " %\n"
+        text+="Total Number of Instances          "
+        text+=Utils.doubleToString(self.m_WithClass, 12, 4) + "\n"
+        if self.m_MissingClass>0:
+            text+="Ignored Class Unknown Instances            "
+            text+=Utils.doubleToString(self.m_MissingClass, 12, 4) + "\n"
+        return text
+
+    def unclassified(self):
+        return self.m_Unclassified
+
+    def pctUnclassified(self):
+        return 100*self.m_Unclassified/self.m_WithClass
+
+    def coverageOfTestCasesByPredictedRegions(self):
+        if not self.m_CoverageStatisticsAvailable:
+            return float('nan')
+        return 100*self.m_TotalCoverage/self.m_WithClass
+
+    def sizeOfPredictedRegions(self):
+        if self.m_NoPriors or not self.m_CoverageStatisticsAvailable:
+            return float('nan')
+        return 100*self.m_TotalSizeOfRegions/self.m_WithClass
+
+    def withClass(self):
+        return self.m_WithClass
+
+    def rootMeanSquaredError(self):
+        return math.sqrt(self.m_SumSqrErr/(self.m_WithClass-self.m_Unclassified))
+
+    def rootMeanPriorSquaredError(self):
+        if self.m_NoPriors:
+            return float('nan')
+        return math.sqrt(self.m_SumPriorSqrErr/self.m_WithClass)
+
+    def relativeAbsoluteError(self):
+        if self.m_NoPriors:
+            return float('nan')
+        return 100*self.meanAbsoluteError()/self.meanPriorAbsoluteError()
+
+    def rootRelativeSquaredError(self):
+        if self.m_NoPriors:
+            return float('nan')
+        return 100*self.rootMeanSquaredError()/self.rootMeanPriorSquaredError()
+
+    def meanAbsoluteError(self):
+        return self.m_SumAbsErr/(self.m_WithClass-self.m_Unclassified)
+
+    def meanPriorAbsoluteError(self):
+        if self.m_NoPriors:
+            return float('nan')
+        return self.m_SumPriorAbsErr/self.m_WithClass
+
+
+    def SFPriorEntropy(self):
+        if self.m_NoPriors or not self.m_ComplexityStatisticsAvailable:
+            return float('nan')
+        return self.m_SumPriorEntropy
+
+    def SFMeanPriorEntropy(self):
+        if self.m_NoPriors or not self.m_ComplexityStatisticsAvailable:
+            return float('nan')
+        return self.m_SumPriorEntropy/self.m_WithClass
+
+    def SFSchemeEntropy(self):
+        if not self.m_ComplexityStatisticsAvailable:
+            return float('nan')
+        return self.m_SumSchemeEntropy
+
+    def SFMeanSchemeEntropy(self):
+        if not self.m_ComplexityStatisticsAvailable:
+            return float('nan')
+        return self.m_SumSchemeEntropy/(self.m_WithClass-self.m_Unclassified)
+
+    def SFEntropyGain(self):
+        if self.m_NoPriors or not self.m_ComplexityStatisticsAvailable:
+            return float('nan')
+        return self.m_SumPriorEntropy-self.m_SumSchemeEntropy
+
+    def SFMeanEntropyGain(self):
+        if self.m_NoPriors or not self.m_ComplexityStatisticsAvailable:
+            return float('nan')
+        return (self.m_SumPriorEntropy-self.m_SumSchemeEntropy)/(self.m_WithClass-self.m_Unclassified)
+
+    def correlationCoefficient(self):
+        if not self.m_ClassIsNominal:
+            raise Exception("Can't compute correlation coefficient: "+ "class is nominal!")
+        correlation=0
+        varActual=self.m_SumSqrClass-self.m_SumClass*self.m_SumClass/(self.m_WithClass-self.m_Unclassified)
+        varPredicted=self.m_SumSqrPredicted-self.m_SumPredicted*self.m_SumPredicted/(self.m_WithClass-self.m_Unclassified)
+        varProd=self.m_SumClassPredicted-self.m_SumClass*self.m_SumClass/(self.m_WithClass-self.m_Unclassified)
+        if varActual*varPredicted<=0:
+            correlation=0
+        else:
+            correlation=varProd/math.sqrt(varActual*varPredicted)
+        return correlation
+
+    def KBInformation(self):
+        if not self.m_ClassIsNominal:
+            raise Exception("Can't compute K&B Info score: " + "class numeric!")
+        if self.m_NoPriors:
+            return float('nan')
+        return self.m_SumKBInfo
+
+    def KBRelativeInformation(self):
+        if not self.m_ClassIsNominal:
+            raise Exception("Can't compute K&B Info score: " + "class numeric!")
+        if self.m_NoPriors:
+            return float('nan')
+        return 100*self.KBMeanInformation()/self.priorEntropy()
+
+    def priorEntropy(self):
+        return self.SFMeanPriorEntropy()
+
+    def SFMeanPriorEntropy(self):
+        if self.m_NoPriors or not self.m_ComplexityStatisticsAvailable:
+            return float('nan')
+        return self.m_SumPriorEntropy/self.m_WithClass
+
+    def KBMeanInformation(self):
+        if not self.m_ClassIsNominal:
+            raise Exception("Can't compute K&B Info score: class numeric!")
+        if self.m_NoPriors:
+            return float('nan')
+        return self.m_SumKBInfo/(self.m_WithClass-self.m_Unclassified)
+
+    def correct(self):
+        return self.m_Correct
+
+    def pctCorrect(self):
+        return 100*self.m_Correct/self.m_WithClass
+
+    def incorrect(self):
+        return self.m_Incorrect
+
+    def pctIncorrect(self):
+        return 100*self.m_Incorrect/self.m_WithClass
+
+    def kappa(self):
+        sumRows=[0]*len(self.m_ConfusionMatrix)
+        sumColumns=[0]*len(self.m_ConfusionMatrix)
+        sumOfWeights=0
+        for i in range(len(self.m_ConfusionMatrix)):
+            for j in range(len(self.m_ConfusionMatrix)):
+                sumRows[i]+=self.m_ConfusionMatrix[i][j]
+                sumColumns[j]+=self.m_ConfusionMatrix[i][j]
+                sumOfWeights+=self.m_ConfusionMatrix[i][j]
+        correct=chanceAgreement=0
+        for i in range(len(self.m_ConfusionMatrix)):
+            chanceAgreement+=sumRows[i]*sumColumns[i]
+            correct+=self.m_ConfusionMatrix[i][i]
+        chanceAgreement/=sumOfWeights*sumOfWeights
+        correct/=sumOfWeights
+        if chanceAgreement <1:
+            return (correct-chanceAgreement)/(1-chanceAgreement)
+        else:
+            return 1
 
     @classmethod
     def getAllEvaluationMetricNames(cls):

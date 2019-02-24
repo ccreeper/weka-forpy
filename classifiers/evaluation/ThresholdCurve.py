@@ -21,7 +21,7 @@ class ThresholdCurve():
     LIFT_NAME = "Lift"
     THRESHOLD_NAME = "Threshold"
 
-    def getCurve(self,predictions:List[Prediction],classIndex:int):
+    def getCurve(self,predictions:List[Prediction],classIndex:int)->Instances:
         if len(predictions) == 0 or len(predictions[0].distribution()) <= classIndex:
             return None
         totPos=totNeg=0
@@ -37,7 +37,7 @@ class ThresholdCurve():
             else:
                 totNeg+=pred.weight()
         insts=self.makeHeader()
-        sorted=Utils.sort(probs)
+        sorted=Utils.sortDouble(probs)
         tc=TwoClassStats(totPos,totNeg,0,0)
         threshold=cumulativePos=cumulativeNeg=0
         for i in range(len(sorted)):
@@ -100,7 +100,7 @@ class ThresholdCurve():
             vals[count]=tc.getTruePositive()/expectedByChance
         count+=1
         vals[count]=prob
-        return Instance(1,vals)
+        return Instance(1.0,vals)
 
     def makeHeader(self)->Instances:
         fv=[]

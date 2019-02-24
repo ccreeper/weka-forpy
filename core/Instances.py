@@ -144,7 +144,7 @@ class Instances(object):
             for i in range(self.numAttributes()):
                 self.attribute(i).setIndex(i)
                 self.m_NamesToAttributeIndices.update({self.attribute(i).name():i})
-            self.m_Instances=[None]*a2
+            self.m_Instances=[]
 
     def __iter__(self):
         for instance in self.m_Instances:
@@ -471,3 +471,5 @@ class Instances(object):
         for i in range(self.numInstances()):
             result.append(self.instance(i).value(index))
         return result
+
+Utils.debugOut("Instances id:",id(Instances))

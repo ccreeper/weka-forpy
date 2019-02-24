@@ -1,7 +1,7 @@
 from typing import *
 
 from Attributes import Attribute
-from Instances import Instances
+from Instances import Instances,Instance
 from Option import Option
 from OptionHandler import OptionHandler
 from SingleIndex import SingleIndex

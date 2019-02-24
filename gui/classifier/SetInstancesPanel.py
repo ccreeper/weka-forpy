@@ -1,6 +1,6 @@
 from TestInstance import Ui_Form
 from PyQt5.QtWidgets import *
-from Instances import Instances
+from Instances import Instances,Instance
 from Attributes import Attribute
 from PyQt5.QtCore import *
 import arff

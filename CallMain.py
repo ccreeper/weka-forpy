@@ -5,7 +5,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from Instances import *
 from Preprocess import PreprocessPanel
 from ClassifierPanel import ClassifierPanel
 from Main import Ui_MainWindow

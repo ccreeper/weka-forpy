@@ -1,6 +1,6 @@
 from typing import *
 from OptionHandler import OptionHandler
-from Instances import Instances
+from Instances import Instances,Instance
 
 class AbstractPlotInstances(OptionHandler):
     def __init__(self):

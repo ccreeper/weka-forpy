@@ -1,4 +1,4 @@
-from Instances import Instances
+from Instances import Instances,Instance
 from typing import *
 import copy
 

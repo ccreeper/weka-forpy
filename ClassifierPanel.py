@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import *
 
 from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
 from GenericObjectEditor import GenericObjectEditor
-from Instances import Instances
+from Instances import Instances,Instance
 from OptionHandler import OptionHandler
 from PropertyPanel import PropertyPanel
 from Thread import Thread
@@ -58,6 +58,7 @@ class ClassifierPanel():
         self.m_selectedEvalMetrics.remove("Coverage")
         self.m_selectedEvalMetrics.remove("Region size")
         self.m_OutText.setReadOnly(True)
+        self.m_OutText.setLineWrapMode(QTextEdit.NoWrap)
         self.m_ClassifierEditor.setClassType(Classifier)
         self.m_ClassifierEditor.setValue(ZeroR())
         self.m_CVBut.setChecked(True)
@@ -201,10 +202,10 @@ class ClassifierPanel():
             trainTimeElapsed=time.time()-trainTimeStart
         outPutResult+="=== Classifier model (full training set) ===\n\n"
         outPutResult+=str(classifier)+"\n"
-        outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)
-
-        self.m_History.updateResult(name)
+        outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)+ " seconds\n\n"
+        self.m_History.updateResult(name,outPutResult)
         #TODO 1486 绘图
+        print("==========update Compelte=================")
 
         if testMode == 2:
             evaluation=Evaluation(inst)
@@ -268,10 +269,13 @@ class ClassifierPanel():
             elif testMode == 3:
                 mode="supplied test set"
             outPutResult+="\nTime taken to test model on " + mode + ": "+ Utils.doubleToString(testTimeElapsed / 1000.0, 2)+ " seconds\n\n"
+        outPutResult+=evaluation.toSummaryString(False)+'\n'
+        Utils.debugOut(outPutResult)
         if inst.attribute(classIndex).isNominal():
             outPutResult+=evaluation.toClassDetailsString()+'\n'
             outPutResult+=evaluation.toMatrixString()+'\n'
-        self.m_History.updateResult(name)
+        self.m_History.updateResult(name,outPutResult)
+
         self.mutex.lock()
         self.m_StartBut.setEnabled(True)
         self.m_StopBut.setEnabled(False)
@@ -280,8 +284,6 @@ class ClassifierPanel():
         print("RunFinished")
 
 
-
-    #TODO
     def setupEval(self,evaluation:Evaluation,classifier:Classifier,inst:Instances,plotInstances:ClassifierErrorsPlotInstances,onlySetPriors:bool):
         # if isinstance(classifier,InputMappedClassifier)...
         #else

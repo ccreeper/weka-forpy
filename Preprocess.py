@@ -2,7 +2,7 @@ import arff
 from AttributeSummaryPanel import AttributeSummaryPanel
 from AttributeVisualizationPanel import AttributeVisualizationPanel
 from InstanceSummaryPanel import InstanceSummaryPanel
-from Instances import *
+from Instances import Instances,Instance
 from PyQt5.QtWidgets import *
 from ViewerDialog import ViewerDialog
 from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel

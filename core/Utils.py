@@ -46,7 +46,7 @@ class Utils():
         if a1 is None:
             return str(round(number, a0))
         else:
-            tempString=cls.doubleToString(number,a0)
+            tempString=cls.doubleToString(number,a1)
             if a1 >= a0:
                 return tempString
             result=[]
@@ -242,6 +242,15 @@ class Utils():
         return newString
 
     @classmethod
+    def sortDouble(cls,arr:List):
+        index=cls.initialIndex(len(arr))
+        if len(arr)>1:
+            arr=arr[:]
+            cls.replaceMissingWithMAX_VALUE(arr)
+            cls.quickSort(arr,index,0,len(arr)-1)
+        return index
+
+    @classmethod
     def sort(cls,arr:List)->List:
         index=cls.initialIndex(len(arr))
         newIndex=[0]*len(arr)
@@ -384,3 +393,13 @@ class Utils():
                     i+=1
             return newIndex
         return index
+
+    @classmethod
+    def division(cls,numerator,denominator):
+        if denominator == 0 and numerator == 0:
+            return float('nan')
+        elif denominator == 0 and numerator > 0:
+            return float('inf')
+        elif denominator == 0 and numerator < 0:
+            return float('-inf')
+        return numerator/denominator
