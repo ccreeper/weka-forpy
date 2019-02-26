@@ -13,18 +13,25 @@ class SelectListDialog(QMainWindow,Ui_Dialog):
         super().setupUi(self)
         self.listView.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.selectBotton.clicked.connect(self.selectBtnClick)
+        self.m_Selection=[]
 
     def setList(self,li:List):
         slm=QStringListModel()
         slm.setStringList(li)
         self.listView.setModel(slm)
 
+    def isSelectionEmpty(self):
+        return len(self.m_Selection) == 0
+
+    def getSelectedIndices(self)->List:
+        return self.m_Selection
+
+    def isSelectedIndex(self,index:int):
+        return index in self.m_Selection
+
     def selectBtnClick(self):
-        res=[]
-        reply=QMessageBox.question(self,"Confirm...","确认删除所选的 "+str(len(self.listView.selectedIndexes()))+" 个属性？",QMessageBox.Yes | QMessageBox.No,QMessageBox.No)
-        if reply == QMessageBox.Yes:
-            for i in self.listView.selectedIndexes():
-                res.append(i.row()+1-len(res))
-            self.select_attributes_signal.emit(res)
-            self.close()
+        for i in self.listView.selectedIndexes():
+            self.m_Selection.append(i.row())
+        self.select_attributes_signal.emit(self.m_Selection)
+        self.close()
 

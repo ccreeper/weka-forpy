@@ -8,6 +8,7 @@ import clusterers.UpdateableClusterer
 from Instances import Instances,Instance
 from CapabilitiesIgnorer import CapabilitiesIgnorer
 from Attributes import Attribute
+import copy
 import importlib
 import sys
 
@@ -56,7 +57,7 @@ class Capabilities():
 
     def setOwner(self, value:CapabilitiesHandler):
         self.m_Owner = value
-        self.m_InterfaceDefinedCapabilities = set()
+        self.m_InterfaceDefinedCapabilities = set()     #type:Set[type]
         if self.m_Owner is not None:
             for c in self.INTERFACE_DEFINED_CAPABILITIES:
                 if isinstance(value, c):
@@ -79,6 +80,21 @@ class Capabilities():
         self.disable(CapabilityEnum.MISSING_CLASS_VALUES)
         self.disable(CapabilityEnum.NO_CLASS)
 
+    def assign(self,c:'Capabilities'):
+        for cap in CapabilityEnum:
+            if c.handles(cap):
+                self.enable(cap)
+            else:
+                self.disable(cap)
+            if c.hasDependency(cap):
+                self.enableDependency(cap)
+            else:
+                self.disableDependency(cap)
+        self.setMinimumNumberInstances(c.getMinimumNumberInstances())
+        self.m_InterfaceDefinedCapabilities=copy.deepcopy(c.m_InterfaceDefinedCapabilities)
+
+    def hasDependency(self,c:'Capability'):
+        return c in self.m_Dependencies
 
     def disableAllClassDependencies(self):
         for cap in CapabilityEnum:
@@ -349,7 +365,7 @@ class Capabilities():
     def getMinimumNumberInstances(self):
         return self.m_MinimumNumberInstances
 
-    def capabilities(self):
+    def capabilities(self)->Set:
         return self.m_Capabilities
 
     def getClassCapabilities(self):
@@ -360,10 +376,83 @@ class Capabilities():
                     result.m_Capabilities.add(cap)
         return result
 
-
+    @classmethod
+    def forInstances(cls,data:Instances,multi:bool)->'Capabilities':
+        result=Capabilities(None)
+        result.m_InterfaceDefinedCapabilities=set()
+        if data.classIndex() == -1:
+            result.enable(CapabilityEnum.NO_CLASS)
+        else:
+            if data.classAttribute().type() == Attribute.NOMINAL:
+                if data.classAttribute().numValues() == 1:
+                    result.enable(CapabilityEnum.UNARY_CLASS)
+                elif data.classAttribute().numValues() == 2:
+                    result.enable(CapabilityEnum.BINARY_CLASS)
+                else:
+                    result.enable(CapabilityEnum.NOMINAL_CLASS)
+            elif data.classAttribute().type() == Attribute.NUMERIC:
+                result.enable(CapabilityEnum.NUMERIC_CLASS)
+            elif data.classAttribute().type() == Attribute.STRING:
+                result.enable(CapabilityEnum.STRING_CLASS)
+            elif data.classAttribute().type() == Attribute.DATE:
+                result.enable(CapabilityEnum.DATE_CLASS)
+            else:
+                raise Exception("Unknown class attribute type '" + data.classAttribute().name() + "'!")
+            for i in range(data.numInstances()):
+                if data.instance(i).classIsMissing():
+                    result.enable(CapabilityEnum.MISSING_CLASS_VALUES)
+                    break
+        for i in range(data.numAttributes()):
+            if i == data.classIndex():
+                continue
+            if data.attribute(i).type() == Attribute.NOMINAL:
+                result.enable(CapabilityEnum.UNARY_ATTRIBUTES)
+                if data.attribute(i).numValues() == 2:
+                    result.enable(CapabilityEnum.BINARY_ATTRIBUTES)
+                elif data.attribute(i).numValues() > 2:
+                    result.enable(CapabilityEnum.NOMINAL_ATTRIBUTES)
+            elif data.attribute(i).type() == Attribute.NUMERIC:
+                result.enable(CapabilityEnum.NUMERIC_ATTRIBUTES)
+            elif data.attribute(i).type() == Attribute.DATE:
+                result.enable(CapabilityEnum.DATE_ATTRIBUTES)
+            elif data.attribute(i).type() == Attribute.STRING:
+                result.enable(CapabilityEnum.STRING_ATTRIBUTES)
+            else:
+                raise Exception("Unknown attribute type '"+ data.attribute(i).name() + "'!")
+        missing=False
+        for i in range(data.numInstances()):
+            inst=data.instance(i)
+            for n in range(data.numAttributes()):
+                if n == inst.classIndex():
+                    continue
+                if inst.isMissing(n):
+                    missing=True
+                    break
+            if missing:
+                result.enable(CapabilityEnum.MISSING_VALUES)
+                break
+        return result
 
     def handles(self,c:'CapabilityEnum')->bool:
         return c in self.m_Capabilities
+
+    def supportsMaybe(self,c:'Capabilities'):
+        for cap in CapabilityEnum:
+            if c.handles(cap) and not(self.handles(cap) or self.hasDependency(cap)):
+                return False
+        for cl in c.m_InterfaceDefinedCapabilities:
+            if cl not in self.m_InterfaceDefinedCapabilities:
+                return False
+        return True
+
+    def supports(self,c:'Capabilities'):
+        for cap in CapabilityEnum:
+            if c.handles(cap) and not self.handles(cap):
+                return False
+        for cl in c.m_InterfaceDefinedCapabilities:
+            if cl not in self.m_InterfaceDefinedCapabilities:
+                return False
+        return True
 
     def doNotCheckCapabilities(self):
         owner=self.getOwner()

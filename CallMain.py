@@ -1,6 +1,5 @@
 import cgitb
 import sys
-import arff
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *

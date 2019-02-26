@@ -2,6 +2,7 @@ import copy
 from configparser import ConfigParser
 from typing import *
 from PyQt5.QtCore import *
+from core.Capabilities import Capabilities,CapabilityEnum
 from PyQt5.QtWidgets import *
 from GOETreeNode import GOETreeNode
 from HierarchyPropertyParser import HierarchyPropertyParser
@@ -24,6 +25,7 @@ class GenericObjectEditor(QObject):
         self.m_CancelWasPressed = False
         self.m_treeNodeOfCurrentObject = None  # type:GOETreeNode
         self.m_ClassType=None       #type:type
+        self.m_CapabilitiesFilter=None  #type:Capabilities
         self.loadProperties()
 
     def setClassType(self, tp: type):
@@ -40,6 +42,9 @@ class GenericObjectEditor(QObject):
             print(PluginManager.PLUGINS)
         except BaseException:
             pass
+
+    def getCapabilitiesFilter(self):
+        return self.m_CapabilitiesFilter
 
     def getClassesFromProperties(self) -> Dict[str, HierarchyPropertyParser]:
         hpps = dict()
@@ -61,6 +66,11 @@ class GenericObjectEditor(QObject):
                 hpp.build(typeOption, ',')
                 hpps.update({root: hpp})
         return hpps
+
+    def setCapabilitiesFilter(self,value:Capabilities):
+        self.m_CapabilitiesFilter=Capabilities(None)
+        self.m_CapabilitiesFilter.assign(value)
+
 
     def sortClassesByRoot(self, classes: str) -> Dict[str, str]:
         if classes is None:

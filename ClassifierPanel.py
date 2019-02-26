@@ -6,30 +6,26 @@ from typing import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from Attributes import Attribute
 from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
 from GenericObjectEditor import GenericObjectEditor
-from Instances import Instances,Instance
+from Instances import Instances
 from OptionHandler import OptionHandler
 from PropertyPanel import PropertyPanel
+from ResultHistoryPanel import ResultHistoryPanel
+from SetInstancesPanel import SetInstancesPanel
 from Thread import Thread
 from Utils import Utils
-from Attributes import Attribute
-from classifier.ResultHistoryPanel import ResultHistoryPanel
-from classifier.SetInstancesPanel import SetInstancesPanel
 from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from classifiers.rules.ZeroR import ZeroR
 
-import random
-
 
 class ClassifierPanel():
-    def __init__(self,win:'CallMain.MainWindow'):
-        self.m_ClassifierEditor=GenericObjectEditor()
-        self.m_Explor=win
-        #TODO 中间条
-        # self.m_CEPanel
-        self.m_CEPanel=PropertyPanel(win,self.m_ClassifierEditor)
+    def __init__(self,win:'MainWindow'):
+        self.m_Explorer=win
+        self.m_Option=win.option_classifier
+        self.m_ChooseBut=win.choose_classifier
         self.m_OutText=win.outText              #type:QTextEdit
         self.m_CVBut=win.cross_radio            #type:QRadioButton
         self.m_TrainBut=win.train_radio         #type:QRadioButton
@@ -44,6 +40,9 @@ class ClassifierPanel():
         self.m_ClassCombo=win.classifier_combobox       #type:QComboBox
         # 结果列表
         self.m_History=win.resultList           #type:ResultHistoryPanel
+        self.m_ClassifierEditor=GenericObjectEditor()   #type:GenericObjectEditor
+        self.m_CEPanel=PropertyPanel(self,self.m_ClassifierEditor)  #type:PropertyPanel
+
         self.m_History.outtext_write_signal.connect(self.updateOutputText)
         self.m_selectedEvalMetrics=Evaluation.getAllEvaluationMetricNames() #type:List[str]
         self.m_TestClassIndex=-1
@@ -52,6 +51,12 @@ class ClassifierPanel():
 
     def updateOutputText(self,text:str):
         self.m_OutText.setText(text)
+
+    def getChooseBut(self):
+        return self.m_ChooseBut
+
+    def getOptionBut(self):
+        return self.m_Option
 
     #TODO 未完成
     def initalize(self):
@@ -94,12 +99,8 @@ class ClassifierPanel():
 
     def setTestSet(self):
         if self.m_SetTestFrame is None:
-            if self.m_Explor is not None:
-                preprocessPanel=self.m_Explor.getPreprocessPanel()
-            else:
-                raise Exception("We don't have access to a PreprocessPanel!")
             self.m_SetTestFrame=SetInstancesPanel(True,True)
-            self.m_SetTestFrame.property_changed_signal.connect(self.propertyChanged)
+            self.m_SetTestFrame.combobox_changed_signal.connect(self.propertyChanged)
         self.m_SetTestFrame.show()
 
     def propertyChanged(self,classIndex:int):
@@ -154,7 +155,7 @@ class ClassifierPanel():
             # if source is None:
             #     raise Exception("No user test set has been specified")
             if not inst.equalHeaders(userTestStructure):
-                QMessageBox.critical(self.m_Explor,"错误","测试数据集属性不同")
+                QMessageBox.critical(self.m_Explorer, "错误", "测试数据集属性不同")
         else:
             raise Exception("Unknown test mode")
         cname=classifier.__module__

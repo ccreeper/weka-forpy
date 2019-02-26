@@ -6,6 +6,7 @@ from Instances import Instances,Instance
 from PyQt5.QtWidgets import *
 from ViewerDialog import ViewerDialog
 from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel
+from copy import *
 
 
 class PreprocessPanel():

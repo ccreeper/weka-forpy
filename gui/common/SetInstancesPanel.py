@@ -8,7 +8,7 @@ import arff
 class SetInstancesPanel(QWidget,Ui_Form):
     NO_CLASS="No class"
     NO_SOURCE="None"
-    property_changed_signal = pyqtSignal(int)
+    combobox_changed_signal = pyqtSignal(int)
     def __init__(self,showZeroInstancesAsUnknown:bool=False,showClassComboBox:bool=False,parent=None):
         super().__init__(parent)
         super().setupUi(self)
@@ -22,6 +22,7 @@ class SetInstancesPanel(QWidget,Ui_Form):
         self.m_sumOfWeightsLab=self.weight_lab
         self.m_Instances=None           #type:Instances
         self.m_ClassComboBox=self.class_combobox        #type:QComboBox
+        self.m_ClassComboBox.setEnabled(showClassComboBox)
 
         self.m_showZeroInstancesAsUnknown=showZeroInstancesAsUnknown
         self.m_showClassComboBox=showClassComboBox
@@ -63,7 +64,7 @@ class SetInstancesPanel(QWidget,Ui_Form):
         if self.m_Instances is not None:
             if self.m_Instances.numAttributes() >= self.m_ClassComboBox.currentIndex():
                 self.m_Instances.setClassIndex(self.m_ClassComboBox.currentIndex()-1)
-                self.property_changed_signal.emit(self.getClassIndex())
+                self.combobox_changed_signal.emit(self.getClassIndex())
 
     def getClassIndex(self):
         return self.m_ClassComboBox.currentIndex()-1

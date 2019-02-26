@@ -2,15 +2,15 @@ import pickle
 import tempfile
 from typing import *
 
-from Attributes import Attribute
-from Instances import Instances, Instance
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+
+from Attributes import Attribute
+from Instances import Instances, Instance
 from SelectListDialog import SelectListDialog
 from TableWidget import TableWidget
 from Utils import Utils
-
 from gui.InsertInstanceDialog import InserInstanceDialog
 
 
@@ -344,8 +344,15 @@ class ArffPanel(QObject):
             li.append(self.model.getInstance().attribute(i).name())
         dialog.setList(li)
         dialog.show()
-        dialog.select_attributes_signal.connect(lambda l:self.model.deleteAttributes(l))
+        dialog.select_attributes_signal.connect(self.sureToDelete)
 
+    def sureToDelete(self,attrs:List):
+        reply = QMessageBox.question(self.m_Table, "Confirm...","确认删除所选的 " + str(len(attrs)) + " 个属性？",QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            indices=[]
+            for index in attrs:
+                indices.append(index+1-len(indices))
+            self.model.deleteAttributes(indices)
 
     def deleteAttributeEvent(self, columnIndex):
         if isinstance(columnIndex,int):

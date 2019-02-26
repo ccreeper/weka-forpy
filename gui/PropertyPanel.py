@@ -1,15 +1,13 @@
 from GenericObjectEditor import GenericObjectEditor,GOEPanel
-from Main import Ui_MainWindow
 from TreeNodeButton import TreeNodeButton
-from PyQt5.QtCore import *
 from typing import *
-#TODO
+
 class PropertyPanel():
-    def __init__(self,win:Ui_MainWindow,pe:GenericObjectEditor):
+    def __init__(self,tab,pe:GenericObjectEditor):
         self.m_Editor=pe
         self.m_PD=None                  #type:GOEPanel
-        self.m_ChooseBut=win.choose_classifier      #type:TreeNodeButton
-        self.m_OptionBut=win.option_classifier
+        self.m_ChooseBut=tab.getChooseBut()      #type:TreeNodeButton
+        self.m_OptionBut=tab.getOptionBut()
         self.m_OptionBut.setStyleSheet("text-align:left")
         self.m_OptionBut.setFlat(True)
         self.m_ChooseBut.clicked.connect(self.chooseClick)

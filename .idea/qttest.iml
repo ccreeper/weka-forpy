@@ -10,12 +10,12 @@
       <sourceFolder url="file://$MODULE_DIR$/filters2" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/filters/attribute1" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/filters/instance" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/filter/instance" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gui/ui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gui/promoteUI" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/filters/attribute" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/filter/attribute" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/filters" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/filter" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gui/common" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gui/designUI" isTestSource="false" />
