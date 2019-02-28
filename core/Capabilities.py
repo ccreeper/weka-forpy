@@ -377,7 +377,7 @@ class Capabilities():
         return result
 
     @classmethod
-    def forInstances(cls,data:Instances,multi:bool)->'Capabilities':
+    def forInstances(cls,data:Instances,multi:bool=False)->'Capabilities':
         result=Capabilities(None)
         result.m_InterfaceDefinedCapabilities=set()
         if data.classIndex() == -1:
@@ -507,4 +507,4 @@ class CapabilityEnum(Enum):
     MISSING_CLASS_VALUES = Capability(Capabilities.CLASS_CAPABILITY, "Missing class values")
     ONLY_MULTIINSTANCE = Capability(Capabilities.OTHER_CAPABILITY, "Only multi-Instance data")
 
-print('ID',id(CapabilityEnum.NUMERIC_ATTRIBUTES))
+print('Capabilites ID',id(CapabilityEnum.NUMERIC_ATTRIBUTES))

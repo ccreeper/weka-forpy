@@ -95,6 +95,12 @@ class Filter():
         self.bufferInput(instance)
         return False
 
+    def output(self):
+        if not self.m_OutputQueue.empty():
+            result=self.m_OutputQueue.get()
+            return result
+        return None
+
     def bufferInput(self,instance:Instance):
         if instance is not None:
             instance=instance.copy()
@@ -104,11 +110,13 @@ class Filter():
         return Instances(self.m_OutputFormat,0)
 
 
-    #TODO
     @classmethod
     def useFilter(cls,data:Instances,filter:'Filter'):
-        # for i in range(data.numInstances()):
-        #     filter.input(data.instance(i))
-        # newData=filter.getOutputFormat()
-        # processed=filter.
-        pass
+        for i in range(data.numInstances()):
+            filter.input(data.instance(i))
+        newData=filter.getOutputFormat()
+        processed=filter.output()
+        while processed is not None:
+            newData.add(processed)
+            processed=filter.output()
+        return newData

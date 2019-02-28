@@ -2,7 +2,7 @@ import copy
 from configparser import ConfigParser
 from typing import *
 from PyQt5.QtCore import *
-from core.Capabilities import Capabilities,CapabilityEnum
+from Capabilities import Capabilities,CapabilityEnum
 from PyQt5.QtWidgets import *
 from GOETreeNode import GOETreeNode
 from HierarchyPropertyParser import HierarchyPropertyParser
@@ -39,6 +39,9 @@ class GenericObjectEditor(QObject):
             kvs = cf.items("Classifier")
             for item in kvs:
                 PluginManager.addPlugin("Classifier", item[1])
+            kvs= cf.items("Clusterer")
+            for item in kvs:
+                PluginManager.addPlugin("Clusterer",item[1])
             print(PluginManager.PLUGINS)
         except BaseException:
             pass

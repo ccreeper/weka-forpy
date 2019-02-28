@@ -1,6 +1,6 @@
 from classifiers.Classifier import Classifier
 from classifiers.AbstractClassifier import AbstractClassifier
-from core.Capabilities import Capabilities,CapabilityEnum
+from Capabilities import Capabilities,CapabilityEnum
 from Attributes import Attribute
 from Instances import Instances,Instance
 from Utils import Utils
@@ -8,6 +8,8 @@ from typing import *
 
 
 class ZeroR(AbstractClassifier):
+    propertyList=AbstractClassifier.propertyList[:]
+    methodList=AbstractClassifier.methodList[:]
     def __init__(self):
         super().__init__()
         self.m_ClassValue=0

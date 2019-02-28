@@ -50,6 +50,17 @@ class Instance():
     def weight(self):
         return self.m_Weight
 
+    def index(self,pos:int):
+        return pos
+
+    def isMissingSparse(self,index:int):
+        if Utils.isMissingValue(self.valueSparse(index)):
+            return True
+        return False
+
+    def valueSparse(self,index:int):
+        return self.m_AttValues[index]
+
     def stringValue(self,index:int):
         return self.m_Dataset.attribute(index).value(self.value(index))
 
@@ -87,6 +98,9 @@ class Instance():
 
     def numClasses(self):
         return self.m_Dataset.numClasses()
+
+    def numValues(self):
+        return len(self.m_AttValues)
 
 
     #insertAttributeAt
@@ -144,7 +158,7 @@ class Instances(object):
             for i in range(self.numAttributes()):
                 self.attribute(i).setIndex(i)
                 self.m_NamesToAttributeIndices.update({self.attribute(i).name():i})
-            self.m_Instances=[]
+            self.m_Instances=[]     #type:List[Instance]
 
     def __iter__(self):
         for instance in self.m_Instances:
@@ -187,8 +201,9 @@ class Instances(object):
         return self.m_Instances[index]
 
     def randomize(self,randSeed:int):
+        random.seed(randSeed)
         for j in range(self.numInstances()-1,0,-1):
-            self.swap(j,random.randint(0,j+1))
+            self.swap(j,random.randint(0,j))
 
     def swap(self,i:int,j:int):
         inst=self.m_Instances[i]

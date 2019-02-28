@@ -1,19 +1,21 @@
 from typing import *
 from Instances import Instances,Instance
 from GenericObjectEditor import GenericObjectEditor
-from CallMain import MainWindow
+# from CallMain import MainWindow
 from ResultHistoryPanel import ResultHistoryPanel
 from PropertyPanel import PropertyPanel
+from clusterers.SimpleKMeans import SimpleKMeans
 from PyQt5.QtWidgets import *
 from filters.attribute.Remove import Remove
 from CapabilitiesHandler import CapabilitiesHandler
 from SetInstancesPanel import SetInstancesPanel
-from core.Capabilities import Capabilities,CapabilityEnum
+from Capabilities import Capabilities,CapabilityEnum
+from clusterers.Clusterer import Clusterer
 from Thread import Thread
 
 
 class ClustererPanel():
-    def __init__(self,win:MainWindow):
+    def __init__(self,win:'MainWindow'):
         self.m_Explorer=win
         self.m_OutText=win.outText_cluster          #type:QTextEdit
         self.m_History=win.resultList_cluster   #type:ResultHistoryPanel
@@ -37,8 +39,8 @@ class ClustererPanel():
         self.m_StartBut.setEnabled(False)
         self.m_StopBut.setEnabled(False)
 
-        # self.m_ClustererEditor.setClassType(Classifier)
-        # self.m_ClustererEditor.setValue(ZeroR())
+        self.m_ClustererEditor.setClassType(Clusterer)
+        self.m_ClustererEditor.setValue(SimpleKMeans())
 
         self.m_TrainBut.clicked.connect(self.updateRadioLinks)
         self.m_TestSplitBut.clicked.connect(self.updateRadioLinks)

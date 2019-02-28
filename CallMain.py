@@ -5,6 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from Preprocess import PreprocessPanel
+from ClustererPanel import ClustererPanel
 from ClassifierPanel import ClassifierPanel
 from Main import Ui_MainWindow
 
@@ -18,6 +19,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         super().setupUi(self)
         self.preprocessPanel=PreprocessPanel(self)
         self.classifierPanel=ClassifierPanel(self)
+        self.clusterPanel=ClustererPanel(self)
         self.initSetting()
 
     def initSetting(self):

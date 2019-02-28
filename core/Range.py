@@ -15,6 +15,13 @@ class Range():
             self.m_Upper=newUpper
             self.setFlags()
 
+    def isInRange(self,index:int):
+        if self.m_Upper == -1:
+            raise  Exception("No upper limit has been specified for range")
+        if self.m_Invert:
+            return not self.m_SelectFlags[index]
+        return self.m_SelectFlags[index]
+
     def getSelection(self):
         if self.m_Upper == -1:
             raise Exception("No upper limit has been specified for range")

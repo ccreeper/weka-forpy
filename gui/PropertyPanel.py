@@ -15,7 +15,6 @@ class PropertyPanel():
         self.m_Editor.classifier_changed.connect(self.classifierChangedEvent)
 
     def chooseClick(self):
-
         self.m_ChooseBut.setTree(self.m_Editor.getTreeMenu())
         self.m_ChooseBut.showPopupMenu()
 
