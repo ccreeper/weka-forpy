@@ -28,10 +28,6 @@ class PropertySheetPanel(QWidget):
         # 忽略类型，直接固定的接口，接口包括返回所有属性name的List和所有方法name的List
         self.m_Properties = target.getAllProperties()
         self.m_Methods = target.getAllMethods()
-        propOrdering = [0] * len(self.m_Properties)
-        for i in range(len(self.m_Properties)):
-            propOrdering[i] = float("inf")
-        sortedPropOrderings = Utils.sort(propOrdering)
 
         def setValue(name: str,attrType:type):
             if attrType is bool:
@@ -46,7 +42,7 @@ class PropertySheetPanel(QWidget):
             return callSet
 
         for i in range(len(self.m_Properties)):
-            name = self.m_Properties[sortedPropOrderings[i]]
+            name = self.m_Properties[i]
             try:
                 property = getattr(target, name)
             except AttributeError:

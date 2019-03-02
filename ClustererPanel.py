@@ -1,10 +1,13 @@
 from typing import *
 from Instances import Instances,Instance
+from ClustererAssignmentsPlotInstances import ClustererAssignmentsPlotInstances
 from GenericObjectEditor import GenericObjectEditor
 # from CallMain import MainWindow
 from ResultHistoryPanel import ResultHistoryPanel
+from filters.Filter import Filter
 from PropertyPanel import PropertyPanel
 from clusterers.SimpleKMeans import SimpleKMeans
+from clusterers.ClusterEvaluation import ClusterEvaluation
 from PyQt5.QtWidgets import *
 from filters.attribute.Remove import Remove
 from CapabilitiesHandler import CapabilitiesHandler
@@ -12,6 +15,11 @@ from SetInstancesPanel import SetInstancesPanel
 from Capabilities import Capabilities,CapabilityEnum
 from clusterers.Clusterer import Clusterer
 from Thread import Thread
+from OptionHandler import OptionHandler
+from PyQt5.QtCore import *
+from Utils import Utils
+import time
+import copy
 
 
 class ClustererPanel():
@@ -47,16 +55,112 @@ class ClustererPanel():
         self.m_SetTestBut.clicked.connect(self.setTestSet)
         # self.m_StartBut.clicked.connect(self.startClassifier)
 
-    def startClassifier(self):
-        pass
-        # if self.m_RunThread is None:
-        #     self.mutex.lock()
-        #     self.m_StartBut.setEnabled(False)
-        #     self.m_StopBut.setEnabled(True)
-        #     self.mutex.unlock()
-        #     self.m_RunThread=Thread(target=self.threadClassifierRun)
-        #     self.m_RunThread.setPriority(QThread.LowPriority)
-        #     self.m_RunThread.start()
+    def startClusterer(self):
+        if self.m_RunThread is None:
+            self.m_StartBut.setEnable(False)
+            self.m_StopBut.setEnabled(True)
+            self.m_RunThread=Thread(target=self.clusterRunThread)
+            self.m_RunThread.setPriority(QThread.LowPriority)
+            self.m_RunThread.start()
+
+    def clusterRunThread(self):
+        self.m_CLPanel.addToHistory()
+        inst=Instances(self.m_Instances)
+        inst.setClassIndex(-1)
+        plotInstances=ClustererAssignmentsPlotInstances()
+        plotInstances.setClusterer(self.m_ClustererEditor.getValue())
+        userTest=None
+        if self.m_SetTestFrame is not None:
+            if self.m_SetTestFrame.getInstances() is not None:
+                userTest=Instances(self.m_SetTestFrame.getInstances())
+        testMode=0
+        clusterer=self.m_ClustererEditor.getValue()
+        outBuff=""
+        name=time.strftime("%H:%M:%S - ")
+        cname=clusterer.__module__
+        if cname.startswith("clusterers."):
+            name+=cname[len("clusterers."):]
+        else:
+            name+=cname
+        cmd=self.m_ClustererEditor.getValue().__module__
+        if self.m_TrainBut.isChecked():
+            testMode=0
+        elif self.m_TestSplitBut.isChecked():
+            testMode=1
+            if userTest is None:
+                raise Exception("No user test set has been opened")
+            if not inst.equalHeaders(userTest):
+                raise Exception("Train and test set are not compatible\n"+ inst.equalHeadersMsg(userTest))
+        else:
+            raise Exception("Unknown test mode")
+        trainInst=Instances(inst)
+        outBuff+="=== Run information ===\n\n"
+        outBuff+="Scheme:       " + cname
+        if isinstance(clusterer,OptionHandler):
+            o=clusterer.getOptions()
+            outBuff+=" " + Utils.joinOptions(o)
+        outBuff+="\n"
+        outBuff+="Relation:     " + inst.relationName() + '\n'
+        outBuff+="Instances:    " + str(inst.numInstances()) + '\n'
+        outBuff+="Attributes:   " + str(inst.numAttributes()) + '\n'
+        if inst.numAttributes() < 100:
+            for i in range(inst.numAttributes()):
+                outBuff+="              " + inst.attribute(i).name()+ '\n'
+        else:
+            outBuff+="              [list of attributes omitted]\n"
+        outBuff+="Test mode:    "
+        if testMode == 0:
+            outBuff+="evaluate on training data\n"
+        elif testMode == 1:
+            "user supplied test set: "+ str(userTest.numInstances()) + " instances\n"
+        outBuff+='\n'
+        self.m_History.addResult(name,outBuff)
+        self.m_History.setSingle(name)
+        trainTimeStart=time.time()
+        if isinstance(clusterer,Clusterer):
+            clusterer.buildClusterer(self.removeClass(trainInst))
+        trainTimeElapsed=time.time()-trainTimeStart
+        outBuff+="\n=== Clustering model (full training set) ===\n\n"
+        outBuff+=str(clusterer)+'\n'
+        outBuff+="\nTime taken to build model (full training data) : "\
+                + Utils.doubleToString(trainTimeElapsed / 1000.0, 2)\
+                + " seconds\n\n"
+        self.m_History.updateResult(name,outBuff)
+        fullClusterer=copy.deepcopy(clusterer)
+        evaluation=ClusterEvaluation()
+        evaluation.setClusterer(clusterer)
+        if testMode == 0:
+            evaluation.evaluateClusterer(trainInst,False)
+            plotInstances.setInstances(inst)
+            plotInstances.setClusterEvaluation(evaluation)
+            outBuff+="=== Model and evaluation on training set ===\n\n"
+        elif testMode == 1:
+            userTestT=Instances(userTest)
+            evaluation.evaluateClusterer(userTestT,False)
+            plotInstances.setInstances(userTest)
+            plotInstances.setClusterEvaluation(evaluation)
+            outBuff+="=== Evaluation on test set ===\n"
+        else:
+            raise Exception("Test mode not implemented")
+        outBuff+=evaluation.clusterResultsToString()
+        outBuff+='\n'
+        self.m_History.updateResult(name,outBuff)
+
+        #TODO right-click visizalition
+        if plotInstances is not None and plotInstances.canPlot(True):
+            pass
+
+    def removeClass(self,inst:Instances):
+        af=Remove()
+        if inst.classIndex() < 0:
+            retI=inst
+        else:
+            af.setAttributeIndices("" + str(inst.classIndex() + 1))
+            af.setInvertSelection(False)
+            af.setInputFormat(inst)
+            retI=Filter.useFilter(inst,af)
+        return retI
+
 
     def getOptionBut(self):
         return self.m_Option

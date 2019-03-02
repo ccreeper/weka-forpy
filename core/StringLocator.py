@@ -11,3 +11,9 @@ class StringLocator(AttributeLocator):
             super().__init__(data,Attribute.STRING,a0,a1)
         elif isinstance(a0,List) and a1 is None:
             super().__init__(data,Attribute.STRING,a0)
+
+    def getAttributeIndices(self):
+        return self.m_Indices
+
+    def getAllowedIndices(self):
+        return self.m_AllowedIndices

@@ -7,6 +7,7 @@ from Stats import Stats
 from Utils import Utils
 
 from core.AttributeStats import AttributeStats
+import copy
 import random
 
 class Instance():
@@ -28,6 +29,38 @@ class Instance():
                 self.m_AttValues.append(Utils.missingValue())
             self.m_Weight=1
             self.m_Dataset=None
+
+    def __str__(self):
+        return self.toStringMaxDecimalDigits(6)
+
+    def toStringMaxDecimalDigits(self,afterDecimalPoint:int):
+        text=self.toStringNoWeight(afterDecimalPoint)
+        return text
+
+    def toStringNoWeight(self,afterDecimalPoint:int=None):
+        text=""
+        if afterDecimalPoint is None:
+            return self.toStringNoWeight(6)
+        for i in range(len(self.m_AttValues)):
+            if i > 0:
+                text+=','
+            text+=self.toString(self.toString(i,afterDecimalPoint))
+        return text
+
+    def toString(self,attIndex:int,afterDecimalPoint:int):
+        text=""
+        if self.isMissing(attIndex):
+            text+="?"
+        else:
+            if self.m_Dataset is None:
+                text+=Utils.doubleToString(self.value(attIndex),afterDecimalPoint)
+            else:
+                if self.m_Dataset.attribute(attIndex).type() == Attribute.NUMERIC:
+                    text+=Utils.doubleToString(self.value(attIndex),afterDecimalPoint)
+                else:
+                    text+=Utils.quote(self.stringValue(attIndex))
+        return text
+
 
     def setDataset(self,inst:'Instances'):
         self.m_Dataset=inst
@@ -254,6 +287,23 @@ class Instances(object):
         for key,val in map.items():
             result.addDistinct(key,val[0],val[1])
         return result
+
+    def stringFreeStructure(self):
+        newAtts=[]
+        for att in self.m_Attributes:
+            if att.type() == Attribute.STRING:
+                newAtts.append(Attribute(att.name(),None,att.index()))
+        if len(newAtts) == 0:
+            return Instances(self,0)
+        atts=copy.deepcopy(self.m_Attributes)
+        for att in newAtts:
+            atts[att.index()]=att
+        result=Instances(self,0)
+        result.m_Attributes=atts
+        return result
+
+    def delete(self):
+        self.m_Instances=[]
 
     def createInstance(self,data:List)->Instance:
         result=[]

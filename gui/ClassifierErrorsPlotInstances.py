@@ -24,8 +24,6 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
         self.m_MinimumPlotSizeNumeric=1
         self.m_MaximumPlotSizeNumeric=20
 
-    def setInstances(self,value:Instances):
-        self.m_Instances=value
 
     def setClassifier(self,value:Classifier):
         self.m_Classifier=value

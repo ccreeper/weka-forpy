@@ -108,6 +108,16 @@ class Utils():
             cls.quickSort(array,index,left,center-1)
             cls.quickSort(array,index,center+1,right)
 
+    @classmethod
+    def quote(cls,string:str):
+        quote=False
+        if '\n' in string or '\r' in string or "'" in string or '"' in string or '\\' in string or \
+            '\t' in string or '%' in string or '\u001E' in string :
+            string=cls.backQuoteChars(string)
+            quote=True
+        if quote or '{' in string or '}' in string or ',' in string or string=="?" or ' ' in string or string == "":
+            string="'"+string+"'"
+        return string
 
     @classmethod
     def conditionalSwap(cls,array:List[float],index:List[int],left:int,right:int):
@@ -254,8 +264,6 @@ class Utils():
     def sort(cls,arr:List)->List:
         index=cls.initialIndex(len(arr))
         newIndex=[0]*len(arr)
-        helpIndex=[]
-        numEqual=0
         cls.quickSort(arr,index,0,len(arr)-1)
         i=0
         while i<len(index):

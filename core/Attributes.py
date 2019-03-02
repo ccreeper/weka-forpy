@@ -33,7 +33,7 @@ class Attribute():
         elif isinstance(a0,str) and isinstance(a1,int):
             self.__init__(name,a0)
             self.m_Index=a1
-        elif isinstance(a0,list) and isinstance(a1,int):
+        elif (isinstance(a0,list) or a0 is None) and isinstance(a1,int):
             self.__init__(name,a0)
             self.m_Index=a1
 

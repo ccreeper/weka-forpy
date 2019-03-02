@@ -7,6 +7,7 @@ from filters.Filter import Filter
 from EuclideanDistance import EuclideanDistance
 from Utils import Utils
 from classifiers.rules.DecisionTableHashKey import DecisionTableHashKey
+import math
 import random
 
 class SimpleKMeans(RandomizableClusterer):
@@ -39,6 +40,130 @@ class SimpleKMeans(RandomizableClusterer):
         self.m_ClusterSizes=None        #type:List[float]
         self.m_squaredErrors=None       #type:List[float]
         self.m_DistanceFunction=EuclideanDistance()
+
+    def __str__(self):
+        if self.m_ClusterCentroids is None:
+            return "No clusterer built yet!"
+        maxAttWidth=0
+        maxWidth=0
+        containsNumberic=False
+        for i in range(self.NumClusters):
+            for j in range(self.m_ClusterCentroids.numAttributes()):
+                if len(self.m_ClusterCentroids.attribute(j).name())>maxAttWidth:
+                    maxAttWidth=len(self.m_ClusterCentroids.attribute(j).name())
+                if self.m_ClusterCentroids.attribute(j).isNumeric():
+                    containsNumberic=True
+                    width=math.log(math.fabs(self.m_ClusterCentroids.instance(i).value(j)))/math.log(10)
+                    if width<0:
+                        width=1
+                    width+=6
+                    if int(width) > maxWidth:
+                        maxWidth=int(width)
+        for i in range(self.m_ClusterCentroids.numAttributes()):
+            if self.m_ClusterCentroids.attribute(i).isNominal():
+                a=self.m_ClusterCentroids.attribute(i)
+                for j in range(self.m_ClusterCentroids.numInstances()):
+                    val=a.value(int(self.m_ClusterCentroids.instance(j).value(i)))
+                    if len(val)>maxWidth:
+                        maxWidth=len(val)
+                for j in range(a.numValues()):
+                    val=a.value(j)+" "
+                    if len(val)>maxAttWidth:
+                        maxAttWidth=len(val)
+        for m_ClusterSize in self.m_ClusterSizes:
+            size="("+str(m_ClusterSize)+")"
+            if len(size)>maxWidth:
+                maxWidth=len(size)
+        plusMinus="+/-"
+        maxAttWidth+=2
+        if maxAttWidth<len("Attribute")+2:
+            maxAttWidth=len("Attribute")+2
+        if maxWidth<len("Full Data"):
+            maxWidth=len("Full Data")+1
+        if maxWidth<len("missing"):
+            maxWidth=len("missing")+1
+        temp="\nkMeans\n======\n"
+        temp+="\nNumber of iterations: " + str(self.m_Iterations)
+        if not self.m_FastDistanceCalc:
+            temp+='\n'
+            temp+="Within cluster sum of squared errors: "+ str(sum(self.m_squaredErrors))
+        temp+="\n\nInitial starting points (random):\n"
+        temp+='\n'
+        for i in range(self.m_initialStartPoints.numInstances()):
+            temp+="Cluster " + str(i) + ": " + str(self.m_initialStartPoints.instance(i))+"\n"
+        temp+="\nMissing values globally replaced with mean/mode"
+        temp+="\n\nFinal cluster centroids:\n"
+        temp+=self.pad("Cluster#", " ", (maxAttWidth + (maxWidth * 2 + 2))- len("Cluster#"), True)
+        temp+='\n'
+        temp+=self.pad("Attribute", " ", maxAttWidth - len("Attribute"), False)
+        temp+=self.pad("Full Data", " ", maxWidth + 1 - len("Full Data"), True)
+        for i in range(self.NumClusters):
+            clustNum=str(i)
+            temp+=self.pad(clustNum, " ", maxWidth + 1 - len(clustNum), True)
+        temp+='\n'
+        cSize="(" + str(sum(self.m_ClusterSizes)) + ")"
+        temp+=self.pad(cSize, " ", maxAttWidth + maxWidth + 1 - len(cSize),True)
+        for i in range(self.NumClusters):
+            cSize="(" + str(self.m_ClusterSizes[i]) + ")"
+            temp+=self.pad(cSize, " ", maxWidth + 1 - len(cSize), True)
+        temp+='\n'
+        temp+=self.pad("", "=",maxAttWidth+ (maxWidth * (self.m_ClusterCentroids.numInstances() + 1)
+                    + self.m_ClusterCentroids.numInstances() + 1), True)
+        temp+='\n'
+        for i in range(self.m_ClusterCentroids.numAttributes()):
+            attName=self.m_ClusterCentroids.attribute(i).name()
+            temp+=attName
+            for j in range(maxAttWidth-len(attName)):
+                temp+=" "
+            if self.m_ClusterCentroids.attribute(i).isNominal():
+                if self.m_FullMeansOrMediansOrModes[i] == -1:
+                    valMeanMode=self.pad("missing", " ", maxWidth + 1 - len("missing"), True)
+                else:
+                    strVal=self.m_ClusterCentroids.attribute(i).value(int(self.m_FullMeansOrMediansOrModes[i]))
+                    valMeanMode=self.pad(strVal," ",maxWidth+1-len(strVal),True)
+            else:
+                if math.isnan(self.m_FullMeansOrMediansOrModes[i]):
+                    valMeanMode=self.pad("missing", " ", maxWidth + 1 - len("missing"), True)
+                else:
+                    strVal=Utils.doubleToString(self.m_FullMeansOrMediansOrModes[i],maxWidth,4).strip()
+                    valMeanMode=self.pad(strVal," ",maxWidth+1-len(strVal),True)
+            temp+=valMeanMode
+            for j in range(self.NumClusters):
+                if self.m_ClusterCentroids.attribute(i).isNominal():
+                    if self.m_ClusterCentroids.instance(j).isMissing(i):
+                        valMeanMode=self.pad("missing", " ", maxWidth + 1 - len("missing"), True)
+                    else:
+                        strVal=self.m_ClusterCentroids.attribute(i).value(int(self.m_ClusterCentroids.instance(j).value(i)))
+                        valMeanMode=self.pad(strVal," ",maxWidth+1-len(strVal),True)
+                else:
+                    if self.m_ClusterCentroids.instance(j).isMissing(i):
+                        valMeanMode=self.pad("missing", " ", maxWidth + 1 - len("missing"), True)
+                    else:
+                        strVal=Utils.doubleToString(self.m_ClusterCentroids.instance(j).value(i),maxWidth,4).strip()
+                        valMeanMode=self.pad(strVal," ",maxWidth+1-len(strVal),True)
+                temp+=valMeanMode
+            temp+='\n'
+        temp+='\n\n'
+        return temp
+
+    def clusterInstance(self,instance:Instance):
+        self.m_ReplaceMissingFilter.input(instance)
+        self.m_ReplaceMissingFilter.batchFinished()
+        inst=self.m_ReplaceMissingFilter.output()
+        return self.clusterProcessedInstance(inst,False,True)
+
+    def pad(self,source:str,padChar:str,length:int,leftPad:bool):
+        temp=""
+        if leftPad:
+            for i in range(length):
+                temp+=padChar
+            temp+=source
+        else:
+            temp+=source
+            for i in range(length):
+                temp+=padChar
+        return temp
+
 
     def getCapabilities(self)->Capabilities:
         result=super().getCapabilities()

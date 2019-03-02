@@ -18,6 +18,7 @@ class Filter():
         self.m_FirstBatchDone=False
         self.m_Debug=False
         self.m_DoNotCheckCapabilities=False
+        self.m_InputStringAtts=None     #type:StringLocator
 
     def isNewBatch(self):
         return self.m_NewBatch
@@ -32,7 +33,7 @@ class Filter():
     def setInputFormat(self,instanceInfo:Instances):
         self.testInputFormat(instanceInfo)
         self.m_InputFormat=instanceInfo.stringFreeStructure()
-        self.m_OutputFormat=None
+        self.m_OutputFormat=None        #type:Instances
         self.m_OutputQueue=Queue()
         self.m_NewBatch=True
         self.m_FirstBatchDone=False
@@ -95,7 +96,31 @@ class Filter():
         self.bufferInput(instance)
         return False
 
-    def output(self):
+    def batchFinished(self):
+        if self.m_InputFormat is None:
+            raise Exception("No input instance format defined")
+        self.flushInput()
+        self.m_NewBatch=True
+        self.m_FirstBatchDone=True
+        if self.m_OutputQueue.empty():
+            if len(self.m_OutputStringAtts.getAttributeIndices())>0:
+                self.m_OutputFormat=self.m_OutputFormat.stringFreeStructure()
+                self.m_OutputStringAtts=StringLocator(self.m_OutputFormat,self.m_OutputStringAtts.getAllowedIndices())
+        return self.numPendingOutput() != 0
+
+    def numPendingOutput(self):
+        if self.m_OutputFormat is None:
+            raise Exception("No output instance format defined")
+        return self.m_OutputQueue.qsize()
+
+    def flushInput(self):
+        if len(self.m_InputStringAtts.getAttributeIndices())>0:
+            self.m_InputFormat=self.m_InputFormat.stringFreeStructure()
+            self.m_InputStringAtts=StringLocator(self.m_InputFormat,self.m_InputStringAtts.getAllowedIndices())
+        else:
+            self.m_InputFormat.delete()
+
+    def output(self)->Instance:
         if not self.m_OutputQueue.empty():
             result=self.m_OutputQueue.get()
             return result

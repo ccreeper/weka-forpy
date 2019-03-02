@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from ViewerDialog import ViewerDialog
 from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel
 from copy import *
-
+from Utils import Utils
 
 class PreprocessPanel():
     def __init__(self,win:'MainWindow'):
