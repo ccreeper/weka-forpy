@@ -4,6 +4,8 @@ from typing import *
 from Capabilities import Capabilities,CapabilityEnum
 from StringLocator import StringLocator
 from queue import Queue
+from Utils import Utils
+import copy
 
 from core.OptionHandler import OptionHandler
 
@@ -37,6 +39,7 @@ class Filter():
         self.m_OutputQueue=Queue()
         self.m_NewBatch=True
         self.m_FirstBatchDone=False
+        self.initInputLocators(self.m_InputFormat,None)
         return False
 
     def testInputFormat(self,instanceInfo:Instances):
@@ -75,11 +78,32 @@ class Filter():
             self.m_OutputFormat=None
         self.m_OutputQueue=Queue()
 
+    def push(self,instance:Instance,copyInstance:bool):
+        if instance is not None:
+            if instance.dataset() is not None:
+                if copyInstance:
+                    instance=copy.deepcopy(instance)
+                self.copyValues(instance,False)
+            instance.setDataset(self.m_OutputFormat)
+            self.m_OutputQueue.put(instance)
+
+    def copyValues(self,instance:Instance,isInput:bool):
+        if isInput:
+            StringLocator.copyStringValues(instance,self.m_InputFormat,self.m_InputStringAtts)
+        else:
+            StringLocator.copyStringValues(instance,self.m_OutputFormat,self.m_OutputStringAtts)
+
     def initOutputLocators(self,data:Instances,indices:List):
         if indices is None:
             self.m_OutputStringAtts=StringLocator(data)
         else:
             self.m_OutputStringAtts=StringLocator(data,indices)
+
+    def getInputFormat(self):
+        return self.m_InputFormat
+
+    def resetQueue(self):
+        self.m_OutputQueue=Queue()
 
     def initInputLocators(self,data:Instances,indices:List):
         if indices is None:
@@ -131,7 +155,9 @@ class Filter():
             instance=instance.copy()
             self.m_InputFormat.add(instance)
 
+
     def getOutputFormat(self):
+        print("output format num instances:",self.m_OutputFormat.numInstances())
         return Instances(self.m_OutputFormat,0)
 
 
@@ -139,7 +165,9 @@ class Filter():
     def useFilter(cls,data:Instances,filter:'Filter'):
         for i in range(data.numInstances()):
             filter.input(data.instance(i))
+        filter.batchFinished()
         newData=filter.getOutputFormat()
+        Utils.debugOut("Queue size:",filter.m_OutputQueue.qsize())
         processed=filter.output()
         while processed is not None:
             newData.add(processed)

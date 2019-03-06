@@ -41,6 +41,10 @@ class MainWindow(QMainWindow,Ui_MainWindow):
     def getClassiferPanel(self):
         return self.classifierPanel
 
+    def getClustererPanel(self):
+        return self.clusterPanel
+
+
 
 if __name__ == '__main__':
     cgitb.enable(format='text')

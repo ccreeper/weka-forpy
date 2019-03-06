@@ -96,16 +96,26 @@ class Attribute():
     def setWeight(self,value:float):
         self.m_Weight=value
 
-    def addStringValue(self,value:str):
+    def addStringValue(self,value,arg0):
         if not self.isString():
             return -1
-        else:
+        if isinstance(value,str) and arg0 is None:
             index=self.m_AttributeInfo.m_Hashtable.get(value)
-            if index is None:
-                index=len(self.m_AttributeInfo.m_Hashtable)
-                self.m_AttributeInfo.m_Values.append(value)
-                self.m_AttributeInfo.m_Hashtable.update({value:index})
-            return index
+            if index is not None:
+                return index
+            intIndex=len(self.m_AttributeInfo.m_Hashtable)
+            self.m_AttributeInfo.m_Values.append(value)
+            self.m_AttributeInfo.m_Hashtable.update({value:intIndex})
+            return intIndex
+        elif isinstance(value,Attribute) and isinstance(arg0,int):
+            store=value.m_AttributeInfo.m_Values[arg0]
+            oldIndex=self.m_AttributeInfo.m_Hashtable.get(store)
+            if oldIndex is not None:
+                return oldIndex
+            intIndex=len(self.m_AttributeInfo.m_Values)
+            self.m_AttributeInfo.m_Values.append(store)
+            self.m_AttributeInfo.m_Hashtable.update({store:intIndex})
+            return intIndex
 
     @classmethod
     def typeToString(self,type:int):

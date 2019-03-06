@@ -4,6 +4,7 @@ import copy
 class Range():
     def __init__(self,rangeList:str=None):
         self.m_Upper=-1
+        self.m_Invert=False
         if rangeList is not None:
             self.setRanges(rangeList)
 
@@ -42,7 +43,7 @@ class Range():
         return selectIndices
 
     def setFlags(self):
-        self.m_SelectFlags=[]
+        self.m_SelectFlags=[False]*(self.m_Upper+1)
         for item in self.m_RangeStrings:
             if not self.isValidRange(item):
                 raise Exception("Invalid range list at "+ item)

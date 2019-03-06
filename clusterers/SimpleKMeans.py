@@ -37,8 +37,8 @@ class SimpleKMeans(RandomizableClusterer):
         self.m_ClusterCentroids=None        #type:Instances
         self.m_initialStartPoints=None      #type:Instances
         self.m_executionSlots=1
-        self.m_ClusterSizes=None        #type:List[float]
-        self.m_squaredErrors=None       #type:List[float]
+        self.m_ClusterSizes=[]        #type:List[float]
+        self.m_squaredErrors=[]       #type:List[float]
         self.m_DistanceFunction=EuclideanDistance()
 
     def __str__(self):
@@ -46,13 +46,12 @@ class SimpleKMeans(RandomizableClusterer):
             return "No clusterer built yet!"
         maxAttWidth=0
         maxWidth=0
-        containsNumberic=False
+
         for i in range(self.NumClusters):
             for j in range(self.m_ClusterCentroids.numAttributes()):
                 if len(self.m_ClusterCentroids.attribute(j).name())>maxAttWidth:
                     maxAttWidth=len(self.m_ClusterCentroids.attribute(j).name())
                 if self.m_ClusterCentroids.attribute(j).isNumeric():
-                    containsNumberic=True
                     width=math.log(math.fabs(self.m_ClusterCentroids.instance(i).value(j)))/math.log(10)
                     if width<0:
                         width=1
@@ -180,14 +179,15 @@ class SimpleKMeans(RandomizableClusterer):
         self.m_ReplaceMissingFilter=ReplaceMissingValues()
         instances=Instances(data)
 
+        print("num before:",instances.numInstances())
         instances.setClassIndex(-1)
 
         self.m_ReplaceMissingFilter.setInputFormat(instances)
         instances=Filter.useFilter(instances,self.m_ReplaceMissingFilter)
-
         self.m_ClusterNominalCounts=[[[] for i in range(instances.numAttributes())] for j in range(self.NumClusters)]
         self.m_ClusterMissingCounts=[[0]*instances.numAttributes() for  i in range(self.NumClusters)]
 
+        print("num after:",instances.numInstances())
         self.m_FullMeansOrMediansOrModes=self.moveCentroid(0,instances,True,False)
         self.m_FullMissingCounts=self.m_ClusterMissingCounts[0]
         self.m_FullNominalCounts=self.m_ClusterNominalCounts[0]
@@ -206,7 +206,7 @@ class SimpleKMeans(RandomizableClusterer):
         initC=dict()        #type:Dict[DecisionTableHashKey,int]
         initInstances=instances
 
-        for j in range(initInstances.numInstances(),-1,-1):
+        for j in range(initInstances.numInstances()-1,-1,-1):
             instIndex=random.randint(0,j)
             hk=DecisionTableHashKey(initInstances.instance(instIndex),initInstances.numAttributes(),True)
             if hk not in initC:
@@ -215,12 +215,12 @@ class SimpleKMeans(RandomizableClusterer):
             initInstances.swap(j,instIndex)
             if self.m_ClusterCentroids.numInstances() == self.NumClusters:
                 break
+
         self.m_initialStartPoints=Instances(self.m_ClusterCentroids)
         self.NumClusters=self.m_ClusterCentroids.numInstances()
-        initInstances=None
         converged=False
         tempI=[]    #type:List[Instances]
-        self.m_squaredErrors=[]
+        self.m_squaredErrors=[0]*self.NumClusters
         self.m_ClusterNominalCounts=[[[] for i in range(instances.numAttributes())] for j in range(self.NumClusters)]
         self.m_ClusterMissingCounts=[[0]*instances.numAttributes() for  i in range(self.NumClusters)]
         while not converged:
@@ -236,7 +236,7 @@ class SimpleKMeans(RandomizableClusterer):
                     clusterAssignments[i]=newC
             self.m_ClusterCentroids=Instances(instances,self.NumClusters)
             for i in range(self.NumClusters):
-                tempI[i]=Instances(instances,0)
+                tempI.append(Instances(instances,0))
             for i in range(instances.numInstances()):
                 tempI[clusterAssignments[i]].add(instances.instance(i))
             for i in range(self.NumClusters):
@@ -269,6 +269,9 @@ class SimpleKMeans(RandomizableClusterer):
         for i in range(self.NumClusters):
             self.m_ClusterSizes.append(tempI[i].sumOfWeight())
         self.m_DistanceFunction.clean()
+
+    def numberOfClusters(self):
+        return self.NumClusters
 
     def clusterProcessedInstance(self,instance:Instance,updateErrors:bool,useFastDistCalc:bool):
         minDist=float('inf')
@@ -326,6 +329,6 @@ class SimpleKMeans(RandomizableClusterer):
                     self.m_ClusterMissingCounts[centroidIndex][j]=weightMissing[j]
                     self.m_ClusterNominalCounts[centroidIndex][j]=nominalDists[j]
             if addToCentroidInstances:
-                self.m_ClusterCentroids.add(Instance(1,vals))
+                self.m_ClusterCentroids.add(Instance(1.0,vals))
 
             return vals

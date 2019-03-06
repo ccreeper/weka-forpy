@@ -1,17 +1,15 @@
 
-from copy import *
 from typing import *
-
 from Attributes import Attribute
 from Stats import Stats
 from Utils import Utils
-
 from core.AttributeStats import AttributeStats
 import copy
 import random
 
 class Instance():
     def __init__(self,a0,a1=None):
+        self.m_AttValues=[]
         if isinstance(a0, list) and a1 is None:
             self.m_AttValues=a0
             self.m_Weight=1
@@ -37,6 +35,20 @@ class Instance():
         text=self.toStringNoWeight(afterDecimalPoint)
         return text
 
+    def hasMissingValue(self):
+        classIndex=self.classIndex()
+        for i in range(self.numValues()):
+            if self.index(i) != classIndex:
+                if self.isMissingSparse(i):
+                    return True
+        return False
+
+    def numAttributes(self):
+        return len(self.m_AttValues)
+
+    def attributeSparse(self,indexOfIndex:int)->Attribute:
+        return self.m_Dataset.attribute(self.index(indexOfIndex))
+
     def toStringNoWeight(self,afterDecimalPoint:int=None):
         text=""
         if afterDecimalPoint is None:
@@ -44,10 +56,10 @@ class Instance():
         for i in range(len(self.m_AttValues)):
             if i > 0:
                 text+=','
-            text+=self.toString(self.toString(i,afterDecimalPoint))
+            text+=self.toString(i,afterDecimalPoint)
         return text
 
-    def toString(self,attIndex:int,afterDecimalPoint:int):
+    def toString(self,attIndex:int,afterDecimalPoint:int)->str:
         text=""
         if self.isMissing(attIndex):
             text+="?"
@@ -123,7 +135,7 @@ class Instance():
         result.m_Dataset=self.m_Dataset
         return result
 
-    def dataset(self):
+    def dataset(self)->'Instances':
         return self.m_Dataset
 
     def classAttribute(self)->Attribute:
@@ -288,22 +300,12 @@ class Instances(object):
             result.addDistinct(key,val[0],val[1])
         return result
 
-    def stringFreeStructure(self):
-        newAtts=[]
-        for att in self.m_Attributes:
-            if att.type() == Attribute.STRING:
-                newAtts.append(Attribute(att.name(),None,att.index()))
-        if len(newAtts) == 0:
-            return Instances(self,0)
-        atts=copy.deepcopy(self.m_Attributes)
-        for att in newAtts:
-            atts[att.index()]=att
-        result=Instances(self,0)
-        result.m_Attributes=atts
-        return result
 
-    def delete(self):
-        self.m_Instances=[]
+    def delete(self,index:int=None):
+        if index is None:
+            self.m_Instances=[]
+        else:
+            self.m_Instances.pop(index)
 
     def createInstance(self,data:List)->Instance:
         result=[]
@@ -375,7 +377,7 @@ class Instances(object):
                 newAtts.append(Attribute(att.name(),None,att.index()))
         if len(newAtts) == 0:
             return Instances(self,0)
-        atts=deepcopy(self.m_Attributes)
+        atts=copy.deepcopy(self.m_Attributes)
         for att in newAtts:
             atts[att.index()]=att
         result=Instances(self,0)
@@ -408,11 +410,8 @@ class Instances(object):
     def setRelationName(self,name:str):
         self.m_RelationName=name
 
-    def delete(self,index:int):
-        self.m_Instances.pop(index)
-
     def add(self,inst:Instance,index:int=-1):
-        newInstance=deepcopy(inst)
+        newInstance=copy.deepcopy(inst)
         newInstance.setDataset(self)
         if index <0:
             self.m_Instances.append(newInstance)

@@ -85,7 +85,10 @@ class PreprocessPanel():
         self.m_tabWidget.currentChanged.connect(self.tabChangedListener)
 
     def tabChangedListener(self,index:int):
-        self.m_Explor.getClassiferPanel().setInstances(self.m_Instances)
+        if index ==1:
+            self.m_Explor.getClassiferPanel().setInstances(self.m_Instances)
+        elif index == 2:
+            self.m_Explor.getClustererPanel().setInstances(self.m_Instances)
 
     def tableCellClick(self,row,column):
         self.attributeSummaryPanel.setAttribute(row)

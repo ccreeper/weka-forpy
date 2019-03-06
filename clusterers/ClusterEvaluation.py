@@ -28,7 +28,7 @@ class ClusterEvaluation():
         i=loglk=unclusteredInstances=0
         cc=self.m_Clusterer.numberOfClusters()
         self.m_numClusters=cc
-        instanceStats=[]
+        instanceStats=[0]*cc
         hasClass=test.classIndex()>=0
         clusterAssignments=[]
         filter=None     #type:Filter
@@ -69,7 +69,7 @@ class ClusterEvaluation():
         self.m_logL=loglk
         self.m_clusterAssignments=[]
         for i in range(len(clusterAssignments)):
-            self.m_clusterAssignments[i]=clusterAssignments[i]
+            self.m_clusterAssignments.append(clusterAssignments[i])
         numInstFieldWidth=int(math.log(len(clusterAssignments)/math.log(10))+1)
         if outputModel:
             self.m_clusteringResult+=str(self.m_Clusterer)

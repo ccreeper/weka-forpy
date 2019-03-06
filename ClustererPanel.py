@@ -38,7 +38,11 @@ class ClustererPanel():
         self.m_ChooseBut=win.choose_cluster
         self.m_ClustererEditor=GenericObjectEditor()    #type:GenericObjectEditor
         self.m_CLPanel=PropertyPanel(self,self.m_ClustererEditor)    #type:PropertyPanel
+        self.m_History.outtext_write_signal.connect(self.updateOutputText)
         self.initalize()
+
+    def updateOutputText(self,text:str):
+        self.m_OutText.setText(text)
 
     def initalize(self):
         self.m_OutText.setReadOnly(True)
@@ -53,11 +57,11 @@ class ClustererPanel():
         self.m_TrainBut.clicked.connect(self.updateRadioLinks)
         self.m_TestSplitBut.clicked.connect(self.updateRadioLinks)
         self.m_SetTestBut.clicked.connect(self.setTestSet)
-        # self.m_StartBut.clicked.connect(self.startClassifier)
+        self.m_StartBut.clicked.connect(self.startClusterer)
 
     def startClusterer(self):
         if self.m_RunThread is None:
-            self.m_StartBut.setEnable(False)
+            self.m_StartBut.setEnabled(False)
             self.m_StopBut.setEnabled(True)
             self.m_RunThread=Thread(target=self.clusterRunThread)
             self.m_RunThread.setPriority(QThread.LowPriority)
@@ -73,7 +77,6 @@ class ClustererPanel():
         if self.m_SetTestFrame is not None:
             if self.m_SetTestFrame.getInstances() is not None:
                 userTest=Instances(self.m_SetTestFrame.getInstances())
-        testMode=0
         clusterer=self.m_ClustererEditor.getValue()
         outBuff=""
         name=time.strftime("%H:%M:%S - ")
@@ -82,7 +85,6 @@ class ClustererPanel():
             name+=cname[len("clusterers."):]
         else:
             name+=cname
-        cmd=self.m_ClustererEditor.getValue().__module__
         if self.m_TrainBut.isChecked():
             testMode=0
         elif self.m_TestSplitBut.isChecked():
@@ -96,9 +98,6 @@ class ClustererPanel():
         trainInst=Instances(inst)
         outBuff+="=== Run information ===\n\n"
         outBuff+="Scheme:       " + cname
-        if isinstance(clusterer,OptionHandler):
-            o=clusterer.getOptions()
-            outBuff+=" " + Utils.joinOptions(o)
         outBuff+="\n"
         outBuff+="Relation:     " + inst.relationName() + '\n'
         outBuff+="Instances:    " + str(inst.numInstances()) + '\n'
@@ -126,7 +125,6 @@ class ClustererPanel():
                 + Utils.doubleToString(trainTimeElapsed / 1000.0, 2)\
                 + " seconds\n\n"
         self.m_History.updateResult(name,outBuff)
-        fullClusterer=copy.deepcopy(clusterer)
         evaluation=ClusterEvaluation()
         evaluation.setClusterer(clusterer)
         if testMode == 0:
@@ -149,6 +147,10 @@ class ClustererPanel():
         #TODO right-click visizalition
         if plotInstances is not None and plotInstances.canPlot(True):
             pass
+        self.m_RunThread=None
+        self.m_StartBut.setEnabled(True)
+        self.m_StopBut.setEnabled(False)
+        Utils.debugOut(outBuff)
 
     def removeClass(self,inst:Instances):
         af=Remove()
@@ -170,6 +172,9 @@ class ClustererPanel():
 
     def setInstances(self,inst:Instances):
         self.m_Instances = inst
+        self.m_StartBut.setEnabled(self.m_RunThread is None)
+        self.m_StopBut.setEnabled(self.m_RunThread is not None)
+        self.updateRadioLinks()
 
 
     def updateRadioLinks(self):
