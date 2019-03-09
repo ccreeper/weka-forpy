@@ -1,11 +1,4 @@
-import sys
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from GenericObjectEditor import GenericObjectEditor
-from PyQt5.QtCore import *
-from typing import *
-from Utils import Utils
-from HierarchyPropertyParser import HierarchyPropertyParser
 
 class TreeNodeButton(QPushButton):
     def __init__(self,parent=None):

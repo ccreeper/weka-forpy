@@ -142,10 +142,13 @@ class MatplotlibWidget(QWidget):
         Utils.debugOut("Xlimit_right:",right)
         Utils.debugOut("Xlimit_len:",len)
         midX=len/2
-        midLabel=(left+right)/2
+        mid=(left+right)/2
         ticks=[-0.5,midX-0.5,len-0.5]
         self.mpl.axes.set_xticks(ticks)
-        labelNumber=[left,midLabel,right]
+        left='%.2f'%left
+        mid='%.2f'%mid
+        right='%.2f'%right
+        labelNumber=[left,mid,right]
         labels=[str(i) for i in labelNumber]
         self.mpl.axes.set_xticklabels(labels)
         self.mpl.draw()

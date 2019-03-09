@@ -66,7 +66,6 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
 
     def process(self,toPredict:Instance,classifier:Classifier,evaluation:Evaluation):
         probActual=probNext=pred=0
-        mappedClass=-1
         classMissing=toPredict.copy()
         classMissing.setDataset(toPredict.dataset())
         #TODO InputMappedClassifier    465

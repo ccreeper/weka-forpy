@@ -2,6 +2,7 @@ from Range import Range
 from typing import *
 from Instances import Instances,Instance
 from Attributes import Attribute
+from core.neighboursearch.PerformanceStats import PerformanceStats
 from Utils import Utils
 
 class NormalizableDistance():
@@ -29,48 +30,66 @@ class NormalizableDistance():
     def clean(self):
         self.m_Data=Instances(self.m_Data,0)
 
-    def distance(self, first: Instance, second: Instance, cutOffValue:float):
-        distance=0
-        firstNumValues=first.numValues()
-        secondNumValues=second.numValues()
-        numAttributes=self.m_Data.numAttributes()
-        classIndex=self.m_Data.classIndex()
+    def update(self,ins:Instance):
         self.validate()
-        p1=p2=0
-        while p1<firstNumValues or p2<secondNumValues:
-            if p1>=firstNumValues:
-                firstI=numAttributes
-            else:
-                firstI=first.index(p1)
-            if p2>=secondNumValues:
-                secondI=numAttributes
-            else:
-                secondI=second.index(p2)
-            if firstI == classIndex:
-                p1+=1
-                continue
-            if firstI<numAttributes and not self.m_ActiveIndices[firstI]:
-                p1+=1
-                continue
-            if secondI == classIndex:
-                p2+=1
-                continue
-            if secondI<numAttributes and not self.m_ActiveIndices[secondI]:
-                p2+=1
-                continue
-            if firstI == secondI:
-                diff=self.difference(firstI,first.valueSparse(p1),second.valueSparse(p2))
-                p1+=1
-                p2+=1
-            elif firstI>secondI:
-                diff=self.difference(secondI,0,second.valueSparse(p2))
-            else:
-                diff=self.difference(firstI,first.valueSparse(p1),0)
-                p1+=1
-            distance=self.updateDistance(distance,diff)
-            if distance>cutOffValue:
-                return float('inf')
-        return distance
+        self.m_Ranges=self.updateRanges(ins,self.m_Ranges)
+
+    @overload
+    def distance(self,first:Instance,second:Instance):...
+    @overload
+    def distance(self,first:Instance,second:Instance,stats:PerformanceStats):...
+    @overload
+    def distance(self,first:Instance,second:Instance,cutOffValue:float):...
+    @overload
+    def distance(self,first:Instance,second:Instance,cutOffValue:float,stats:PerformanceStats):...
+
+    def distance(self, first: Instance, second: Instance,a0=None,a1=None):
+        if a0 is None or isinstance(a0,PerformanceStats):
+            return self.distance(first,second,float("inf"),a0)
+        elif isinstance(a0,float):
+            distance=0
+            firstNumValues=first.numValues()
+            secondNumValues=second.numValues()
+            numAttributes=self.m_Data.numAttributes()
+            classIndex=self.m_Data.classIndex()
+            self.validate()
+            p1=p2=0
+            while p1<firstNumValues or p2<secondNumValues:
+                if p1>=firstNumValues:
+                    firstI=numAttributes
+                else:
+                    firstI=first.index(p1)
+                if p2>=secondNumValues:
+                    secondI=numAttributes
+                else:
+                    secondI=second.index(p2)
+                if firstI == classIndex:
+                    p1+=1
+                    continue
+                if firstI<numAttributes and not self.m_ActiveIndices[firstI]:
+                    p1+=1
+                    continue
+                if secondI == classIndex:
+                    p2+=1
+                    continue
+                if secondI<numAttributes and not self.m_ActiveIndices[secondI]:
+                    p2+=1
+                    continue
+                if firstI == secondI:
+                    diff=self.difference(firstI,first.valueSparse(p1),second.valueSparse(p2))
+                    p1+=1
+                    p2+=1
+                elif firstI>secondI:
+                    diff=self.difference(secondI,0,second.valueSparse(p2))
+                else:
+                    diff=self.difference(firstI,first.valueSparse(p1),0)
+                    p1+=1
+                if isinstance(a1,PerformanceStats):
+                    a1.incrPointCount()
+                distance=self.updateDistance(distance,diff)
+                if distance>a0:
+                    return float('inf')
+            return distance
 
     def updateDistance(self,currDist:float,diff:float)->float:...
 
@@ -136,7 +155,7 @@ class NormalizableDistance():
         else:
             self.updateRangesFirst(self.m_Data.instance(0),numAtt,ranges)
         for i in range(self.m_Data.numInstances()):
-            self.updateRanges(self.m_Data.instance(i),numAtt,ranges)
+            self.updateRanges(self.m_Data.instance(i),ranges)
         self.m_Ranges=ranges
         return self.m_Ranges
 
@@ -158,7 +177,7 @@ class NormalizableDistance():
                 return True
         return False
 
-    def updateRanges(self,instance:Instance,numAtt:int,ranges:List[List[float]]):
+    def updateRanges(self,instance:Instance,ranges:List[List[float]]):
         numVals=instance.numValues()
         prevIndex=0
         for j in range(numVals):
@@ -180,3 +199,4 @@ class NormalizableDistance():
                 if val > ranges[currIndex][self.R_MAX]:
                     ranges[currIndex][self.R_MAX]=val
                     ranges[currIndex][self.R_WIDTH]=ranges[currIndex][self.R_MAX]-ranges[currIndex][self.R_MIN]
+        return ranges

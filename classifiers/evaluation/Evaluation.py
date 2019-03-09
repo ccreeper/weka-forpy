@@ -380,6 +380,7 @@ class Evaluation():
                     text+="{:<12.3f}".format(prcVal)
             text+=self.m_ClassNames[i]+"\n"
         text+="Weighted Avg.    "
+
         if displayTP:
             wtpr=self.weightedTruePositiveRate()
             if Utils.isMissingValue(wtpr):

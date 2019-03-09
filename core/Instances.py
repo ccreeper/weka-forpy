@@ -514,6 +514,17 @@ class Instances(object):
             train.randomize(randomSeed)
             return train
 
+    def deleteWithMissingClass(self,attIndex:int=None):
+        if attIndex is None:
+            if self.m_ClassIndex < 0:
+                raise Exception("Class index is negative (not set)!")
+            attIndex=self.m_ClassIndex
+        newInstances=[] #type:List[Instance]
+        for i in range(self.numInstances()):
+            if not self.instance(i).isMissing(attIndex):
+                newInstances.append(self.instance(i))
+        self.m_Instances=newInstances
+
     def testCV(self,numFolds:int,numFold:int)->'Instances':
         if numFolds < 2:
             raise Exception("Number of folds must be at least 2!")

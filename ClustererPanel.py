@@ -1,7 +1,7 @@
 from typing import *
 from Instances import Instances,Instance
 from ClustererAssignmentsPlotInstances import ClustererAssignmentsPlotInstances
-from GenericObjectEditor import GenericObjectEditor
+from GenericObjectEditor import GenericObjectEditor,GOEPanel
 # from CallMain import MainWindow
 from ResultHistoryPanel import ResultHistoryPanel
 from filters.Filter import Filter

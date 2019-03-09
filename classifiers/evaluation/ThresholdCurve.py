@@ -26,6 +26,7 @@ class ThresholdCurve():
             return None
         totPos=totNeg=0
         probs=self.getProbabilities(predictions,classIndex)
+
         for i in range(len(probs)):
             pred=predictions[i]
             if pred.actual() == Utils.missingValue():

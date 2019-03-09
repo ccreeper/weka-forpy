@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import *
 
 from Attributes import Attribute
 from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
-from GenericObjectEditor import GenericObjectEditor
+from GenericObjectEditor import GenericObjectEditor,GOEPanel
 from Instances import Instances
 from OptionHandler import OptionHandler
 from PropertyPanel import PropertyPanel
@@ -271,12 +271,13 @@ class ClassifierPanel():
                 mode="supplied test set"
             outPutResult+="\nTime taken to test model on " + mode + ": "+ Utils.doubleToString(testTimeElapsed / 1000.0, 2)+ " seconds\n\n"
         outPutResult+=evaluation.toSummaryString(False)+'\n'
-        Utils.debugOut(outPutResult)
+        self.m_History.updateResult(name,outPutResult)
         if inst.attribute(classIndex).isNominal():
             outPutResult+=evaluation.toClassDetailsString()+'\n'
             outPutResult+=evaluation.toMatrixString()+'\n'
         self.m_History.updateResult(name,outPutResult)
 
+        Utils.debugOut(outPutResult)
         self.mutex.lock()
         self.m_StartBut.setEnabled(True)
         self.m_StopBut.setEnabled(False)

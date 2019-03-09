@@ -39,12 +39,11 @@ class GenericObjectEditor(QObject):
             kvs = cf.items("Classifier")
             for item in kvs:
                 PluginManager.addPlugin("Classifier", item[1])
-            kvs= cf.items("Clusterer")
+            kvs = cf.items("Clusterer")
             for item in kvs:
                 PluginManager.addPlugin("Clusterer",item[1])
-            print(PluginManager.PLUGINS)
-        except BaseException:
-            pass
+        except BaseException as e:
+            print(repr(e))
 
     def getCapabilitiesFilter(self):
         return self.m_CapabilitiesFilter

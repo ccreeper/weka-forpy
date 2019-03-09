@@ -104,7 +104,6 @@ class Utils():
             cls.swap(index,pivotLocation,right-1)
             center=cls.partition(array,index,left,right,array[index[right-1]])
             cls.swap(index,center,right-1)
-
             cls.quickSort(array,index,left,center-1)
             cls.quickSort(array,index,center+1,right)
 
@@ -143,9 +142,11 @@ class Utils():
         r-=1
         while True:
             l+=1
-            while array[index[l]] < pivot:pass
+            while array[index[l]] < pivot:
+                l+=1
             r-=1
-            while array[index[r]] > pivot:pass
+            while array[index[r]] > pivot:
+                r-=1
             if l>=r:
                 return l
             cls.swap(index,l,r)

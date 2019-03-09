@@ -38,7 +38,11 @@ class PropertySheetPanel(QWidget):
                         setattr(target,name,False)
             else:
                 def callSet(option):
-                    setattr(target, name, option)
+                    if option != "":
+                        if attrType is int:
+                            setattr(target, name, int(option))
+                        elif attrType is float:
+                            setattr(target,name,float(option))
             return callSet
 
         for i in range(len(self.m_Properties)):

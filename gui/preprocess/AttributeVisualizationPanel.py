@@ -103,7 +103,7 @@ class AttributeVisualizationPanel():
                         for i in range(len(self.m_histBarClassCounts)):
                             if self.m_histBarClassCounts[i] is not None:
                                 if first:
-                                    dataList=[[] for i in range(self.m_histBarClassCounts[i].numAttributes())]
+                                    dataList=[[] for k in range(self.m_histBarClassCounts[i].numAttributes())]
                                     first=False
                                 for j in range(self.m_histBarClassCounts[i].numAttributes()):
                                     dataList[j].append(self.m_histBarClassCounts[i].value(j))
@@ -136,12 +136,12 @@ class AttributeVisualizationPanel():
                         for i in range(len(self.m_histBarClassCounts)):
                             if self.m_histBarClassCounts[i] is not None:
                                 if first:
-                                    dataList=[[] for i in range(self.m_histBarClassCounts[i].numValues())]
-                                for j in range(self.m_histBarClassCounts[i].numValues()):
-                                    Utils.debugOut("histBarClassCount[",j,"]:",self.m_histBarClassCounts[i].valueSparse(j))
-                                    dataList[j].append(self.m_histBarClassCounts[i].valueSparse(j))
+                                    dataList=[[] for k in range(self.m_histBarClassCounts[i].numAttributes())]
+                                for j in range(self.m_histBarClassCounts[i].numAttributes()):
+                                    # Utils.debugOut("histBarClassCount[",j,"]:",self.m_histBarClassCounts[i].value(j))
+                                    dataList[j].append(self.m_histBarClassCounts[i].value(j))
                                     if first:
-                                        newColor.append(self.m_colorList[self.m_histBarClassCounts[i].positionIndex(j)])
+                                        newColor.append(self.m_colorList[j])
                                 first=False
                             else:
                                 nullBarCount.append(i)
