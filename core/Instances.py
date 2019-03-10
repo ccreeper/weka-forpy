@@ -43,6 +43,9 @@ class Instance():
                     return True
         return False
 
+    def setWeight(self,weight:float):
+        self.m_Weight=weight
+
     def numAttributes(self):
         return len(self.m_AttValues)
 
@@ -324,7 +327,9 @@ class Instances(object):
         inst=Instance(result)
         return inst
 
-    def sort(self,attrIndex:int):
+    def sort(self,attrIndex=None):
+        if isinstance(attrIndex,Attribute):
+            attrIndex=attrIndex.index()
         if not self.attribute(attrIndex).isNominal():
             vals=[0.0]*self.numInstances()
             backup=[None]*self.numInstances()     #type:List[Instance]
@@ -541,10 +546,16 @@ class Instances(object):
         self.copyInstances(first,numInstForFold,test)
         return test
 
+    def lastInstance(self)->Instance:
+        return self.m_Instances[-1]
+
     def attributeToDoubleArray(self,index:int):
         result=[]
         for i in range(self.numInstances()):
             result.append(self.instance(i).value(index))
         return result
+
+    def enumerateAttributes(self)->List[Attribute]:
+        return self.m_Attributes
 
 Utils.debugOut("Instances id:",id(Instances))

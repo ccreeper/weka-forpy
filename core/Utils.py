@@ -1,6 +1,7 @@
 import math
 from functools import partial
 from typing import *
+from Statistics import Statistics
 import importlib
 
 
@@ -9,6 +10,11 @@ class Utils():
     #debug模式
     DEBUG=True
     equal=partial(math.isclose,rel_tol=1e-6)
+    MAX_INT_FOR_CACHE_PLUS_ONE=10000
+    INT_N_LOG_N_CACHE=[]
+
+    for i in range(MAX_INT_FOR_CACHE_PLUS_ONE):
+        INT_N_LOG_N_CACHE.append(i*math.log(i))
 
     @classmethod
     def padLeft(cls,string:str,length:int):
@@ -40,6 +46,11 @@ class Utils():
     @classmethod
     def missingValue(cls):
         return float("nan")
+
+    @classmethod
+    def roundDouble(cls,value:float,afterDecimalPoint:int):
+        mask=10**afterDecimalPoint
+        return round(value*mask)/mask
 
     @classmethod
     def doubleToString(cls, number:float, a0:int,a1=None):
@@ -85,6 +96,23 @@ class Utils():
         if len(array)>1:
             cls.quickSort(array,index,0,len(array)-1)
         return index
+
+
+    @classmethod
+    def addErrs(cls,N:float,e:float,CF:float):
+        if CF > 0.5:
+            return 0
+        if e < 1:
+            base=N*(1-CF**1/N)
+            if e == 0:
+                return base
+            return base+e*(cls.addErrs(N,1,CF)-base)
+        if e+0.5 >= N:
+            return max(N-e,0)
+        z=Statistics.normalInverse(1-CF)
+        f=(e+0.5)/N
+        r=(f+(z*z)/(2*N)+z*math.sqrt(f/N-f*f/N+z*z/(4*N*N)))/(1+z*z/N)
+        return r*N-e
 
     @classmethod
     def quickSort(cls,array:List[float],index:List[int],left:int,right:int):
@@ -178,6 +206,17 @@ class Utils():
             if options[i][1]=='-':
                 return ""
         return ""
+
+    @classmethod
+    def lnFunc(cls,num:float):
+        if num <= 0:
+            return 0
+        if num < cls.MAX_INT_FOR_CACHE_PLUS_ONE:
+            n=int(num)
+            if n == num:
+                return cls.INT_N_LOG_N_CACHE[n]
+        return num*math.log(num)
+
 
     @classmethod
     def getOptionPos(cls,flag:str,options:List[str]):
