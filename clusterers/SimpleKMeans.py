@@ -52,7 +52,10 @@ class SimpleKMeans(RandomizableClusterer):
                 if len(self.m_ClusterCentroids.attribute(j).name())>maxAttWidth:
                     maxAttWidth=len(self.m_ClusterCentroids.attribute(j).name())
                 if self.m_ClusterCentroids.attribute(j).isNumeric():
-                    width=math.log(math.fabs(self.m_ClusterCentroids.instance(i).value(j)))/math.log(10)
+                    try:
+                        width=math.log(math.fabs(self.m_ClusterCentroids.instance(i).value(j)))/math.log(10)
+                    except ValueError:
+                        width=float('-inf')
                     if width<0:
                         width=1
                     width+=6
@@ -178,8 +181,6 @@ class SimpleKMeans(RandomizableClusterer):
         self.m_Iterations=0
         self.m_ReplaceMissingFilter=ReplaceMissingValues()
         instances=Instances(data)
-
-        print("num before:",instances.numInstances())
         instances.setClassIndex(-1)
 
         self.m_ReplaceMissingFilter.setInputFormat(instances)
@@ -187,7 +188,6 @@ class SimpleKMeans(RandomizableClusterer):
         self.m_ClusterNominalCounts=[[[] for i in range(instances.numAttributes())] for j in range(self.NumClusters)]
         self.m_ClusterMissingCounts=[[0]*instances.numAttributes() for  i in range(self.NumClusters)]
 
-        print("num after:",instances.numInstances())
         self.m_FullMeansOrMediansOrModes=self.moveCentroid(0,instances,True,False)
         self.m_FullMissingCounts=self.m_ClusterMissingCounts[0]
         self.m_FullNominalCounts=self.m_ClusterNominalCounts[0]
@@ -324,11 +324,10 @@ class SimpleKMeans(RandomizableClusterer):
                         vals[j]=Utils.missingValue()
                     else:
                         vals[j]=maxIndex
-            if updateClusterInfo:
-                for j in range(members.numAttributes()):
-                    self.m_ClusterMissingCounts[centroidIndex][j]=weightMissing[j]
-                    self.m_ClusterNominalCounts[centroidIndex][j]=nominalDists[j]
-            if addToCentroidInstances:
-                self.m_ClusterCentroids.add(Instance(1.0,vals))
-
-            return vals
+        if updateClusterInfo:
+            for j in range(members.numAttributes()):
+                self.m_ClusterMissingCounts[centroidIndex][j]=weightMissing[j]
+                self.m_ClusterNominalCounts[centroidIndex][j]=nominalDists[j]
+        if addToCentroidInstances:
+            self.m_ClusterCentroids.add(Instance(1.0,vals))
+        return vals
