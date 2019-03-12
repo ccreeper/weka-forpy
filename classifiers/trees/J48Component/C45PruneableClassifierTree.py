@@ -1,8 +1,8 @@
 from typing import *
-from classifiers.trees.J48.ClassifierTree import ClassifierTree
-from classifiers.trees.J48.ModelSelection import ModelSelection
-from classifiers.trees.J48.NoSplit import NoSplit
-from classifiers.trees.J48.Distribution import Distribution
+from classifiers.trees.J48Component.ClassifierTree import ClassifierTree
+from classifiers.trees.J48Component.ModelSelection import ModelSelection
+from classifiers.trees.J48Component.NoSplit import NoSplit
+from classifiers.trees.J48Component.Distribution import Distribution
 from Instances import Instances,Instance
 from Utils import Utils
 
@@ -26,6 +26,7 @@ class C45PruneableClassifierTree(ClassifierTree):
             self.prune()
         if self.m_cleanup:
             self.cleanup(Instances(data,0))
+
 
     def collapse(self):
         if not self.m_isLeaf:
@@ -111,3 +112,9 @@ class C45PruneableClassifierTree(ClassifierTree):
             for i in range(len(self.m_sons)):
                 errors=errors+self.son(i).getTrainingErrors()
             return errors
+
+    def getNewTree(self,data:Instances,test:Instances=None):
+        newTree=C45PruneableClassifierTree(self.m_toSelectModel,self.m_pruneTheTree,self.m_CF,self.m_subtreeRaising,self.m_cleanup,self.m_collapseTheTree)
+        newTree.buildTree(data,self.m_subtreeRaising or not self.m_cleanup)
+        print("c45 new")
+        return newTree

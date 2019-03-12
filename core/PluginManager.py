@@ -9,7 +9,10 @@ class PluginManager():
         imp=importlib.import_module(className)
         clsName=className.split(".")[-1]
         cla=getattr(imp,clsName)
-        dt=dict({className:cla})
+        dt=cls.PLUGINS.get(interfaceName)
+        if dt is None:
+            dt=dict()
+        dt.update({className:cla})
         cls.PLUGINS.update({interfaceName:dt})
 
     @classmethod

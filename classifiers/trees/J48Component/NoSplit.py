@@ -1,7 +1,7 @@
 from typing import *
 from Instances import Instances,Instance
-from classifiers.trees.J48.Distribution import Distribution
-from classifiers.trees.J48.ClassifierSplitModel import ClassifierSplitModel
+from classifiers.trees.J48Component.Distribution import Distribution
+from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
 
 class NoSplit(ClassifierSplitModel):
     def __init__(self,distribution:Distribution):

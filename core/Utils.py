@@ -11,9 +11,9 @@ class Utils():
     DEBUG=True
     equal=partial(math.isclose,rel_tol=1e-6)
     MAX_INT_FOR_CACHE_PLUS_ONE=10000
-    INT_N_LOG_N_CACHE=[]
+    INT_N_LOG_N_CACHE=[0]
 
-    for i in range(MAX_INT_FOR_CACHE_PLUS_ONE):
+    for i in range(1,MAX_INT_FOR_CACHE_PLUS_ONE):
         INT_N_LOG_N_CACHE.append(i*math.log(i))
 
     @classmethod

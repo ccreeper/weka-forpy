@@ -3,11 +3,11 @@ from typing import *
 from Instances import Instances,Instance
 from Utils import Utils
 from Capabilities import Capabilities,CapabilityEnum
-from classifiers.trees.J48.ClassifierTree import ClassifierTree
-from classifiers.trees.J48.BinC45ModelSelection import BinC45ModelSelection
-from classifiers.trees.J48.C45ModelSelection import C45ModelSelection
-from classifiers.trees.J48.C45PruneableClassifierTree import C45PruneableClassifierTree
-from classifiers.trees.J48.PruneableClassifierTree import PruneableClassifierTree
+from classifiers.trees.J48Component.ClassifierTree import ClassifierTree
+from classifiers.trees.J48Component.BinC45ModelSelection import BinC45ModelSelection
+from classifiers.trees.J48Component.C45ModelSelection import C45ModelSelection
+from classifiers.trees.J48Component.C45PruneableClassifierTree import C45PruneableClassifierTree
+from classifiers.trees.J48Component.PruneableClassifierTree import PruneableClassifierTree
 
 class J48(AbstractClassifier):
     propertyList=AbstractClassifier.propertyList[:]
@@ -15,18 +15,18 @@ class J48(AbstractClassifier):
     def __init__(self):
         super().__init__()
         self.m_root=None        #type:ClassifierTree
-        self.unpruned=False
-        self.collapseTree=True
-        self.CF=0.25
-        self.minNumObj=2
-        self.useMDLcorrection=True
-        self.useLaplace=False
-        self.reducedErrorPruning=False
-        self.numFolds=3
         self.binarySplits=False
-        self.subtreeRaising=True
-        self.noCleanup=False
+        self.collapseTree=True
+        self.confidenceFactor=0.25
+        self.minNumObj=2
+        self.numFolds=3
+        self.reducedErrorPruning=False
         self.seed=1
+        self.subtreeRaising=True
+        self.unpruned=False
+        self.useLaplace=False
+        self.useMDLcorrection=True
+        self.noCleanup=False
 
     def __str__(self):
         if self.m_root is None:
@@ -58,8 +58,8 @@ class J48(AbstractClassifier):
         else:
             modSelection=C45ModelSelection(self.minNumObj,data,self.useMDLcorrection,self.doNotCheckCapabilities)
         if not self.reducedErrorPruning:
-            self.m_root=C45PruneableClassifierTree(modSelection, not self.unpruned,self.CF,
-                                                   self.subtreeRaising,not self.noCleanup,
+            self.m_root=C45PruneableClassifierTree(modSelection, not self.unpruned, self.confidenceFactor,
+                                                   self.subtreeRaising, not self.noCleanup,
                                                    self.collapseTree)
         else:
             self.m_root=PruneableClassifierTree(modSelection,not self.unpruned,self.numFolds,not self.noCleanup,self.seed)

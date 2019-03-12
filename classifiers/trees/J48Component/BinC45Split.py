@@ -1,10 +1,23 @@
 from typing import *
 from Instances import Instances,Instance
-from classifiers.trees.J48.Distribution import Distribution
-from classifiers.trees.J48.ClassifierSplitModel import ClassifierSplitModel
+from classifiers.trees.J48Component.Distribution import Distribution
+from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
 from Utils import Utils
 
 class C45Split(ClassifierSplitModel):
+
+    def __init__(self,attIndex:int,minNoObj:int,sumOfWeights:float,useMDLcorrection:bool):
+        super().__init__()
+        self.m_distribution=None    #type:Distribution
+        self.m_numSubsets=0
+        self.m_attIndex=attIndex
+        self.m_minNoObj=minNoObj
+        self.m_sumOfWeights=sumOfWeights
+        self.m_useMDLcorrection=useMDLcorrection
+        self.m_splitPoint=float("inf")
+        self.m_infoGain=0
+        self.m_gainRatio=0
+
     def buildClassifer(self,instances:Instances):
         self.m_numSubsets=0
         self.m_splitPoint=float("inf")
@@ -114,3 +127,38 @@ class C45Split(ClassifierSplitModel):
         else:
             text+=" > " + str(self.m_splitPoint)
         return text
+
+    def leftSide(self,data:Instances):
+        return data.attribute(self.m_attIndex).name()
+
+    def attIndex(self):
+        return self.m_attIndex
+
+    def splitPoint(self):
+        return self.m_splitPoint
+
+    def infoGain(self):
+        return self.m_infoGain
+
+    def gainRatio(self):
+        return self.m_gainRatio
+
+    def weights(self,instance:Instance):
+        if instance.isMissing(self.m_attIndex):
+            weights=[]
+            for i in range(self.m_numSubsets):
+                weights.append(self.m_distribution.perBag(i)/self.m_distribution.total())
+            return weights
+        return None
+
+
+    def setSplitPoint(self,allInstances:Instances):
+        newSplitPoint=float("-inf")
+        if allInstances.attribute(self.m_attIndex).isNumeric() and self.m_numSubsets > 1:
+            for i in range(allInstances.numInstances()):
+                instance=allInstances.instance(i)
+                tempValue=instance.value(self.m_attIndex)
+                if not Utils.isMissingValue(tempValue):
+                    if tempValue > newSplitPoint and tempValue <= self.m_splitPoint:
+                        newSplitPoint=tempValue
+            self.m_splitPoint=newSplitPoint

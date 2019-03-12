@@ -1,5 +1,5 @@
 from typing import *
-from classifiers.trees.J48.Distribution import Distribution
+from classifiers.trees.J48Component.Distribution import Distribution
 from Utils import Utils
 import math
 
@@ -23,3 +23,9 @@ class EntropyBasedSplitCrit():
         if num<1e-6:
             return 0
         return Utils.lnFunc(num)
+
+    def splitEnt(self,bags:Distribution):
+        res=0
+        for i in range(bags.numBags()):
+            res=res+self.lnFunc(bags.perBag(i))
+        return (self.lnFunc(bags.total())-res)/math.log(2)

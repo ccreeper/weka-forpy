@@ -1,9 +1,9 @@
 from typing import *
-from classifiers.trees.J48.ModelSelection import ModelSelection
+from classifiers.trees.J48Component.ModelSelection import ModelSelection
 from Instances import Instances,Instance
-from classifiers.trees.J48.Distribution import Distribution
-from classifiers.trees.J48.NoSplit import NoSplit
-from classifiers.trees.J48.C45Split import C45Split
+from classifiers.trees.J48Component.Distribution import Distribution
+from classifiers.trees.J48Component.NoSplit import NoSplit
+from classifiers.trees.J48Component.C45Split import C45Split
 from Utils import Utils
 
 

@@ -1,9 +1,9 @@
 from typing import *
 from CapabilitiesHandler import CapabilitiesHandler
 from Instances import Instances,Instance
-from classifiers.trees.J48.ModelSelection import ModelSelection
-from classifiers.trees.J48.ClassifierSplitModel import ClassifierSplitModel
-from classifiers.trees.J48.Distribution import Distribution
+from classifiers.trees.J48Component.ModelSelection import ModelSelection
+from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
+from classifiers.trees.J48Component.Distribution import Distribution
 from Utils import Utils
 
 class ClassifierTree(CapabilitiesHandler):
@@ -23,8 +23,8 @@ class ClassifierTree(CapabilitiesHandler):
             text+=self.m_localModel.dumpLabel(0,self.m_train)
         else:
             text=self.dumpTree(0,text)
-        text+="\n\nNumber of Leaves  : \t" + self.numLeaves() + "\n"
-        text+="\nSize of the tree : \t" + self.numNodes() + "\n"
+        text+="\n\nNumber of Leaves  : \t" + str(self.numLeaves()) + "\n"
+        text+="\nSize of the tree : \t" + str(self.numNodes()) + "\n"
         return text
 
     def numLeaves(self):
@@ -71,31 +71,51 @@ class ClassifierTree(CapabilitiesHandler):
         data.deleteWithMissingClass()
         self.buildTree(data,False)
 
-    def buildTree(self,data:Instances,keepData:bool):
+    def buildTree(self,data:Instances,keepData:bool,test:Instances=None):
         if keepData:
-            self.m_train=data
-        self.m_test=None
-        self.m_isLeaf=False
-        self.m_isEmpty=False
-        self.m_sons=None
-        self.m_localModel=self.m_toSelectModel.selectModel(data)
-        if self.m_localModel.numSubsets() > 1:
-            localInstances=self.m_localModel.split(data)
-            data=None
-            self.m_sons=[]
-            for i in range(self.m_localModel.numSubsets()):
-                self.m_sons.append(self.getNewTree(localInstances[i]))
-                localInstances[i]=None
+            self.m_train = data
+        self.m_isLeaf = False
+        self.m_isEmpty = False
+        self.m_sons = None
+        if test is None:
+            self.m_test=None
+            self.m_localModel = self.m_toSelectModel.selectModel(data)
+            if self.m_localModel.numSubsets() > 1:
+                print("numSubsets:",self.localModel().numSubsets())
+                localInstances=self.m_localModel.split(data)
+                self.m_sons=[]
+                for i in range(self.m_localModel.numSubsets()):
+                    self.m_sons.append(self.getNewTree(localInstances[i]))
+                    localInstances[i]=None
+                print("sons len:", len(self.m_sons))
+                print("Leaves:", self.numLeaves())
+            else:
+                self.m_isLeaf=True
+                if Utils.equal(data.sumOfWeight(),0):
+                    self.m_isEmpty=True
+
         else:
-            self.m_isLeaf=True
-            if Utils.equal(data.sumOfWeight(),0):
-                self.m_isEmpty=True
-            data=None
+            self.m_localModel=self.m_toSelectModel.selectModel(data,test)
+            self.m_test=Distribution(test,self.m_localModel)
+            if self.m_localModel.numSubsets() > 1:
+                localTrain=self.m_localModel.split(data)
+                localTest=self.m_localModel.split(test)
+                self.m_sons=[]
+                for i in range(self.m_localModel.numSubsets()):
+                    self.m_sons.append(self.getNewTree(localTrain[i],localTest[i]))
+                    localTrain[i]=None
+                    localTest[i]=None
+            else:
+                self.m_isLeaf=True
+                if Utils.equal(data.sumOfWeight(),0):
+                    self.m_isEmpty=True
 
-
-    def getNewTree(self,data:Instances):
+    def getNewTree(self,data:Instances,test:Instances=None):
         newTree=ClassifierTree(self.m_toSelectModel)
-        newTree.buildTree(data,False)
+        if test is None:
+            newTree.buildTree(data,False)
+        else:
+            newTree.buildTree(data,False,test)
         return newTree
 
     def getProbsLaplace(self,classIndex:int,instance:Instance,weight:float):

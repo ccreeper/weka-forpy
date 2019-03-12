@@ -57,10 +57,10 @@ class ReplaceMissingValues(Filter):
             raise Exception("No input instance format defined")
         if self.m_ModesAndMeans is None:
             sumOfWeights=self.getInputFormat().sumOfWeight()
-            counts=[]
+            counts=[[] for k in range(self.getInputFormat().numAttributes())]
             for i in range(self.getInputFormat().numAttributes()):
                 if self.getInputFormat().attribute(i).isNominal():
-                    counts.append([0]*self.getInputFormat().attribute(i).numValues())
+                    counts[i]=[0]*self.getInputFormat().attribute(i).numValues()
                     if len(counts[i]) > 0:
                         counts[i][0]=sumOfWeights
             sums=[]

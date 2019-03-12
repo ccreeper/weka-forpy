@@ -1,9 +1,9 @@
 from typing import *
-from classifiers.trees.J48.ModelSelection import ModelSelection
+from classifiers.trees.J48Component.ModelSelection import ModelSelection
 from Instances import Instances,Instance
-from classifiers.trees.J48.Distribution import Distribution
-from classifiers.trees.J48.NoSplit import NoSplit
-from classifiers.trees.J48.C45Split import C45Split
+from classifiers.trees.J48Component.Distribution import Distribution
+from classifiers.trees.J48Component.NoSplit import NoSplit
+from classifiers.trees.J48Component.C45Split import C45Split
 from Utils import Utils
 
 class C45ModelSelection(ModelSelection):
@@ -16,6 +16,7 @@ class C45ModelSelection(ModelSelection):
         noSplitModel=NoSplit(checkDistribution)
         if Utils.gr(2*self.m_minNoObj,checkDistribution.total()) or \
             Utils.equal(checkDistribution.total(),checkDistribution.perClass(checkDistribution.maxClass())):
+            print("A")
             return noSplitModel
         if self.m_allData is not None:
             for attr in data.enumerateAttributes():
@@ -37,7 +38,10 @@ class C45ModelSelection(ModelSelection):
                     else:
                         averageInfoGain=averageInfoGain+currentModel[i].infoGain()
                         validModels+=1
+            else:
+                currentModel[i]=None
         if validModels == 0:
+            print("B")
             return noSplitModel
         averageInfoGain=averageInfoGain/validModels
         minResult=0
@@ -48,9 +52,11 @@ class C45ModelSelection(ModelSelection):
                     bestModel=currentModel[i]
                     minResult=currentModel[i].gainRatio()
         if Utils.equal(minResult,0):
+            print("C")
             return noSplitModel
         bestModel.distribution().addInstWithUnknown(data,bestModel.attIndex())
         if self.m_allData is not None and not self.m_doNotMakeSplitPointActualValue:
             bestModel.setSplitPoint(self.m_allData)
+        print("D")
         return bestModel
 

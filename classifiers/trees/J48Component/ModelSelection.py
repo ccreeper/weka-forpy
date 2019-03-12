@@ -1,5 +1,5 @@
 from typing import *
-from classifiers.trees.J48.ClassifierSplitModel import ClassifierSplitModel
+from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
 from Instances import Instances,Instance
 
 class ModelSelection():

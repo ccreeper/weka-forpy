@@ -1,7 +1,7 @@
 from typing import *
 from Utils import Utils
-from classifiers.trees.J48.ClassifierSplitModel import ClassifierSplitModel
 from Instances import Instances,Instance
+import classifiers.trees.J48Component.ClassifierSplitModel
 
 class Distribution():
     @overload
@@ -15,7 +15,7 @@ class Distribution():
     @overload
     def __init__(self,source:Instances):...
     @overload
-    def __init__(self,source:Instances,modelToUse:ClassifierSplitModel):...
+    def __init__(self,source:Instances,modelToUse:'ClassifierSplitModel'):...
     @overload
     def __init__(self,toMerge:'Distribution'):...
     @overload
@@ -45,7 +45,7 @@ class Distribution():
             self.m_perClass=[0]*a0.numClasses()
             for inst in a0:
                 self.add(0,inst)
-        elif isinstance(a0,Instances) and isinstance(a1,ClassifierSplitModel):
+        elif isinstance(a0,Instances) and isinstance(a1,classifiers.trees.J48Component.ClassifierSplitModel.ClassifierSplitModel):
             self.m_perClassPerBag=[[0]*a0.numClasses() for k in range(a1.numSubsets())]
             self.m_perBag=[0]*a1.numSubsets()
             self.totaL=0
