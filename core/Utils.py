@@ -21,6 +21,10 @@ class Utils():
         return ("{0:>"+str(length)+"."+str(length)+"}").format(string)
 
     @classmethod
+    def padRight(cls,string:str,length:int):
+        return ("{0:<"+str(length)+"."+str(length)+"}").format(string)
+
+    @classmethod
     def isMissingValue(cls,value):
         return math.isnan(value)
 

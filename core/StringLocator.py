@@ -18,15 +18,45 @@ class StringLocator(AttributeLocator):
     def getAllowedIndices(self):
         return self.m_AllowedIndices
 
+    @overload
     @classmethod
-    def copyStringValues(cls,inst:Instance,destDataset:Instances,strAtts:AttributeLocator):
-        if inst.dataset() is None:
-            raise Exception("Instance has no dataset assigned!!")
-        elif inst.dataset().numAttributes() != destDataset.numAttributes():
-            raise Exception("Src and Dest differ in # of attributes: "
-                      + str(inst.dataset().numAttributes()) + " != "
-                      + str(destDataset.numAttributes()))
-        cls.copyStringValuesFromSrc(inst,True,inst.dataset(),strAtts,destDataset,strAtts)
+    def copyStringValues(cls,inst:Instance,destDataset:Instances,strAtts:AttributeLocator):...
+    @overload
+    @classmethod
+    def copyStringValues(cls,inst:Instance,instSrcCompat:bool,srcDataset:Instances,srcLoc:AttributeLocator,destDataset:Instances,destLoc:AttributeLocator):...
+
+    @classmethod
+    def copyStringValues(cls, inst:Instance, a0=None, a1=None, a2:AttributeLocator=None, a3:Instances=None, a4:AttributeLocator=None):
+        if isinstance(a0,Instances) and isinstance(a1,AttributeLocator):
+            if inst.dataset() is None:
+                raise Exception("Instance has no dataset assigned!!")
+            elif inst.dataset().numAttributes() != a0.numAttributes():
+                raise Exception("Src and Dest differ in # of attributes: "
+                          + str(inst.dataset().numAttributes()) + " != "
+                          + str(a0.numAttributes()))
+            cls.copyStringValuesFromSrc(inst,True,inst.dataset(),a1,a0,a1)
+        else:
+            if a1 == a3:
+                return
+            if len(a2.getAttributeIndices()) != len(a4.getAttributeIndices()):
+                raise Exception("Src and Dest string indices differ in length: "
+                                + str(len(a2.getAttributeIndices())) + " != "
+                                + str(len(a4.getAttributeIndices())))
+            if len(a2.getLocatorIndices()) != len(a4.getLocatorIndices()):
+                raise Exception("Src and Dest locator indices differ in length: "
+                                + str(len(a2.getLocatorIndices())) + " != "
+                                + str(len(a4.getLocatorIndices())))
+            for i in range(len(a2.getAttributeIndices())):
+                if a0:
+                    instIndex = a2.getActualIndex(a2.getAttributeIndices()[i])
+                else:
+                    instIndex = a4.getActualIndex(a4.getAttributeIndices()[i])
+                src = a1.attribute(a2.getActualIndex(a2.getAttributeIndices()[i]))
+                dest = a3.attribute(a4.getActualIndex(a4.getAttributeIndices()[i]))
+                if not inst.isMissing(instIndex):
+                    valIndex = dest.addStringValue(src, int(inst.value(instIndex)))
+                    inst.setValue(instIndex, valIndex)
+
 
     @classmethod
     def copyStringValuesFromSrc(cls,instance:Instance,instSrcCompat:bool,srcDataset:Instances,srcLoc:AttributeLocator,

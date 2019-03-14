@@ -6,6 +6,7 @@ from Utils import Utils
 from core.AttributeStats import AttributeStats
 import copy
 import random
+import math
 
 class Instance():
     def __init__(self,a0,a1=None):
@@ -437,6 +438,49 @@ class Instances(object):
         self.m_Attributes.pop(attIndex)
         self.m_Attributes.insert(attIndex,newAtt)
         return True
+
+    def variance(self,attIndex:int):
+        if not self.attribute(attIndex).isNumeric():
+            raise Exception( "Can't compute variance because attribute is " + "not numeric!")
+        mean=sumWeights=0
+        var=float("nan")
+        for i in range(self.numInstances()):
+            if not self.instance(i).isMissing(attIndex):
+                weight=self.instance(i).weight()
+                value=self.instance(i).value(attIndex)
+                if math.isnan(var):
+                    mean=value
+                    sumWeights=weight
+                    var=0
+                    continue
+                delta=weight*(value-mean)
+                sumWeights+=weight
+                mean+=delta/sumWeights
+                var+=delta*(value-mean)
+        if sumWeights <= 1:
+            return float("nan")
+        var/=sumWeights-1
+        if var < 0:
+            return 0
+        return var
+
+    def meanOrMode(self,attIndex:int):
+        if self.attribute(attIndex).isNumeric():
+            result=found=0
+            for j in range(self.numInstances()):
+                if not self.instance(j).isMissing(attIndex):
+                    found+=self.instance(j).weight()
+                    result+=self.instance(j).weight()*self.instance(j).value(attIndex)
+            if found <= 0:
+                return 0
+            return result/found
+        elif self.attribute(attIndex).isNominal():
+            counts=[0]*self.attribute(attIndex).numValues()
+            for j in range(self.numInstances()):
+                if not self.instance(j).isMissing(attIndex):
+                    counts[int(self.instance(j).value(attIndex))]+=self.instance(j).weight()
+            return Utils.maxIndex(counts)
+        return 0
 
     def deleteAttributeAt(self,position:int):
         if position<0 or position>=self.numAttributes():

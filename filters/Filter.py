@@ -64,10 +64,10 @@ class Filter():
             result.disableDependency(CapabilityEnum.NO_CLASS)
         return result
 
-    def setOutputFormat(self, outputFormat: Instances):
+    def setOutputFormat(self, outputFormat: Instances=None):
         if outputFormat is not None:
             self.m_OutputFormat = outputFormat.stringFreeStructure()
-            self.initOutputLocators(self.m_OutputFormat,None)
+            self.initOutputLocators(self.m_OutputFormat)
             relationName = outputFormat.relationName() + "-" +self.__class__.__name__
             if isinstance(self,OptionHandler):
                 options=self.getOptions()
@@ -78,7 +78,7 @@ class Filter():
             self.m_OutputFormat=None
         self.m_OutputQueue=Queue()
 
-    def push(self,instance:Instance,copyInstance:bool):
+    def push(self,instance:Instance,copyInstance:bool=True):
         if instance is not None:
             if instance.dataset() is not None:
                 if copyInstance:
@@ -87,13 +87,21 @@ class Filter():
             instance.setDataset(self.m_OutputFormat)
             self.m_OutputQueue.put(instance)
 
-    def copyValues(self,instance:Instance,isInput:bool):
-        if isInput:
-            StringLocator.copyStringValues(instance,self.m_InputFormat,self.m_InputStringAtts)
+    @overload
+    def copyValues(self,instance:Instance,isInput:bool):...
+    @overload
+    def copyValues(self,instance:Instance,instSrcCompat:bool,srcDataset:Instances,destDataset:Instances):...
+    def copyValues(self,instance:Instance,a0:bool,a1:Instances=None,a2:Instances=None):
+        if a1 is None and a2 is None:
+            if a0:
+                StringLocator.copyStringValues(instance,self.m_InputFormat,self.m_InputStringAtts)
+            else:
+                StringLocator.copyStringValues(instance,self.m_OutputFormat,self.m_OutputStringAtts)
         else:
-            StringLocator.copyStringValues(instance,self.m_OutputFormat,self.m_OutputStringAtts)
+            StringLocator.copyStringValues(instance,a0,a1,self.m_InputStringAtts,a2,self.m_OutputStringAtts)
 
-    def initOutputLocators(self,data:Instances,indices:List):
+
+    def initOutputLocators(self,data:Instances,indices:List=None):
         if indices is None:
             self.m_OutputStringAtts=StringLocator(data)
         else:
@@ -102,10 +110,13 @@ class Filter():
     def getInputFormat(self):
         return self.m_InputFormat
 
+    def outputFormatPeek(self):
+        return self.m_OutputFormat
+
     def resetQueue(self):
         self.m_OutputQueue=Queue()
 
-    def initInputLocators(self,data:Instances,indices:List):
+    def initInputLocators(self,data:Instances,indices:List=None):
         if indices is None:
             self.m_InputStringAtts=StringLocator(data)
         else:
