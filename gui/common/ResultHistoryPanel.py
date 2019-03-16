@@ -11,8 +11,32 @@ class ResultHistoryPanel(QListWidget):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.m_Results=dict()       #type:Dict[str,str]
         self.m_SingleName=""
+        # self.m_IsMenuClick=False
         self.itemClicked.connect(self.valueChanged)
+        #菜单设置
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.generateMenu)
+        self.createMenu()
 
+    def generateMenu(self):
+        # self.setMenuClickNow(True)
+        # self.setMenu()
+        action = self.m_Menu.exec_(self.cursor().pos())
+        if action == self.showClassifierErrors:
+            pass
+        elif action == self.showVisualizeTree:
+            pass
+        else:
+            return
+        # self.m_Table.setMenuClickNow(False)
+
+    def createMenu(self):
+        self.m_Menu = QMenu()
+        self.showClassifierErrors = self.m_Menu.addAction(u"Visualize classifier errors")
+        self.showVisualizeTree = self.m_Menu.addAction(u"Visualize tree")
+
+    # def setMenuClickNow(self,flag:bool):
+    #     self.m_IsMenuClick=flag
 
     def keyPressEvent(self, e: QKeyEvent):
         if e.key() == Qt.Key_Delete:

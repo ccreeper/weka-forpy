@@ -7,6 +7,7 @@ from Utils import Utils
 from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from gui.classifier.Plot2D import Plot2D
+from PlotData2D import PlotData2D
 
 
 class ClassifierErrorsPlotInstances(AbstractPlotInstances):
@@ -134,4 +135,11 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
                     self.m_PlotShapes.append(Plot2D.MISSING_SHAPE)
                 self.m_PlotSizes.append(errd)
 
-
+    def createPlotData(self,name:str):
+        if not self.m_SaveForVisualization:
+            return None
+        result=PlotData2D(self.m_PlotInstances)
+        result.setShapeSize(self.m_PlotSizes)
+        result.setShapeType(self.m_PlotShapes)
+        result.setPlotName(name+" ("+self.m_Instances.relationName+")")
+        return result

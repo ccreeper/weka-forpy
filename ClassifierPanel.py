@@ -19,6 +19,7 @@ from Utils import Utils
 from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from classifiers.rules.ZeroR import ZeroR
+from VisualizePanel import VisualizePanel
 
 
 class ClassifierPanel():
@@ -42,6 +43,7 @@ class ClassifierPanel():
         self.m_History=win.resultList           #type:ResultHistoryPanel
         self.m_ClassifierEditor=GenericObjectEditor()   #type:GenericObjectEditor
         self.m_CEPanel=PropertyPanel(self,self.m_ClassifierEditor)  #type:PropertyPanel
+        self.m_CurrentVis=None      #type:VisualizePanel
 
         self.m_History.outtext_write_signal.connect(self.updateOutputText)
         self.m_selectedEvalMetrics=Evaluation.getAllEvaluationMetricNames() #type:List[str]
@@ -164,8 +166,8 @@ class ClassifierPanel():
         else:
             name+=cname
         cmd = classifier.__module__
-        if isinstance(classifier,OptionHandler):
-            cmd+=" "+Utils.joinOptions(classifier.getOptions())
+        # if isinstance(classifier,OptionHandler):
+        #     cmd+=" "+Utils.joinOptions(classifier.getOptions())
         plotInstances=ClassifierErrorsPlotInstances()
         plotInstances.setInstances(userTestStructure if testMode == 4 else inst)
         plotInstances.setClassifier(classifier)
@@ -174,9 +176,9 @@ class ClassifierPanel():
         outPutResult+="=== Run information ===\n\n"
         outPutResult+="Scheme:       " + cname
 
-        if isinstance(classifier,OptionHandler):
-            o=classifier.getOptions()
-            outPutResult+=" "+Utils.joinOptions(o)
+        # if isinstance(classifier,OptionHandler):
+        #     o=classifier.getOptions()
+        #     outPutResult+=" "+Utils.joinOptions(o)
         outPutResult+="\n"
         outPutResult+="Relation:     " + inst.relationName() + '\n'
         outPutResult+="Instances:    " + str(inst.numInstances()) + '\n'
@@ -276,8 +278,12 @@ class ClassifierPanel():
             outPutResult+=evaluation.toClassDetailsString()+'\n'
             outPutResult+=evaluation.toMatrixString()+'\n'
         self.m_History.updateResult(name,outPutResult)
-
         Utils.debugOut(outPutResult)
+
+        if(plotInstances is not None and plotInstances.canPlot(False)):
+            self.m_CurrentVis=VisualizePanel()
+            self.m_CurrentVis.setName(name+" ("+inst.relationName()+")")
+
         self.mutex.lock()
         self.m_StartBut.setEnabled(True)
         self.m_StopBut.setEnabled(False)

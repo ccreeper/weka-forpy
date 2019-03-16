@@ -20,6 +20,11 @@ class ClusterEvaluation():
         self.m_clusteringResult=""
         self.m_clusterAssignments=None      #type:List
 
+    def getClusterAssignments(self):
+        return self.m_clusteringResult
+
+    def getClassesToClusters(self):
+        return self.m_classToCluster
 
     def setClusterer(self,clusterer:Clusterer):
         self.m_Clusterer=clusterer

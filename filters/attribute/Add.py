@@ -2,9 +2,8 @@ from typing import *
 
 from Attributes import Attribute
 from Instances import Instances,Instance
-from Option import Option
-from OptionHandler import OptionHandler
 from SingleIndex import SingleIndex
+from Capabilities import Capabilities,CapabilityEnum
 from Tag import Tag
 from Utils import Utils
 
@@ -12,7 +11,7 @@ from core.SelectedTag import SelectedTag
 from filters.Filter import Filter
 
 
-class Add(Filter,OptionHandler):
+class Add(Filter):
     TAGS_TYPE=[Tag(Attribute.NUMERIC,"NUM","Numeric attribute"),
                Tag(Attribute.NOMINAL,"NOM","Nominal attribute"),
                Tag(Attribute.STRING,"STR","String attribute"),
@@ -27,74 +26,15 @@ class Add(Filter,OptionHandler):
         self.m_DateFormat="%Y-%m-%d'T'%H:%M:%S"
         self.m_Weight=1
 
-    def listOptions(self):
-        newVector=[]
-        desc=""
-
-        for i in  range(len(self.TAGS_TYPE)):
-            tag=SelectedTag(self.TAGS_TYPE[i].getID(),self.TAGS_TYPE)
-            desc+="\t"+tag.getSelectedTag().getIDStr()+" = "+tag.getSelectedTag().getReadable()+"\n"
-
-        newVector.append(Option("\tThe type of attribute to create:\n"+ desc + "\t(default: " + str(SelectedTag(Attribute.NUMERIC, self.TAGS_TYPE))
-                                 + ")", "T", 1, "-T " + Tag.toOptionList(self.TAGS_TYPE)))
-        newVector.append(Option("\tSpecify where to insert the column. First and last\n" + "\tare valid indexes.(default: last)", "C", 1, "-C <index>"))
-        newVector.append(Option("\tName of the new attribute.\n" + "\t(default: 'Unnamed')", "N", 1, "-N <name>"))
-        newVector.append(Option("\tCreate nominal attribute with given labels\n" + "\t(default: numeric attribute)", "L", 1, "-L <label1,label2,...>"))
-        newVector.append(Option("\tThe format of the date values (see ISO-8601)\n" + "\t(default: yyyy-MM-dd'T'HH:mm:ss)", "F", 1, "-F <format>"))
-        newVector.append(Option("\tThe weight for the new attribute\n" + "\t(default: 1.0)", "W", 1, "-W <double>"))
-        return newVector
-
-    def setOption(self,options:List[str]):
-        tmpStr=Utils.getOption('T',options)
-        if len(tmpStr) != 0:
-            self.setAttributeType(SelectedTag(tmpStr,self.TAGS_TYPE))
-        else:
-            self.setAttributeType(SelectedTag(Attribute.NUMERIC,self.TAGS_TYPE))
-
-        tmpStr=Utils.getOption('C',options)
-        if len(tmpStr) == 0:
-            tmpStr="last"
-        self.setAttributeIndex(tmpStr)
-        self.setAttributeName(Utils.unbackQuoteChars(Utils.getOption('N',options)))
-        if self.m_AttributeType == Attribute.NOMINAL:
-            tmpStr=Utils.getOption('L',options)
-            if len(tmpStr) != 0:
-                self.setNominalLabels(tmpStr)
-        elif self.m_AttributeType == Attribute.DATE:
-            tmpStr=Utils.getOption('F',options)
-            #TODO  时间格式暂不做修改
-            if len(tmpStr) != 0:
-                pass
-        tmpStr=Utils.getOption('W',options)
-        if len(tmpStr) == 0:
-            self.setWeight(1.0)
-        else:
-            self.setWeight(float(tmpStr))
-        if self.getInputFormat() is not None:
-            self.setInputFormat(self.getInputFormat())
-
-
-
-    def getOptions(self)->List[str]:
-        result=[]
-        if self.m_AttributeType != Attribute.NUMERIC:
-            result.append('-T')
-            result.append(str(self.getAttributeType()))
-        result.append('-N')
-        result.append(Utils.backQuoteChars(self.getAttributeName()))
-        if self.m_AttributeType == Attribute.NOMINAL:
-            result.append('-L')
-            result.append(self.getNominalLabels())
-            result.append('-F')
-            result.append(self.getDateFormat())
-        result.append('-C')
-        result.append(self.getAttributeIndex())
-
-        result.append('-W')
-        result.append(str(self.getWeight()))
-
+    def getCapabilities(self,data:Instances=None):
+        result=super().getCapabilities()
+        result.disableAll()
+        result.enableAllAttributes()
+        result.enable(CapabilityEnum.MISSING_VALUES)
+        result.enableAllClasses()
+        result.enable(CapabilityEnum.MISSING_CLASS_VALUES)
+        result.enable(CapabilityEnum.NO_CLASS)
         return result
-
 
     def getAttributeType(self):
         return SelectedTag(self.m_AttributeType,self.TAGS_TYPE)
@@ -174,6 +114,21 @@ class Add(Filter,OptionHandler):
         outputFormat.insertAttributeAt(newAttribute,self.m_Insert.getIndex())
         self.setOutputFormat(outputFormat)
         return True
+
+    def input(self,instance:Instance):
+        if self.getInputFormat() is None:
+            raise Exception("No input instance format defined")
+        if self.m_NewBatch:
+            self.resetQueue()
+            self.m_NewBatch=False
+        inst=instance.copy()
+        self.copyValues(inst,True,inst.dataset(),self.outputFormatPeek())
+        inst.setDataset()
+        inst.insertAttributeAt(self.m_Insert.getIndex())
+        self.push(inst)
+        return True
+
+
 
     # def getCapabilities(self):
 

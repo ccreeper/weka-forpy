@@ -36,6 +36,21 @@ class Instance():
         text=self.toStringNoWeight(afterDecimalPoint)
         return text
 
+    def insertAttributeAt(self,position:int):
+        if self.m_Dataset is not None:
+            raise Exception("Instance has accesss to a dataset!")
+        if position < 0 or position > self.numAttributes():
+            raise Exception("Can't insert attribute: index out of range")
+        self.forceInsertAttributeAt(position)
+
+    def forceInsertAttributeAt(self,position:int):
+        newValues=self.m_AttValues[:]
+        newValues.append(0)
+        newValues[position]=Utils.missingValue()
+        for i in range(position+1,len(self.m_AttValues)+1):
+            newValues[i]=self.m_AttValues[i-1]
+        self.m_AttValues=newValues
+
     def hasMissingValue(self):
         classIndex=self.classIndex()
         for i in range(self.numValues()):
@@ -78,7 +93,7 @@ class Instance():
         return text
 
 
-    def setDataset(self,inst:'Instances'):
+    def setDataset(self,inst:'Instances'=None):
         self.m_Dataset=inst
 
     def setClassMissing(self):

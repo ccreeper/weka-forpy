@@ -1,6 +1,7 @@
 from typing import *
 from OptionHandler import OptionHandler
 from Instances import Instances,Instance
+from PlotData2D import PlotData2D
 
 class AbstractPlotInstances(OptionHandler):
     def __init__(self):
@@ -18,7 +19,7 @@ class AbstractPlotInstances(OptionHandler):
 
     def determineFormat(self):pass
 
-    def setInstances(self,value):
+    def setInstances(self,value:Instances):
         self.m_Instances=value
 
     def getPlotInstances(self):
@@ -36,3 +37,10 @@ class AbstractPlotInstances(OptionHandler):
             return self.getPlotInstances().numInstances()>0
         except Exception:
             return False
+
+    def getPlotData(self,name:str)->PlotData2D:
+        if not self.m_FinishUpCalled:
+            self.finishUp()
+        return self.createPlotData(name)
+
+    def createPlotData(self,name:str)->PlotData2D:...
