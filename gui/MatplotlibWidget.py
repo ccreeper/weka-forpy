@@ -72,6 +72,7 @@ class MyMplCanvas(FigureCanvas):
         self.m_maxX=self.m_minX=self.m_maxY=self.m_minY=self.m_maxC=self.m_minC=0
         self.m_XaxisEnd=self.m_YaxisEnd=self.m_XaxisStart=self.m_YaxisStart=0
         self.m_axisChanged=False
+        self.m_plotResize=True
         for i in range(10):
             pc=self.m_defaultColors.get(self.m_defaultColorsName[i%10])
             self.m_colorList.append(pc)
@@ -84,6 +85,8 @@ class MyMplCanvas(FigureCanvas):
             raise Exception("No instances in plot data!")
         self.m_masterPlot=newPlot
         self.m_plotInstances=self.m_masterPlot.m_plotInstances
+        # print("plotInstance numIns:",self.m_plotInstances.numInstances())
+        # print("plotInstance attIns:",self.m_plotInstances.numAttributes())
         self.m_plots.append(newPlot)
         self.setXindex(self.m_xIndex)
         self.setYindex(self.m_yIndex)
@@ -93,9 +96,10 @@ class MyMplCanvas(FigureCanvas):
         self.m_xIndex=x
         for i in range(len(self.m_plots)):
             self.m_plots[i].setXindex(self.m_xIndex)
+        # print("mplot size:",len(self.m_plots))
+        # print("x:",x)
         self.determineBounds()
         self.m_axisChanged=True
-        self.paintPoint()
 
     def setYindex(self,y:int):
         self.m_yIndex=y
@@ -103,7 +107,6 @@ class MyMplCanvas(FigureCanvas):
             self.m_plots[i].setYindex(self.m_yIndex)
         self.determineBounds()
         self.m_axisChanged=True
-        self.paintPoint()
 
     def setCindex(self,c:int):
         self.m_cIndex=c
@@ -111,7 +114,6 @@ class MyMplCanvas(FigureCanvas):
             self.m_plots[i].setCindex(self.m_cIndex)
         self.determineBounds()
         self.m_axisChanged=True
-        self.paintPoint()
 
     def determineBounds(self):
         self.m_minX=self.m_plots[0].m_minX
@@ -139,8 +141,13 @@ class MyMplCanvas(FigureCanvas):
             value=self.m_plots[i].m_maxC
             if value > self.m_maxC:
                 self.m_maxC=value
+        # print("minX:",self.m_minX)
+        # print("maxX:",self.m_maxX)
+        # print("minY:",self.m_minY)
+        # print("maxY:",self.m_maxY)
+        # print("minC:",self.m_minC)
+        # print("maxC:",self.m_maxC)
         self.fillLookup()
-        self.paintPoint()
 
     def fillLookup(self):
         for j in range(len(self.m_plots)):
@@ -156,8 +163,12 @@ class MyMplCanvas(FigureCanvas):
                         y=self.convertToPanelY(temp_plot.m_plotInstances.instance(i).value(self.m_yIndex))
                         temp_plot.m_pointLookup[i][0]=x
                         temp_plot.m_pointLookup[i][1]=y
-
-
+        # print("==================")
+        # for plot in self.m_plots:
+        #     for i in range(plot.m_plotInstances.numInstances()):
+        #         print(i,"_0:",plot.m_pointLookup[i][0])
+        #         print(i,"_1:",plot.m_pointLookup[i][1])
+        # print("===================")
 
 
     def convertToPanelX(self,xval:float):
@@ -227,36 +238,53 @@ class MyMplCanvas(FigureCanvas):
         self.draw()
 
     def paintPoint(self):
+        # print("xStart: ",self.m_XaxisStart,"xEnd: ",self.m_XaxisEnd)
+        # print("yStart: ",self.m_YaxisStart,"yEnd: ",self.m_YaxisEnd)
+        self.m_XaxisStart=189900
+        self.m_XaxisEnd=325000
+        self.m_YaxisStart=223957.0928571
+        self.m_YaxisEnd=223957.1928571
         self.fig.subplots_adjust(top=0.95, bottom=0.1, left=0.2, right=0.95, hspace=0, wspace=0)
         self.paintAxis()
         self.showFrame(True)
         if self.m_plotInstances is not None and self.m_plotInstances.numInstances() > 0\
             and self.m_plotInstances.numAttributes() > 0:
             self.paintAxis()
+            if self.m_axisChanged or self.m_plotResize:
+                x_range=self.m_XaxisEnd-self.m_XaxisStart
+                y_range=self.m_YaxisEnd-self.m_YaxisStart
+                if x_range < 10:
+                    x_range=10
+                if y_range < 10:
+                    y_range=10
+                self.m_drawnPoints=[[0]*(y_range+1) for i in range(x_range+1)]
+                self.fillLookup()
+                self.m_plotResize=False
+                self.m_axisChanged=False
             self.paintData()
+        self.draw()
 
 
 
     def paintAxis(self):
-        len = self.m_XaxisEnd-self.m_XaxisStart
-        Xticks = [0.6, len/2, len-0.5]
-        self.axes.set_xticks(Xticks)
-        len = self.m_YaxisEnd-self.m_YaxisStart
-        Yticks=[0.6, len/2, len-0.5]
-        self.axes.set_yticks(Yticks)
-        top = '%.2f' % self.m_YaxisEnd
-        mid = '%.2f' % ((self.m_YaxisEnd+self.m_YaxisStart)/2)
-        bottom = '%.2f' % self.m_YaxisStart
-        labelNumber = [int(self.m_XaxisStart), int((self.m_XaxisEnd+self.m_XaxisStart)/2), int(self.m_YaxisEnd)]
+        ticks = [self.m_XaxisStart,(self.m_XaxisStart+self.m_XaxisEnd)//2, self.m_XaxisEnd]
+        self.axes.set_xticks(ticks)
+        ticks = [self.m_YaxisStart,(self.m_YaxisStart+self.m_YaxisEnd)/2, self.m_YaxisEnd]
+        self.axes.set_yticks(ticks)
+        labelNumber = [int(self.m_XaxisStart), int((self.m_XaxisEnd+self.m_XaxisStart)/2), int(self.m_XaxisEnd)]
         labels = [str(i) for i in labelNumber]
         self.axes.set_xticklabels(labels)
-        labelNumber = [bottom,mid,top]
+        labelNumber = [self.m_YaxisStart,(self.m_YaxisEnd+self.m_YaxisStart)/2, self.m_YaxisEnd]
         labels = [str(i) for i in labelNumber]
         self.axes.set_yticklabels(labels)
+        self.axes.set_xlim(self.m_XaxisStart,self.m_XaxisEnd)
+        self.axes.set_ylim(self.m_YaxisStart,self.m_YaxisEnd)
 
     def paintData(self):
+        print("size:  ",len(self.m_plots))
         for j in range(len(self.m_plots)):
             temp_plot=self.m_plots[j]
+            print("num:  ",temp_plot.m_plotInstances.numInstances())
             for i in range(temp_plot.m_plotInstances.numInstances()):
                 if temp_plot.m_plotInstances.instance(i).isMissing(self.m_xIndex) or \
                     temp_plot.m_plotInstances.instance(i).isMissing(self.m_yIndex):
@@ -269,55 +297,48 @@ class MyMplCanvas(FigureCanvas):
                         #TODO 上点坐标，可用于连线
                         # prevx=temp_plot.m_pointLookup[i-1][0]+temp_plot.m_pointLookup[i-1][2]
                         # prevy=temp_plot.m_pointLookup[i-1][1]+temp_plot.m_pointLookup[i-1][3]
-                    x_range=int(x)-self.m_XaxisStart
-                    y_range=int(y)-self.m_YaxisStart
-                    if x_range >= 0 and y_range >= 0:
-                        if self.m_drawnPoints[x_range][y_range] == i or \
-                            self.m_drawnPoints[x_range][y_range] == 0 or\
-                            temp_plot.m_shapeSize[i] == temp_plot.m_alwaysDisplayPointsOfThisSize or\
-                            temp_plot.m_displayAllPoints:
-                            if temp_plot.m_plotInstances.attribute(self.m_cIndex).isNominal():
-                                if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
-                                    color="#808080"
-                                else:
-                                    ind=int(temp_plot.m_plotInstances.instance(i).value(self.m_cIndex))
-                                    color=self.m_colorList[i]
-                                if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
-                                    #TODO 连线
-                                    # if temp_plot.m_connecctPoints[i]:
-                                    #     pass
-                                    self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value)
-                                else:
-                                    if temp_plot.m_shapeType[i] == Plot2D.CONST_AUTOMATIC_SHAPE:
-                                        # if temp_plot.m_connecctPoints[i]:
-                                        self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j)
-                                    else:
-                                        # if temp_plot.m_connecctPoints[i]
-                                        self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i])
+                    if temp_plot.m_plotInstances.attribute(self.m_cIndex).isNominal():
+                        if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
+                            color="#808080"
+                        else:
+                            color=self.m_colorList[i]
+                        if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
+                            #TODO 连线
+                            # if temp_plot.m_connecctPoints[i]:
+                            #     pass
+                            self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value)
+                        else:
+                            if temp_plot.m_shapeType[i] == Plot2D.CONST_AUTOMATIC_SHAPE:
+                                # if temp_plot.m_connecctPoints[i]:
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j)
                             else:
-                                if not temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
-                                    r=(temp_plot.m_plotInstances.instance(i).value(self.m_cIndex)-self.m_minC)/(self.m_maxC-self.m_minC)
-                                    r=r*240+15
-                                    color=Utils.rgb((int(r),150,int(255-r)))
-                                else:
-                                    color="#808080"
-                                if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
-                                    # if temp_plot.m_connecctPoints[i]:
-                                    self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value)
-                                else:
-                                    if temp_plot.m_shapeType[i] == Plot2D.CONST_AUTOMATIC_SHAPE:
-                                        # if temp_plot.m_connecctPoints[i]:
-                                        self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j)
-                                    else:
-                                        # if temp_plot.m_connecctPoints[i]:
-                                        self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i])
+                                # if temp_plot.m_connecctPoints[i]
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i])
+                    else:
+                        if not temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
+                            r=(temp_plot.m_plotInstances.instance(i).value(self.m_cIndex)-self.m_minC)/(self.m_maxC-self.m_minC)
+                            r=r*240+15
+                            color=Utils.rgb((int(r),150,int(255-r)))
+                        else:
+                            color="#808080"
+                        if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
+                            # if temp_plot.m_connecctPoints[i]:
+                            self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value)
+                        else:
+                            if temp_plot.m_shapeType[i] == Plot2D.CONST_AUTOMATIC_SHAPE:
+                                # if temp_plot.m_connecctPoints[i]:
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j)
+                            else:
+                                # if temp_plot.m_connecctPoints[i]:
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i])
 
 
 
 
 
     def drawDataPoint(self,x:float,y:float,size:int,color:str,shape:int):
-        if size == 0:
+        print("x:",x,"y:",y,"size:",size)
+        if size <= 0:
             size=1
         if shape != Plot2D.ERROR_SHAPE and shape != Plot2D.MISSING_SHAPE:
             shape=shape%5
@@ -325,13 +346,20 @@ class MyMplCanvas(FigureCanvas):
         self.axes.scatter(x,y,s=size,c=color,marker=marker)
 
     # def paintPoint(self):
+    #     self.m_XaxisStart=189900
+    #     self.m_XaxisEnd=325000
+    #     self.m_YaxisStart=223957.0928571
+    #     self.m_YaxisEnd=223957.1928571
+    #     print("xStart: ",self.m_XaxisStart,"xEnd: ",self.m_XaxisEnd)
+    #     print("yStart: ",self.m_YaxisStart,"yEnd: ",self.m_YaxisEnd)
     #     self.fig.subplots_adjust(top=0.95, bottom=0.1, left=0.2, right=0.95, hspace=0, wspace=0)
     #     self.paintAxis()
     #     self.showFrame(True)
-    #     x = np.arange(1, 5)
-    #     y = x
-    #     sValue = x * 10
-    #     self.axes.scatter(x, y, s=sValue, c='r', marker='^')
+    #     # x = np.arange(1, 5)
+    #     # y = x
+    #     # sValue = x * 10
+    #     # self.axes.scatter(x, y, s=sValue, c='r', marker='^')
+    #     self.axes.scatter(230000,223957.14285714287,s=10,c='r',marker='x')
     #     self.draw()
 
 class MatplotlibWidget(QWidget):
@@ -372,11 +400,6 @@ class MatplotlibWidget(QWidget):
         self.mpl.axes.cla()
         self.mpl.axes.set_xticks([])
         self.mpl.axes.set_yticks([])
-
-    def addPlot(self,newPlot:PlotData2D):
-        if len(self.m_plot2D.getPlots()) == 0:
-            self.m_plot2D.addPlot(newPlot)
-            #TODO m_classPanel???
 
 # if __name__=="__main__":
 #     app=QApplication(sys.argv)

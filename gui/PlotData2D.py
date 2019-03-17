@@ -125,3 +125,6 @@ class PlotData2D():
 
     def setPlotName(self,name:str):
         self.m_plotName=name
+
+    def getCindex(self):
+        return self.m_cIndex

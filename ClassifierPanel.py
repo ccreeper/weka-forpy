@@ -124,7 +124,6 @@ class ClassifierPanel():
             self.m_RunThread.setPriority(QThread.LowPriority)
             self.m_RunThread.start()
 
-
     def threadClassifierRun(self):
         self.m_CEPanel.addToHistory()
         inst=Instances(self.m_Instances)
@@ -140,7 +139,6 @@ class ClassifierPanel():
         classIndex=self.m_ClassCombo.currentIndex()
         inst.setClassIndex(classIndex)
         classifier=self.m_ClassifierEditor.getValue()           #type:Classifier
-        template=copy.deepcopy(classifier)
         name=time.strftime("%H:%M:%S - ")
         outPutResult=""
         evaluation=None     #type:Evaluation
@@ -207,7 +205,8 @@ class ClassifierPanel():
         outPutResult+=str(classifier)+"\n"
         outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)+ " seconds\n\n"
         self.m_History.updateResult(name,outPutResult)
-        #TODO 1486 绘图
+
+        fullClassifier=copy.deepcopy(classifier)
         print("==========update Compelte=================")
 
         if testMode == 2:
@@ -251,6 +250,7 @@ class ClassifierPanel():
         elif testMode == 3:
             evaluation=Evaluation(inst)
             evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
+
             plotInstances.setInstances(userTestStructure)
             evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
             plotInstances.setUp()
@@ -283,6 +283,19 @@ class ClassifierPanel():
         if(plotInstances is not None and plotInstances.canPlot(False)):
             self.m_CurrentVis=VisualizePanel()
             self.m_CurrentVis.setName(name+" ("+inst.relationName()+")")
+            self.m_CurrentVis.addPlot(plotInstances.getPlotData(cname))
+            plotInstances.cleanUp()
+            vv=[]
+            vv.append(fullClassifier)
+            trainHeader=Instances(self.m_Instances,0)
+            trainHeader.setClassIndex(classIndex)
+            vv.append(trainHeader)
+            vv.append(self.m_CurrentVis)
+            if evaluation is not None and evaluation.predictions() is not None:
+                vv.append(evaluation.predictions())
+                vv.append(inst.classAttribute())
+            self.m_History.addObject(name,vv)
+
 
         self.mutex.lock()
         self.m_StartBut.setEnabled(True)

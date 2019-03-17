@@ -10,8 +10,6 @@ from ClassifierPanel import ClassifierPanel
 from Main import Ui_MainWindow
 
 
-#弃用
-
 class MainWindow(QMainWindow,Ui_MainWindow):
 
     def __init__(self,parent=None):

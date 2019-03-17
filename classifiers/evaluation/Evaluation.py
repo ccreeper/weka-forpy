@@ -13,6 +13,7 @@ from classifiers.ConditionalDensityEstimator import ConditionalDensityEstimator
 from classifiers.evaluation.ThresholdCurve import ThresholdCurve
 from classifiers.IntervalEstimator import IntervalEstimator
 from estimators.UnivariateKernelEstimator import UnivariateKernelEstimator
+import copy
 
 
 class Evaluation():
@@ -88,6 +89,11 @@ class Evaluation():
             self.m_MaxTarget=self.m_NumClasses
             self.m_MinTarget=0
 
+    def predictions(self):
+        if self.m_DiscardPredictions:
+            return None
+        return self.m_Predictions
+
 
     def addNumericTrainClass(self,classValue:float,weight:float):
         if classValue > self.m_MaxTarget:
@@ -129,12 +135,13 @@ class Evaluation():
                     self.m_Predictions.append(NumericPrediction(instance.classValue(),pred,instance.weight()))
             return pred
         elif isinstance(a0,Classifier):
-            classMissing=instance.copy()
+            classMissing=copy.deepcopy(instance)
             classMissing.setDataset(instance.dataset())
             #TODO
             # if isinstance(a0,InputMappedClassifier)
             # else:
             classMissing.setClassMissing()
+            # print("isMiss: ", instance.value(5))
 
             pred=self.evaluationForSingleInstance(a0.distributionForInstance(classMissing),instance,storePredictions)
             if not self.m_ClassIsNominal:
@@ -182,7 +189,7 @@ class Evaluation():
                 self.m_Unclassified+=instance.weight()
                 return
             self.m_SumClass+=instance.weight()*instance.classValue()
-            self.m_SumSqrClass+=instance.weight()*instance.classValue()*instance.classAttribute()
+            self.m_SumSqrClass+=instance.weight()*instance.classValue()*instance.classValue()
             self.m_SumClassPredicted+=instance.weight()*instance.classValue()*predictedValue
             self.m_SumPredicted+=instance.weight()*predictedValue
             self.m_SumSqrPredicted+=instance.weight()*predictedValue*predictedValue
@@ -651,6 +658,7 @@ class Evaluation():
                 displayIncorrect="incorrect" in self.m_metricsToDisplay
                 displayKappa="kappa" in self.m_metricsToDisplay
 
+
                 if displayCorrect:
                     text+="Correctly Classified Instances     "
                     text+=Utils.doubleToString(self.correct(), 12, 4) + "     "+ Utils.doubleToString(self.pctCorrect(), 12, 4) + " %\n"
@@ -807,7 +815,7 @@ class Evaluation():
         return (self.m_SumPriorEntropy-self.m_SumSchemeEntropy)/(self.m_WithClass-self.m_Unclassified)
 
     def correlationCoefficient(self):
-        if not self.m_ClassIsNominal:
+        if self.m_ClassIsNominal:
             raise Exception("Can't compute correlation coefficient: "+ "class is nominal!")
         correlation=0
         varActual=self.m_SumSqrClass-self.m_SumClass*self.m_SumClass/(self.m_WithClass-self.m_Unclassified)

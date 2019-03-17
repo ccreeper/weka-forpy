@@ -8,6 +8,7 @@ from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from gui.classifier.Plot2D import Plot2D
 from PlotData2D import PlotData2D
+import copy
 
 
 class ClassifierErrorsPlotInstances(AbstractPlotInstances):
@@ -22,8 +23,8 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
         self.m_ClassIndex=-1
         self.m_Evaluation=None      #type:Evaluation
         self.m_SaveForVisualization=True
-        self.m_MinimumPlotSizeNumeric=1
-        self.m_MaximumPlotSizeNumeric=20
+        self.m_MinimumPlotSizeNumeric=30
+        self.m_MaximumPlotSizeNumeric=200
 
 
     def setClassifier(self,value:Classifier):
@@ -67,7 +68,7 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
 
     def process(self,toPredict:Instance,classifier:Classifier,evaluation:Evaluation):
         probActual=probNext=pred=0
-        classMissing=toPredict.copy()
+        classMissing=copy.deepcopy(toPredict)
         classMissing.setDataset(toPredict.dataset())
         #TODO InputMappedClassifier    465
         if toPredict.classAttribute().isNominal():
@@ -87,7 +88,6 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
             evaluation.evaluationForSingleInstance(preds,toPredict,True)
         else:
             pred=evaluation.evaluateModelOnceAndRecordPrediction(classifier,toPredict)
-
         if not self.m_SaveForVisualization:
             return
         if self.m_PlotInstances is not None:
@@ -111,7 +111,11 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
                         values[i]=toPredict.value(i-2)
                     else:
                         values[i]=toPredict.value(i-1)
-            self.m_PlotInstances.add(Instance(1,values))
+            # print("============")
+            # for m in values:
+            #     print("val:",m)
+            # print("============")
+            self.m_PlotInstances.add(Instance(1.0,values))
             if toPredict.classAttribute().isNominal():
                 if toPredict.isMissing(toPredict.classIndex()) or Utils.isMissingValue(pred):
                     self.m_PlotShapes.append(Plot2D.MISSING_SHAPE)
@@ -141,5 +145,46 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
         result=PlotData2D(self.m_PlotInstances)
         result.setShapeSize(self.m_PlotSizes)
         result.setShapeType(self.m_PlotShapes)
-        result.setPlotName(name+" ("+self.m_Instances.relationName+")")
+        result.setPlotName(name+" ("+self.m_Instances.relationName()+")")
         return result
+
+    def finishUp(self):
+        super().finishUp()
+        if not self.m_SaveForVisualization:
+            return
+        if self.m_Instances.classAttribute().isNumeric() or self.m_pointSizeProportionalToMargin:
+            self.scaleNumericPredictions()
+
+    def scaleNumericPredictions(self):
+        maxErr=float("-inf")
+        minErr=float("inf")
+        if self.m_Instances.classAttribute().isNominal():
+            maxErr=1
+            minErr=0
+        else:
+            for i in range(len(self.m_PlotSizes)):
+                errd=self.m_PlotSizes[i]
+                if errd is not None:
+                    err=abs(errd)
+                    if err < minErr:
+                        minErr=err
+                    if err > maxErr:
+                        maxErr=err
+        for i in range(len(self.m_PlotSizes)):
+            errd=self.m_PlotSizes[i]
+            if errd is not None:
+                err=abs(errd)
+                if maxErr - minErr > 0:
+                    temp=((err-minErr)/(maxErr-minErr))*(self.m_MaximumPlotSizeNumeric-self.m_MinimumPlotSizeNumeric+1)
+                    self.m_PlotSizes[i]=int(temp)+self.m_MinimumPlotSizeNumeric
+                else:
+                    self.m_PlotSizes[i]=self.m_MinimumPlotSizeNumeric
+            else:
+                self.m_PlotSizes[i]=self.m_MinimumPlotSizeNumeric
+
+    def cleanUp(self):
+        super().cleanUp()
+        self.m_Classifier=None
+        self.m_PlotShapes=None
+        self.m_PlotSizes=None
+        self.m_Evaluation=None

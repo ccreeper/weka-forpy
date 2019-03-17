@@ -43,4 +43,9 @@ class AbstractPlotInstances(OptionHandler):
             self.finishUp()
         return self.createPlotData(name)
 
+    def cleanUp(self):
+        self.m_Instances=None       #type:Instances
+        self.m_PlotInstances=None
+        self.m_FinishUpCalled=False
+
     def createPlotData(self,name:str)->PlotData2D:...

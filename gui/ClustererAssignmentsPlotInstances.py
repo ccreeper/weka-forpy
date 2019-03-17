@@ -49,6 +49,7 @@ class ClustererAssignmentsPlotInstances(AbstractPlotInstances):
                 else:
                     self.m_PlotShapes[i]=Plot2D.MISSING_SHAPE
 
+
     def createPlotData(self,name:str):
         result=PlotData2D(self.m_PlotInstances)
         if self.m_PlotShapes is not None:
@@ -56,3 +57,9 @@ class ClustererAssignmentsPlotInstances(AbstractPlotInstances):
         result.addInstanceNumberAttribute()
         result.setPlotName(name+" ("+self.m_Instances.relationName()+")")
         return result
+
+    def cleanUp(self):
+        super(ClustererAssignmentsPlotInstances, self).cleanUp()
+        self.m_Clusterer=None
+        self.m_Evaluation=None
+        self.m_PlotShapes=None
