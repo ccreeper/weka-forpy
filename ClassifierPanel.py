@@ -1,11 +1,11 @@
-import copy
+
 # import CallMain
 import time
 from typing import *
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-
+from copy import *
 from Attributes import Attribute
 from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
 from GenericObjectEditor import GenericObjectEditor,GOEPanel
@@ -20,10 +20,13 @@ from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from classifiers.rules.ZeroR import ZeroR
 from VisualizePanel import VisualizePanel
+from PlotData2D import PlotData2D
 
 
-class ClassifierPanel():
+class ClassifierPanel(QObject):
+    history_add_visualize_signal=pyqtSignal(str,list,str,PlotData2D)
     def __init__(self,win:'MainWindow'):
+        super().__init__()
         self.m_Explorer=win
         self.m_Option=win.option_classifier
         self.m_ChooseBut=win.choose_classifier
@@ -45,6 +48,7 @@ class ClassifierPanel():
         self.m_CEPanel=PropertyPanel(self,self.m_ClassifierEditor)  #type:PropertyPanel
         self.m_CurrentVis=None      #type:VisualizePanel
 
+
         self.m_History.outtext_write_signal.connect(self.updateOutputText)
         self.m_selectedEvalMetrics=Evaluation.getAllEvaluationMetricNames() #type:List[str]
         self.m_TestClassIndex=-1
@@ -60,6 +64,14 @@ class ClassifierPanel():
     def getOptionBut(self):
         return self.m_Option
 
+    def addToHistoryVisualize(self,name:str, vv:List, visName:str, data:PlotData2D):
+        self.m_CurrentVis = VisualizePanel()
+        self.m_CurrentVis.setName(visName)
+        self.m_CurrentVis.addPlot(data)
+        vv.append(self.m_CurrentVis)
+        self.m_History.addObject(name, vv)
+        print("add end")
+
     #TODO 未完成
     def initalize(self):
         self.m_selectedEvalMetrics.remove("Coverage")
@@ -71,12 +83,14 @@ class ClassifierPanel():
         self.m_CVBut.setChecked(True)
         self.m_StartBut.setEnabled(False)
         self.m_StopBut.setEnabled(False)
+        self.updateRadioLinks()
 
         self.m_CVBut.clicked.connect(self.updateRadioLinks)
         self.m_TrainBut.clicked.connect(self.updateRadioLinks)
         self.m_TestSplitBut.clicked.connect(self.updateRadioLinks)
         self.m_SetTestBut.clicked.connect(self.setTestSet)
         self.m_StartBut.clicked.connect(self.startClassifier)
+        self.history_add_visualize_signal.connect(self.addToHistoryVisualize)
 
 
     def setInstances(self,inst:Instances):
@@ -130,7 +144,7 @@ class ClassifierPanel():
         trainTimeStart=trainTimeElapsed=testTimeStart=testTimeElapsed=0
         userTestStructure=None
         if self.m_SetTestFrame is not None:
-            userTestStructure=copy.deepcopy(self.m_SetTestFrame.getInstances())    #type:Instances
+            userTestStructure=deepcopy(self.m_SetTestFrame.getInstances())    #type:Instances
             userTestStructure.setClassIndex(self.m_TestClassIndex)
 
         #默认outputmodel,output per-class stats,output confusion matrix,store predictions for visualization
@@ -205,8 +219,6 @@ class ClassifierPanel():
         outPutResult+=str(classifier)+"\n"
         outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)+ " seconds\n\n"
         self.m_History.updateResult(name,outPutResult)
-
-        fullClassifier=copy.deepcopy(classifier)
         print("==========update Compelte=================")
 
         if testMode == 2:
@@ -235,7 +247,7 @@ class ClassifierPanel():
                 train=inst.trainCV(numFolds,fold,rnd)
                 evaluation=self.setupEval(evaluation,classifier,train,plotInstances,True)
                 evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
-                current=copy.deepcopy(classifier)
+                current=deepcopy(classifier)
                 current.buildClassifier(train)
                 test=inst.testCV(numFolds,fold)
                 # TODO
@@ -281,20 +293,17 @@ class ClassifierPanel():
         Utils.debugOut(outPutResult)
 
         if(plotInstances is not None and plotInstances.canPlot(False)):
-            self.m_CurrentVis=VisualizePanel()
-            self.m_CurrentVis.setName(name+" ("+inst.relationName()+")")
-            self.m_CurrentVis.addPlot(plotInstances.getPlotData(cname))
+            visName=name+" ("+inst.relationName()+")"
+            pl2d=plotInstances.getPlotData(cname)
             plotInstances.cleanUp()
             vv=[]
-            vv.append(fullClassifier)
             trainHeader=Instances(self.m_Instances,0)
             trainHeader.setClassIndex(classIndex)
             vv.append(trainHeader)
-            vv.append(self.m_CurrentVis)
             if evaluation is not None and evaluation.predictions() is not None:
                 vv.append(evaluation.predictions())
                 vv.append(inst.classAttribute())
-            self.m_History.addObject(name,vv)
+            self.history_add_visualize_signal.emit(name,vv,visName,pl2d)
 
 
         self.mutex.lock()

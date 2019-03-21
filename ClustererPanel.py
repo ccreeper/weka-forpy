@@ -50,6 +50,7 @@ class ClustererPanel():
         self.m_TrainBut.setChecked(True)
         self.m_StartBut.setEnabled(False)
         self.m_StopBut.setEnabled(False)
+        self.updateRadioLinks()
 
         self.m_ClustererEditor.setClassType(Clusterer)
         self.m_ClustererEditor.setValue(SimpleKMeans())

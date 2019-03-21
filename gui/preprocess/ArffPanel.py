@@ -99,6 +99,19 @@ class ArffPanel(QObject):
         self.setModel(inst)
         self.model.clearUndo()
         self.m_Changed=False
+        self.m_Table.itemChanged.connect(self.itemValueChanged)
+
+    def itemValueChanged(self,item:QTableWidgetItem):
+        row=item.row()
+        column=item.column()-1
+        if item.text() == "":
+            val=float('nan')
+            item.setBackground(QBrush(QColor(232, 232, 232)))
+        elif self.model.getInstance().attribute(column).isNumeric():
+            val=float(item.text())
+        else:
+            val=self.model.getInstance().attribute(column).value(self.model.getInstance().instance(row).value(column))
+        self.getInstance().instance(row).setValue(column,val)
 
     def getInstance(self):
         return self.model.getInstance()
@@ -128,6 +141,7 @@ class ArffPanel(QObject):
         ###
         for row in range(data.numInstances()):
             item=QTableWidgetItem(str(row+1))
+            item.setFlags(Qt.NoItemFlags)
             self.m_Table.setItem(row,0,item)
             self.m_Table.setRawItem(data,row)
             self.m_Table.setRowHeight(row,30)

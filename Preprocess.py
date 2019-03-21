@@ -8,6 +8,9 @@ from ViewerDialog import ViewerDialog
 from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel
 from copy import *
 from Utils import Utils
+from Attributes import Attribute
+from typing import *
+import os
 
 class PreprocessPanel():
     def __init__(self,win:'MainWindow'):
@@ -26,24 +29,59 @@ class PreprocessPanel():
         self.m_applyBut=win.apply_btn
         self.m_saveBut=win.save_btn
 
+        self.m_FileName=""
+        self.m_Data=None        #type:Dict
+
         self.initSetting()
         self.attachListener()
 
 
 
     def openFile(self):
-        filename = QFileDialog.getOpenFileName(self.m_tab, '选择文件', '/', 'Arff data files(*.arff);;CSV data files(*.csv)')
+        filename = QFileDialog.getOpenFileName(self.m_tab, '打开文件', '/', 'Arff data files(*.arff);;CSV data files(*.csv)')
         file = open(filename[0], 'rb')
+        self.m_FileName=os.path.basename(file.name).split('.')[0]
         # 解析arff
         with file:
             s = file.read().decode('utf-8')
         data = arff.loads(s)
-        print(data)
+        self.m_Data=data
         inst = Instances(data)
+        print(data)
         self.setInstances(inst)
 
         self.m_tabWidget.setTabEnabled(1, True)
         self.m_tabWidget.setTabEnabled(2, True)
+
+    def saveFile(self):
+        relation=self.m_Instances.relationName()
+        self.m_Data.update({"relation":relation})
+        attributes=[]
+        for i in range(self.m_Instances.numAttributes()):
+            t=[]
+            t.append(self.m_Instances.attribute(i).name())
+            if self.m_Instances.attribute(i).type() == Attribute.NUMERIC:
+                t.append("REAL")
+            else:
+                t.append(self.m_Instances.attribute(i).m_AttributeInfo.m_Values)
+            attributes.append(tuple(t))
+        self.m_Data.update({"attributes":attributes})
+        data=[]
+        for i in range(self.m_Instances.numInstances()):
+            val=[]
+            for j in range(self.m_Instances.numAttributes()):
+                if self.m_Instances.instance(i).isMissing(j):
+                    val.append(None)
+                elif self.m_Instances.attribute(j).isNominal():
+                    val.append(self.m_Instances.attribute(j).value(self.m_Instances.instance(i).value(j)))
+                else:
+                    val.append(str(self.m_Instances.instance(i).value(j)))
+            data.append(val)
+        self.m_Data.update({"data":data})
+        filename=QFileDialog.getSaveFileName(self.m_tab,'保存文件','/'+self.m_FileName,'Arff data files(*.arff)')
+        with open(filename[0],'w') as f:
+            text=arff.dumps(self.m_Data)
+            f.write(text)
 
 
     def setInstances(self,inst:Instances):
@@ -80,6 +118,7 @@ class PreprocessPanel():
 
     def attachListener(self):
         self.m_openBut.clicked.connect(self.openFile)
+        self.m_saveBut.clicked.connect(self.saveFile)
         self.attributePanel.m_TableModel.m_Table.cellClicked.connect(self.tableCellClick)
         self.m_editBut.clicked.connect(self.edit)
         self.m_tabWidget.currentChanged.connect(self.tabChangedListener)

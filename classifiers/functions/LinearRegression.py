@@ -15,7 +15,11 @@ class LinearRegression(AbstractClassifier):
     SELECTION_M5=0      #default
     SELECTION_NONE=1
     SELECTION_GREEDY=2
-    TAGS_SELECTION=[Tag(SELECTION_NONE,"No attribute selection"),Tag((SELECTION_M5,"M5 method"),)]
+    TAGS_SELECTION=[Tag(SELECTION_NONE,"No attribute selection"),
+                    Tag(SELECTION_M5,"M5 method"),
+                    Tag(SELECTION_GREEDY,"Greedy method")]
+    propertyList=AbstractClassifier.propertyList[:]
+    propertyList.append('Ridge')
     def __init__(self):
         super().__init__()
         self.m_Coefficients=None    #type:List[float]
@@ -313,7 +317,7 @@ class LinearRegression(AbstractClassifier):
                 coefficients=coeffsWithoutIntercept[0].copy()
             else:
                 coefficients=coeffsWithoutIntercept.copy()
-        coefficients[numAttributes]=self.m_ClassMean
+        coefficients=np.append(coefficients,self.m_ClassMean)
         column=0
         for i in range(self.m_TransformedData.numAttributes()):
             if i != self.m_TransformedData.classIndex() and selectedAttributes[i]:

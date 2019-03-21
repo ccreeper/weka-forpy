@@ -101,6 +101,7 @@ class MyMplCanvas(FigureCanvas):
         self.determineBounds()
         self.m_axisChanged=True
 
+
     def setYindex(self,y:int):
         self.m_yIndex=y
         for i in range(len(self.m_plots)):
@@ -170,6 +171,10 @@ class MyMplCanvas(FigureCanvas):
         #         print(i,"_1:",plot.m_pointLookup[i][1])
         # print("===================")
 
+    def clear(self):
+        self.axes.cla()
+        self.axes.set_xticks([])
+        self.axes.set_yticks([])
 
     def convertToPanelX(self,xval:float):
         temp=(xval-self.m_minX)/(self.m_maxX-self.m_minX)
@@ -238,6 +243,7 @@ class MyMplCanvas(FigureCanvas):
         self.draw()
 
     def paintPoint(self):
+        self.clear()
         # print("xStart: ",self.m_XaxisStart,"xEnd: ",self.m_XaxisEnd)
         # print("yStart: ",self.m_YaxisStart,"yEnd: ",self.m_YaxisEnd)
         self.m_XaxisStart=189900
@@ -281,10 +287,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_ylim(self.m_YaxisStart,self.m_YaxisEnd)
 
     def paintData(self):
-        print("size:  ",len(self.m_plots))
         for j in range(len(self.m_plots)):
             temp_plot=self.m_plots[j]
-            print("num:  ",temp_plot.m_plotInstances.numInstances())
             for i in range(temp_plot.m_plotInstances.numInstances()):
                 if temp_plot.m_plotInstances.instance(i).isMissing(self.m_xIndex) or \
                     temp_plot.m_plotInstances.instance(i).isMissing(self.m_yIndex):
@@ -337,7 +341,6 @@ class MyMplCanvas(FigureCanvas):
 
 
     def drawDataPoint(self,x:float,y:float,size:int,color:str,shape:int):
-        print("x:",x,"y:",y,"size:",size)
         if size <= 0:
             size=1
         if shape != Plot2D.ERROR_SHAPE and shape != Plot2D.MISSING_SHAPE:
@@ -397,9 +400,7 @@ class MatplotlibWidget(QWidget):
         self.mpl.draw()
 
     def clear(self):
-        self.mpl.axes.cla()
-        self.mpl.axes.set_xticks([])
-        self.mpl.axes.set_yticks([])
+        self.m_plot2D.clear()
 
 # if __name__=="__main__":
 #     app=QApplication(sys.argv)

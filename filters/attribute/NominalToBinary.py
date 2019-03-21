@@ -29,7 +29,7 @@ class NominalToBinary(Filter):
         super().setInputFormat(instanceInfo)
         if instanceInfo.classIndex() < 0:
             raise Exception("No class has been assigned to the instances")
-        self.setOutputFormat()
+        self.setOutputFormatBinary()
         self.m_Indices=None
         if instanceInfo.classAttribute().isNominal():
             return True
@@ -52,7 +52,7 @@ class NominalToBinary(Filter):
             raise Exception("No input instance format defined")
         if self.m_Indices is None and self.getInputFormat().classAttribute().isNumeric():
             self.computeAverageClassValues()
-            self.setOutputFormat()
+            self.setOutputFormatBinary()
             for i in range(self.getInputFormat().numInstances()):
                 self.convertInstance(self.getInputFormat().instance(i))
         self.flushInput()
@@ -147,7 +147,7 @@ class NominalToBinary(Filter):
         self.copyValues(inst,False,instance.dataset(),self.outputFormatPeek())
         self.push(inst)
 
-    def setOutputFormat(self, outputFormat: Instances=None):
+    def setOutputFormatBinary(self, outputFormat: Instances=None):
         if self.getInputFormat().classAttribute().isNominal():
             self.setOutputFormatNominal()
         else:

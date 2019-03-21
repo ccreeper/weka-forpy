@@ -23,12 +23,6 @@ class ZeroR(AbstractClassifier):
             return "ZeroR predicts class value: " + str(self.m_ClassValue)
         return "ZeroR predicts class value: " + self.m_Class.value(int(self.m_ClassValue))
 
-    def addPropertiesToList(self):
-        pass
-
-    def addMethodsToList(self):
-        pass
-
     def getCapabilities(self)->Capabilities:
         result=super().getCapabilities()
         result.disableAll()

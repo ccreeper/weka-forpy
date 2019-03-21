@@ -96,7 +96,7 @@ class Attribute():
     def setWeight(self,value:float):
         self.m_Weight=value
 
-    def addStringValue(self,value,arg0):
+    def addStringValue(self,value,arg0=None):
         if not self.isString():
             return -1
         if isinstance(value,str) and arg0 is None:

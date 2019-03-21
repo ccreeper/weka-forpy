@@ -8,6 +8,7 @@ from Attributes import Attribute
 from Instances import Instances,Instance
 from classifiers.Classifier import Classifier
 
+
 class ResultHistoryPanel(QListWidget):
     outtext_write_signal=pyqtSignal(str)
     def __init__(self,parent=None):

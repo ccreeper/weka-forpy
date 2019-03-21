@@ -49,6 +49,7 @@ class VisualizePanel(QMainWindow,Ui_Form):
         if index >= 0 and index < self.m_XCombo.count():
             self.m_xIndex=index
             self.m_plot.m_plot2D.setXindex(index)
+            self.draw()
         else:
             raise Exception("x index is out of range!")
 
@@ -56,6 +57,7 @@ class VisualizePanel(QMainWindow,Ui_Form):
         if index >= 0 and index < self.m_YCombo.count():
             self.m_yIndex=index
             self.m_plot.m_plot2D.setYindex(index)
+            self.draw()
         else:
             raise Exception("y index is out of range!")
 
@@ -86,8 +88,8 @@ class VisualizePanel(QMainWindow,Ui_Form):
             YNames.append("Y: "+inst.attribute(i).name()+type)
         self.m_XCombo.addItems(XNames)
         self.m_YCombo.addItems(YNames)
-        # self.m_XCombo.setCurrentIndex(0)
-        # self.m_YCombo.setCurrentIndex(1)
+        self.m_XCombo.setCurrentIndex(0)
+        self.m_YCombo.setCurrentIndex(1)
 
     def draw(self):
         self.m_plot.m_plot2D.paintPoint()
@@ -98,5 +100,6 @@ class VisualizePanel(QMainWindow,Ui_Form):
 #     app=QApplication(sys.argv)
 #     cgitb.enable(format='text')
 #     sp=VisualizePanel()
+#     sp.y_comboBox.addItems(['1','2','3'])
 #     sp.show()
 #     sys.exit(app.exec_())
