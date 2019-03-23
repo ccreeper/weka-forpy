@@ -7,7 +7,7 @@ from VisualizePanel import VisualizePanel
 from Attributes import Attribute
 from Instances import Instances,Instance
 from classifiers.Classifier import Classifier
-
+from Drawable import Drawable
 
 class ResultHistoryPanel(QListWidget):
     outtext_write_signal=pyqtSignal(str)
@@ -33,7 +33,7 @@ class ResultHistoryPanel(QListWidget):
         if action == self.showClassifierErrors:
             self.visualizeClassifierErrors(self.temp_vp)
         elif action == self.showVisualizeTree:
-            pass
+            self.visualizeTree(self.temp_grph)
         else:
             return
         # self.m_Table.setMenuClickNow(False)
@@ -48,6 +48,7 @@ class ResultHistoryPanel(QListWidget):
         self.temp_trainHeader=None       #type:Instances
         self.temp_classifier=None        #type:Classifier
         self.temp_classAtt=None      #type:Attribute
+        self.temp_grph=None     #type:str
         if o is not None:
             for i in range(len(o)):
                 temp=o[i]
@@ -59,20 +60,31 @@ class ResultHistoryPanel(QListWidget):
                     self.temp_vp=temp
                 elif isinstance(temp,Attribute):
                     self.temp_classAtt=temp
+                elif isinstance(temp,str):
+                    self.temp_grph=temp
         if self.temp_vp is not None:
             self.showClassifierErrors.setEnabled(True)
-            if self.temp_vp.getXIndex() == 0 and self.temp_vp.getYIndex() == 1:
-                self.temp_vp.setXIndex(self.temp_vp.getInstances().classIndex())
-                self.temp_vp.setYIndex(self.temp_vp.getInstances().classIndex()-1)
         else:
             self.showClassifierErrors.setEnabled(False)
 
+        if  self.temp_grph is not None:
+            self.showVisualizeTree.setEnabled(True)
+        else:
+            self.showVisualizeTree.setEnabled(False)
+
     def visualizeClassifierErrors(self,sp:VisualizePanel):
         if sp is not None:
-            plotName=sp.getName()
-            sp.setWindowTitle("Classifier Visualize: "+plotName)
-        sp.draw()
-        sp.show()
+            if sp.getXIndex() == 0 and sp.getYIndex() == 1:
+                sp.setXIndex(sp.getInstances().classIndex())
+                sp.setYIndex(sp.getInstances().classIndex() - 1)
+                plotName=sp.getName()
+                sp.setWindowTitle("Classifier Visualize: "+plotName)
+                sp.draw()
+                sp.show()
+
+    def visualizeTree(self,dottyStrinng:str):
+            print(dottyStrinng)
+
 
 
     def getNamedObject(self,name:str):

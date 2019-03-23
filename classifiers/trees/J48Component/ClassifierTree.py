@@ -4,9 +4,10 @@ from Instances import Instances,Instance
 from classifiers.trees.J48Component.ModelSelection import ModelSelection
 from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
 from classifiers.trees.J48Component.Distribution import Distribution
+from Drawable import Drawable
 from Utils import Utils
 
-class ClassifierTree(CapabilitiesHandler):
+class ClassifierTree(CapabilitiesHandler,Drawable):
     def __init__(self,toSelectLocModel:ModelSelection):
         self.m_toSelectModel=toSelectLocModel       #type:ModelSelection
         self.m_localModel=None          #type:ClassifierSplitModel
@@ -15,6 +16,7 @@ class ClassifierTree(CapabilitiesHandler):
         self.m_isEmpty=False
         self.m_train=None       #type:Instances
         self.m_test=None    #type:Distribution
+        self.m_id=0
 
     def __str__(self):
         text=""
@@ -34,6 +36,40 @@ class ClassifierTree(CapabilitiesHandler):
         for i in range(len(self.m_sons)):
             num+=self.m_sons[i].numLeaves()
         return num
+
+    def graphType(self):
+        return Drawable.TREE
+
+    def graph(self):
+        text=""
+        self.assignIDs(-1)
+        text+="digraph J48Tree {\n"
+        if self.m_isLeaf:
+            text+="N" + str(self.m_id) + " [label=\""\
+                + Utils.backQuoteChars(self.m_localModel.dumpLabel(0, self.m_train)) + "\" "\
+                + "shape=box style=filled "
+            if self.m_train is not None and self.m_train.numInstances() > 0:
+                text+="data =\n" + str(self.m_train) + "\n"
+                text+=",\n"
+            text+="]\n"
+        else:
+            text+="N" + str(self.m_id) + ' [label="'+ Utils.backQuoteChars(self.m_localModel.leftSide(self.m_train)) + '" '
+            if self.m_train is not None and self.m_train.numInstances() > 0:
+                text+="data =\n" + str(self.m_train) + "\n"
+                text+=",\n"
+            text+=']\n'
+            text=self.graphTree(text)
+        text+="}\n"
+        return text
+
+
+    def assignIDs(self,lastID:int):
+        currLastID=lastID+1
+        self.m_id=currLastID
+        if self.m_sons is not None:
+            for son in self.m_sons:
+                currLastID=son.assignIDs(currLastID)
+        return currLastID
 
     def numNodes(self):
         no=1
@@ -152,13 +188,33 @@ class ClassifierTree(CapabilitiesHandler):
                     return weight*self.localModel().classProb(classIndex,instance,treeIndex)
                 return self.son(treeIndex).getProbs(classIndex,instance,weight)
 
-
     def cleanup(self,justHeaderInfo:Instances):
         self.m_train=justHeaderInfo
         if not self.m_isLeaf:
             for son in self.m_sons:
                 son.cleanup(justHeaderInfo)
 
+    def graphTree(self,text:str):
+        for i in range(len(self.m_sons)):
+            text+="N" + str(self.m_id) + "->" + "N" + str(self.m_sons[i].m_id) + " [label=\""\
+                    + Utils.backQuoteChars(self.m_localModel.rightSide(i, self.m_train).strip())\
+                    + "\"]\n"
+            if self.m_sons[i].m_isLeaf:
+                text+="N" + str(self.m_sons[i].m_id) + " [label=\""\
+                      + Utils.backQuoteChars(self.m_localModel.dumpLabel(i, self.m_train)) + "\" "\
+                      + "shape=box style=filled "
+                if self.m_train is not None and self.m_train.numInstances() > 0:
+                    text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
+                text+="]\n"
+            else:
+                text+="N" + str(self.m_sons[i].m_id) + " [label=\""\
+                          + Utils.backQuoteChars(self.m_sons[i].m_localModel.leftSide(self.m_train))\
+                          + "\" "
+                if self.m_train is not None and self.m_train.numInstances() > 0:
+                    text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
+                text+=']\n'
+                text=self.m_sons[i].graphTree(text)
+        return text
 
     def son(self,index:int):
         return self.m_sons[index]

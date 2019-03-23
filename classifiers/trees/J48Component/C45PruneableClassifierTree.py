@@ -116,5 +116,4 @@ class C45PruneableClassifierTree(ClassifierTree):
     def getNewTree(self,data:Instances,test:Instances=None):
         newTree=C45PruneableClassifierTree(self.m_toSelectModel,self.m_pruneTheTree,self.m_CF,self.m_subtreeRaising,self.m_cleanup,self.m_collapseTheTree)
         newTree.buildTree(data,self.m_subtreeRaising or not self.m_cleanup)
-        print("c45 new")
         return newTree

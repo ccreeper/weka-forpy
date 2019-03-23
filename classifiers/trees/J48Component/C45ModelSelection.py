@@ -16,7 +16,6 @@ class C45ModelSelection(ModelSelection):
         noSplitModel=NoSplit(checkDistribution)
         if Utils.gr(2*self.m_minNoObj,checkDistribution.total()) or \
             Utils.equal(checkDistribution.total(),checkDistribution.perClass(checkDistribution.maxClass())):
-            print("A")
             return noSplitModel
         if self.m_allData is not None:
             for attr in data.enumerateAttributes():
@@ -41,7 +40,6 @@ class C45ModelSelection(ModelSelection):
             else:
                 currentModel[i]=None
         if validModels == 0:
-            print("B")
             return noSplitModel
         averageInfoGain=averageInfoGain/validModels
         minResult=0
@@ -52,11 +50,9 @@ class C45ModelSelection(ModelSelection):
                     bestModel=currentModel[i]
                     minResult=currentModel[i].gainRatio()
         if Utils.equal(minResult,0):
-            print("C")
             return noSplitModel
         bestModel.distribution().addInstWithUnknown(data,bestModel.attIndex())
         if self.m_allData is not None and not self.m_doNotMakeSplitPointActualValue:
             bestModel.setSplitPoint(self.m_allData)
-        print("D")
         return bestModel
 

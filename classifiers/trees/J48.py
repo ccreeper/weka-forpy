@@ -8,8 +8,9 @@ from classifiers.trees.J48Component.BinC45ModelSelection import BinC45ModelSelec
 from classifiers.trees.J48Component.C45ModelSelection import C45ModelSelection
 from classifiers.trees.J48Component.C45PruneableClassifierTree import C45PruneableClassifierTree
 from classifiers.trees.J48Component.PruneableClassifierTree import PruneableClassifierTree
+from Drawable import Drawable
 
-class J48(AbstractClassifier):
+class J48(AbstractClassifier,Drawable):
     propertyList=AbstractClassifier.propertyList[:]
     methodList=AbstractClassifier.methodList[:]
     def __init__(self):
@@ -47,6 +48,12 @@ class J48(AbstractClassifier):
 
         result.setMinimumNumberInstances(0)
         return result
+
+    def graphType(self):
+        return Drawable.TREE
+
+    def graph(self):
+        return self.m_root.graph()
 
     def distributionForInstance(self,instance:Instance):
         return self.m_root.distributionForInstance(instance,self.useLaplace)

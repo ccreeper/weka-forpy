@@ -1,5 +1,6 @@
 from AttributeInfo import DateAttributeInfo,NominalAttributeInfo
 from typing import *
+from Utils import Utils
 
 class Attribute():
     NUMERIC=0
@@ -36,6 +37,32 @@ class Attribute():
         elif (isinstance(a0,list) or a0 is None) and isinstance(a1,int):
             self.__init__(name,a0)
             self.m_Index=a1
+
+    def __str__(self):
+        text=""
+        text+="@attribute "+Utils.quote(self.m_Name)+" "
+        if self.m_Type == Attribute.NOMINAL:
+            text+="{"
+            first=True
+            for item in self.m_AttributeInfo.m_Values:
+                if first:
+                    text+=Utils.quote(item)
+                    first=False
+                else:
+                    text+=","+Utils.quote(item)
+            text+="}"
+            if self.weight() != 1:
+                text+="{"+str(self.weight())+"}"
+        elif self.m_Type == Attribute.NUMERIC:
+            text+="numeric"
+            if self.weight() != 1:
+                text+="{"+str(self.weight())+"}"
+        elif self.m_Type == Attribute.STRING:
+            text+="string"
+            if self.weight() != 1:
+                text+="{"+str(self.weight())+"}"
+        return text
+
 
     def name(self):
         return self.m_Name

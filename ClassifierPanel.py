@@ -21,7 +21,7 @@ from classifiers.evaluation.Evaluation import Evaluation
 from classifiers.rules.ZeroR import ZeroR
 from VisualizePanel import VisualizePanel
 from PlotData2D import PlotData2D
-
+from Drawable import Drawable
 
 class ClassifierPanel(QObject):
     history_add_visualize_signal=pyqtSignal(str,list,str,PlotData2D)
@@ -70,7 +70,6 @@ class ClassifierPanel(QObject):
         self.m_CurrentVis.addPlot(data)
         vv.append(self.m_CurrentVis)
         self.m_History.addObject(name, vv)
-        print("add end")
 
     #TODO 未完成
     def initalize(self):
@@ -156,6 +155,7 @@ class ClassifierPanel(QObject):
         name=time.strftime("%H:%M:%S - ")
         outPutResult=""
         evaluation=None     #type:Evaluation
+        grph=None
 
         if self.m_CVBut.isChecked():
             testMode=1
@@ -219,6 +219,9 @@ class ClassifierPanel(QObject):
         outPutResult+=str(classifier)+"\n"
         outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)+ " seconds\n\n"
         self.m_History.updateResult(name,outPutResult)
+        if isinstance(classifier,Drawable):
+            grph=classifier.graph()
+
         print("==========update Compelte=================")
 
         if testMode == 2:
@@ -300,6 +303,8 @@ class ClassifierPanel(QObject):
             trainHeader=Instances(self.m_Instances,0)
             trainHeader.setClassIndex(classIndex)
             vv.append(trainHeader)
+            if grph is not None:
+                vv.append(grph)
             if evaluation is not None and evaluation.predictions() is not None:
                 vv.append(evaluation.predictions())
                 vv.append(inst.classAttribute())

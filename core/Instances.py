@@ -231,6 +231,23 @@ class Instances(object):
     def __getitem__(self, item):
         return self.m_Instances[item]
 
+    def __str__(self):
+        text=""
+        text+="@relation "+Utils.quote(self.m_RelationName)+"\n\n"
+        for i in range(self.numAttributes()):
+            text+=str(self.attribute(i))+"\n"
+        text+="\n@data\n"
+        text+=self.stringWithoutHeader()
+        return text
+
+    def stringWithoutHeader(self):
+        text=""
+        for i in range(self.numInstances()):
+            text+=str(self.instance(i))
+            if i <self.numInstances()-1:
+                text+='\n'
+        return text
+
     def initialize(self,dataset,capacity:int):
         if capacity<0:
             capacity=0

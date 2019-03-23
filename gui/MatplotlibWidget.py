@@ -9,6 +9,7 @@ from core.Utils import Utils
 from PlotData2D import PlotData2D
 from gui.classifier.Plot2D import Plot2D
 from Instances import Instances,Instance
+import math
 
 class MyMplCanvas(FigureCanvas):
     m_defaultColors = {
@@ -160,8 +161,8 @@ class MyMplCanvas(FigureCanvas):
                         temp_plot.m_pointLookup[i][0]=float("-inf")
                         temp_plot.m_pointLookup[i][1]=float("-inf")
                     else:
-                        x=self.convertToPanelX(temp_plot.m_plotInstances.instance(i).value(self.m_xIndex))
-                        y=self.convertToPanelY(temp_plot.m_plotInstances.instance(i).value(self.m_yIndex))
+                        x=temp_plot.m_plotInstances.instance(i).value(self.m_xIndex)
+                        y=temp_plot.m_plotInstances.instance(i).value(self.m_yIndex)
                         temp_plot.m_pointLookup[i][0]=x
                         temp_plot.m_pointLookup[i][1]=y
         # print("==================")
@@ -175,18 +176,18 @@ class MyMplCanvas(FigureCanvas):
         self.axes.cla()
         self.axes.set_xticks([])
         self.axes.set_yticks([])
-
-    def convertToPanelX(self,xval:float):
-        temp=(xval-self.m_minX)/(self.m_maxX-self.m_minX)
-        temp2=temp*(self.m_XaxisEnd-self.m_XaxisStart)
-        temp2+=self.m_XaxisStart
-        return temp2
-
-    def convertToPanelY(self,yval:float):
-        temp=(yval-self.m_minY)/(self.m_maxY-self.m_minY)
-        temp2=temp*(self.m_YaxisEnd-self.m_YaxisStart)
-        temp2=self.m_YaxisEnd-temp2
-        return temp2
+    #
+    # def convertToPanelX(self,xval:float):
+    #     temp=(xval-self.m_minX)/(self.m_maxX-self.m_minX)
+    #     temp2=temp*(self.m_XaxisEnd-self.m_XaxisStart)
+    #     temp2+=self.m_XaxisStart
+    #     return temp2
+    #
+    # def convertToPanelY(self,yval:float):
+    #     temp=(yval-self.m_minY)/(self.m_maxY-self.m_minY)
+    #     temp2=temp*(self.m_YaxisEnd-self.m_YaxisStart)
+    #     temp2=self.m_YaxisEnd-temp2
+    #     return temp2
 
     def getMasterPlot(self):
         return self.m_masterPlot
@@ -198,7 +199,7 @@ class MyMplCanvas(FigureCanvas):
         self.fig.gca().spines['right'].set_visible(flag)
 
     def paintRect(self,dataSet:np.ndarray,barWidth:int,isNumeric:bool=False,colorList:List[str]=("black")):
-        # 生成数据
+        self.fig.subplots_adjust(top=0.99, bottom=0.05, left=0.05, right=0.99, hspace=0, wspace=0)
         x = np.arange(len(dataSet[0]))
         # 堆积柱状图
         #width=(max-min)/(x-1)
@@ -246,10 +247,6 @@ class MyMplCanvas(FigureCanvas):
         self.clear()
         # print("xStart: ",self.m_XaxisStart,"xEnd: ",self.m_XaxisEnd)
         # print("yStart: ",self.m_YaxisStart,"yEnd: ",self.m_YaxisEnd)
-        self.m_XaxisStart=189900
-        self.m_XaxisEnd=325000
-        self.m_YaxisStart=223957.0928571
-        self.m_YaxisEnd=223957.1928571
         self.fig.subplots_adjust(top=0.95, bottom=0.1, left=0.2, right=0.95, hspace=0, wspace=0)
         self.paintAxis()
         self.showFrame(True)
@@ -273,18 +270,141 @@ class MyMplCanvas(FigureCanvas):
 
 
     def paintAxis(self):
-        ticks = [self.m_XaxisStart,(self.m_XaxisStart+self.m_XaxisEnd)//2, self.m_XaxisEnd]
-        self.axes.set_xticks(ticks)
-        ticks = [self.m_YaxisStart,(self.m_YaxisStart+self.m_YaxisEnd)/2, self.m_YaxisEnd]
-        self.axes.set_yticks(ticks)
-        labelNumber = [int(self.m_XaxisStart), int((self.m_XaxisEnd+self.m_XaxisStart)/2), int(self.m_XaxisEnd)]
-        labels = [str(i) for i in labelNumber]
-        self.axes.set_xticklabels(labels)
-        labelNumber = [self.m_YaxisStart,(self.m_YaxisEnd+self.m_YaxisStart)/2, self.m_YaxisEnd]
-        labels = [str(i) for i in labelNumber]
-        self.axes.set_yticklabels(labels)
-        self.axes.set_xlim(self.m_XaxisStart,self.m_XaxisEnd)
-        self.axes.set_ylim(self.m_YaxisStart,self.m_YaxisEnd)
+        whole =int(abs(self.m_maxX))
+        decimal=abs(self.m_maxX)-whole
+        if whole > 0:
+            nondecimal=int(math.log(whole)/math.log(10))
+        else:
+            nondecimal=1
+
+        if decimal > 0:
+            precisionXmax=int(abs(math.log(abs(self.m_maxX)) / math.log(10))) + 2
+        else:
+            precisionXmax=1
+        if precisionXmax > 10:
+            precisionXmax=1
+        maxStringX=Utils.doubleToString(self.m_maxX,nondecimal+1+precisionXmax,precisionXmax)
+
+        whole=int(abs(self.m_minX))
+        decimal=abs(self.m_minX)-whole
+        if whole > 0:
+            nondecimal = int(math.log(whole) / math.log(10))
+        else:
+            nondecimal = 1
+
+        if decimal > 0:
+            precisionXmin = int(abs(math.log(abs(self.m_minX)) / math.log(10))) + 2
+        else:
+            precisionXmin = 1
+        if precisionXmin > 10:
+            precisionXmin = 1
+        minStringX=Utils.doubleToString(self.m_minX,nondecimal+1+precisionXmin,precisionXmin)
+
+        whole = int(abs(self.m_maxY))
+        decimal = abs(self.m_maxY) - whole
+        if whole > 0:
+            nondecimal = int(math.log(whole) / math.log(10))
+        else:
+            nondecimal = 1
+
+        if decimal > 0:
+            precisionYmax = int(abs(math.log(abs(self.m_maxY)) / math.log(10))) + 2
+        else:
+            precisionYmax = 1
+        if precisionYmax > 10:
+            precisionYmax = 1
+        maxStringY=Utils.doubleToString(self.m_maxY,nondecimal+1+precisionYmax,precisionYmax)
+
+        whole = int(abs(self.m_minY))
+        decimal = abs(self.m_minY) - whole
+        if whole > 0:
+            nondecimal = int(math.log(whole) / math.log(10))
+        else:
+            nondecimal = 1
+
+        if decimal > 0:
+            precisionYmin = int(abs(math.log(abs(self.m_minY)) / math.log(10))) + 2
+        else:
+            precisionYmin = 1
+        if precisionYmin > 10:
+            precisionYmin = 1
+        minStringY=Utils.doubleToString(self.m_minY,nondecimal+1+precisionYmin,precisionYmin)
+
+        if self.m_plotInstances.attribute(self.m_xIndex).isNumeric():
+            mid=(self.m_minX+self.m_maxX)/2
+            whole = int(abs(mid))
+            decimal = abs(mid) - whole
+            if whole > 0:
+                nondecimal = int(math.log(whole) / math.log(10))
+            else:
+                nondecimal = 1
+
+            if decimal > 0:
+                precisionXmid = int(abs(math.log(abs(mid)) / math.log(10))) + 2
+            else:
+                precisionXmid = 1
+            if precisionXmid > 10:
+                precisionXmid = 1
+            maxString=Utils.doubleToString(mid,nondecimal+1+precisionXmid,precisionXmid)
+
+            ticks = [self.m_minX,(self.m_minX+self.m_maxX)/2, self.m_maxX]
+            self.axes.set_xticks(ticks)
+            labelNumber = [minStringX, maxString, maxStringX]
+            self.axes.set_xlim(self.m_minX,self.m_maxX)
+            self.axes.set_xticklabels(labelNumber)
+        else:
+            numValues=self.m_plotInstances.attribute(self.m_xIndex).numValues()
+            x = np.arange(0,numValues)
+            self.axes.set_xticks(x)
+            label=[]
+            subFlag=False
+            if numValues > 10:
+                subFlag=True
+            for i in range(numValues):
+                if subFlag:
+                    label.append(self.m_plotInstances.attribute(self.m_xIndex).value(i)[:3])
+                else:
+                    label.append(self.m_plotInstances.attribute(self.m_xIndex).value(i))
+            self.axes.set_xticklabels(label)
+            self.axes.set_xlim(self.m_minX,self.m_maxX)
+
+        if self.m_plotInstances.attribute(self.m_yIndex).isNumeric():
+            ticks = [self.m_minY,(self.m_minY+self.m_maxY)/2, self.m_maxY]
+            self.axes.set_yticks(ticks)
+            mid=(self.m_minY+self.m_maxY)/2
+            whole = int(abs(mid))
+            decimal = abs(mid) - whole
+            if whole > 0:
+                nondecimal = int(math.log(whole) / math.log(10))
+            else:
+                nondecimal = 1
+
+            if decimal > 0:
+                precisionYmid = int(abs(math.log(abs(mid)) / math.log(10))) + 2
+            else:
+                precisionYmid = 1
+            if precisionYmid > 10:
+                precisionYmid = 1
+            maxString = Utils.doubleToString(mid, nondecimal + 1 + precisionYmid, precisionYmid)
+            labelNumber = [minStringY,maxString, maxStringY]
+            self.axes.set_yticklabels(labelNumber)
+            self.axes.set_ylim(self.m_minY,self.m_maxY)
+        else:
+            numValues = self.m_plotInstances.attribute(self.m_yIndex).numValues()
+            x = np.arange(0, numValues)
+            self.axes.set_yticks(x)
+            label = []
+            subFlag = False
+            if numValues > 10:
+                subFlag = True
+            for i in range(numValues):
+                if subFlag:
+                    label.append(self.m_plotInstances.attribute(self.m_yIndex).value(i)[:3])
+                else:
+                    label.append(self.m_plotInstances.attribute(self.m_yIndex).value(i))
+            self.axes.set_yticklabels(label)
+            self.axes.set_ylim(self.m_minY, self.m_maxY)
+
 
     def paintData(self):
         for j in range(len(self.m_plots)):
@@ -305,7 +425,8 @@ class MyMplCanvas(FigureCanvas):
                         if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
                             color="#808080"
                         else:
-                            color=self.m_colorList[i]
+                            ind=temp_plot.m_plotInstances.instance(i).value(self.m_cIndex)
+                            color=self.m_colorList[ind]
                         if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
                             #TODO 连线
                             # if temp_plot.m_connecctPoints[i]:
@@ -365,6 +486,113 @@ class MyMplCanvas(FigureCanvas):
     #     self.axes.scatter(230000,223957.14285714287,s=10,c='r',marker='x')
     #     self.draw()
 
+    decision_node = dict(boxstyle="sawtooth", fc="0.8")
+    leaf_node = dict(boxstyle="round4", fc="0.8")
+    arrow_args = dict(arrowstyle="<-")
+
+    def get_num_leafs(self,mytree):
+        '''
+        获取叶子节点数
+        '''
+        num_leafs = 0
+        first_str = list(mytree.keys())[0]
+        second_dict = mytree[first_str]
+
+        for key in second_dict.keys():
+            if type(second_dict[key]).__name__ == 'dict':
+                num_leafs += self.get_num_leafs(second_dict[key])
+            else:
+                num_leafs += 1
+
+        return num_leafs
+
+    def get_tree_depth(self,mytree):
+        '''
+        获取树的深度
+        '''
+        max_depth = 0
+        first_str = list(mytree.keys())[0]
+        second_dict = mytree[first_str]
+
+        for key in second_dict.keys():
+            # 如果子节点是字典类型，则该节点也是一个判断节点，需要递归调用
+            # get_tree_depth()函数
+            if type(second_dict[key]).__name__ == 'dict':
+                this_depth = 1 + self.get_tree_depth(second_dict[key])
+            else:
+                this_depth = 1
+
+            if this_depth > max_depth:
+                max_depth = this_depth
+
+        return max_depth
+
+    def plot_node(self,ax, node_txt, center_ptr, parent_ptr, node_type):
+        '''
+            绘制带箭头的注解
+        '''
+        ax.annotate(node_txt, xy=parent_ptr, xycoords='axes fraction',
+                    xytext=center_ptr, textcoords='axes fraction',
+                    va="center", ha="center", bbox=node_type, arrowprops=self.arrow_args)
+
+    def plot_mid_text(self,ax, center_ptr, parent_ptr, txt):
+        '''
+        在父子节点间填充文本信息
+        '''
+        x_mid = (parent_ptr[0] - center_ptr[0]) / 2.0 + center_ptr[0]
+        y_mid = (parent_ptr[1] - center_ptr[1]) / 2.0 + center_ptr[1]
+
+        ax.text(x_mid, y_mid, txt)
+
+
+
+    def create_plot(self,in_tree):
+        # fig = plt.figure(1, facecolor="white")
+        # fig.clf()
+        self.fig.subplots_adjust(top=0.8, bottom=0.2, left=0.2, right=0.8, hspace=0, wspace=0)
+        ax_props = dict(xticks=[], yticks=[])
+        # ax = plt.subplot(111, frameon=False, **ax_props)
+        plot_tree=self.createPlotTree(in_tree)
+        plot_tree(self.axes, in_tree, (0.5, 1.0), "")
+        #     plot_node(ax, "a decision node", (0.5, 0.1), (0.1, 0.5), decision_node)
+        #     plot_node(ax, "a leaf node", (0.8, 0.1), (0.3, 0.8), leaf_node)
+        self.draw()
+
+    def createPlotTree(self,in_tree):
+        total_width = float(self.get_num_leafs(in_tree))
+        total_depth = float(self.get_tree_depth(in_tree))
+        x_off = -0.5 / total_width
+        y_off = 1.0
+        def plot_tree(ax, mytree, parent_ptr, node_txt):
+            nonlocal x_off,y_off,total_depth,total_width
+
+            num_leafs = self.get_num_leafs(mytree)
+
+            first_str = list(mytree.keys())[0]
+            center_ptr = (
+            x_off + (1.0 + float(num_leafs)) / 2.0 / total_width, y_off)
+
+            # 绘制特征值，并计算父节点和子节点的中心位置，添加标签信息
+            self.plot_mid_text(ax, center_ptr, parent_ptr, node_txt)
+            self.plot_node(ax, first_str, center_ptr, parent_ptr, self.decision_node)
+
+            second_dict = mytree[first_str]
+            # 采用的自顶向下的绘图，需要依次递减Y坐标
+            y_off -= 1.0 / total_depth
+
+            # 遍历子节点，如果是叶子节点，则绘制叶子节点，否则，递归调用self.plot_tree()
+            for key in second_dict.keys():
+                if type(second_dict[key]).__name__ == "dict":
+                    plot_tree(ax, second_dict[key], center_ptr, str(key))
+                else:
+                    x_off += 1.0 / total_width
+                    self.plot_mid_text(ax, (x_off, y_off), center_ptr, str(key))
+                    self.plot_node(ax, second_dict[key], (x_off, y_off), center_ptr,self.leaf_node)
+
+            # 在绘制完所有子节点之后，需要增加Y的偏移
+            y_off += 1.0 / total_depth
+        return plot_tree
+
 class MatplotlibWidget(QWidget):
     def __init__(self,parent=None):
         super().__init__(parent)
@@ -402,9 +630,19 @@ class MatplotlibWidget(QWidget):
     def clear(self):
         self.m_plot2D.clear()
 
+#
+# def retrieve_tree(i):
+#     list_of_trees = [{'no surfacing': {0: 'no', 1: {'flippers': {0: 'no', 1: 'yes'}}}},
+#                      {'no surfacing': {0: 'no', 1: {'flippers': {0: {'head': {0: 'no', 1: 'yes'}}, 1: 'no'}}}}
+#                      ]
+#     return list_of_trees[i]
+#
 # if __name__=="__main__":
 #     app=QApplication(sys.argv)
 #     win=MatplotlibWidget()
+#     mytree = retrieve_tree(1)
+#     mytree['no surfacing'][3] = "maybe"
+#     win.m_plot2D.create_plot(mytree)
 #     win.show()
 #     sys.exit(app.exec_())
 
