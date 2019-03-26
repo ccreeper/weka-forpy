@@ -5,6 +5,7 @@ from Instances import Instances,Instance
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from Utils import Utils
 
 from gui.designUI.Main import Ui_MainWindow
 

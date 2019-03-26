@@ -7,13 +7,14 @@ from core.AttributeStats import AttributeStats
 import copy
 import random
 import math
+import arff
 
 class Instance():
     def __init__(self,a0,a1=None):
         self.m_AttValues=[]
         if isinstance(a0, list) and a1 is None:
             self.m_AttValues=a0
-            self.m_Weight=1
+            self.m_Weight=1.0
         elif isinstance(a0, Instance) and a1 is None:
             self.m_AttValues=a0.m_AttValues
             self.m_Weight=a0.weight()
@@ -26,7 +27,7 @@ class Instance():
             self.m_AttValues=[]
             for i in range(a0):
                 self.m_AttValues.append(Utils.missingValue())
-            self.m_Weight=1
+            self.m_Weight=1.0
             self.m_Dataset=None
 
     def __str__(self):
@@ -44,11 +45,14 @@ class Instance():
         self.forceInsertAttributeAt(position)
 
     def forceInsertAttributeAt(self,position:int):
-        newValues=self.m_AttValues[:]
-        newValues.append(0)
+        newValues=[0]*(len(self.m_AttValues)+1)
+        newValues=self.m_AttValues[:position]+newValues[position:]
         newValues[position]=Utils.missingValue()
-        for i in range(position+1,len(self.m_AttValues)+1):
-            newValues[i]=self.m_AttValues[i-1]
+        # for i in self.m_AttValues:
+        #     print(",",i,end="")
+        # print()
+        for i in range(len(self.m_AttValues)-position):
+            newValues[position+i+1]=self.m_AttValues[position+i]
         self.m_AttValues=newValues
 
     def hasMissingValue(self):
@@ -179,6 +183,7 @@ class Instances(object):
             self.m_Instances=[] #type:List[Instance]
             self.m_ClassIndex=-1
             self.m_NamesToAttributeIndices=None     #type:Dict
+            self.m_Description=a0.get("description")    #type:str
             for attr in a0.get("attributes"):
                 second=attr[1]
                 if isinstance(second,str):
@@ -219,6 +224,7 @@ class Instances(object):
             self.m_ClassIndex=-1
             self.m_Attributes=a1
             self.m_NamesToAttributeIndices=dict()
+            self.m_Description=""
             for i in range(self.numAttributes()):
                 self.attribute(i).setIndex(i)
                 self.m_NamesToAttributeIndices.update({self.attribute(i).name():i})
@@ -240,6 +246,35 @@ class Instances(object):
         text+=self.stringWithoutHeader()
         return text
 
+    def toArffString(self):
+        data=dict()
+        data.update({"description":self.getDescription()})
+        data.update({"relation":  self.relationName()})
+        attributes = []
+        for i in range(self.numAttributes()):
+            t = []
+            t.append(self.attribute(i).name())
+            if self.attribute(i).type() == Attribute.NUMERIC:
+                t.append("REAL")
+            else:
+                t.append(self.attribute(i).m_AttributeInfo.m_Values)
+            attributes.append(tuple(t))
+        data.update({"attributes": attributes})
+        datas = []
+        for i in range(self.numInstances()):
+            val = []
+            for j in range(self.numAttributes()):
+                if self.instance(i).isMissing(j):
+                    val.append(None)
+                elif self.attribute(j).isNominal():
+                    val.append(self.attribute(j).value(self.instance(i).value(j)))
+                else:
+                    val.append(str(self.instance(i).value(j)))
+            datas.append(val)
+        data.update({"data": datas})
+        text = arff.dumps(data)
+        return text
+
     def stringWithoutHeader(self):
         text=""
         for i in range(self.numInstances()):
@@ -256,6 +291,10 @@ class Instances(object):
         self.m_Attributes=dataset.m_Attributes
         self.m_Instances=[]
         self.m_NamesToAttributeIndices=dataset.m_NamesToAttributeIndices
+        self.m_Description=dataset.m_Description
+
+    def getDescription(self):
+        return self.m_Description
 
     def setClassIndex(self,classIndex:int):
         self.m_ClassIndex=classIndex
@@ -423,20 +462,21 @@ class Instances(object):
         return result
 
     def insertAttributeAt(self,att:Attribute,pos:int):
+        att=att.copy()
         att.setIndex(pos)
-        newList=[None]*(len(self.m_Attributes)+1)
+        newList=[]
         newMap=dict()
         for i in range(pos):
             oldAtt=self.m_Attributes[i]
             newList.append(oldAtt)
-            newMap.update({oldAtt.name(),i})
+            newMap.update({oldAtt.name():i})
         newList.append(att)
-        newMap.update({att.name(),pos})
+        newMap.update({att.name():pos})
         for i in range(len(self.m_Attributes)):
             newAtt=self.m_Attributes[i]
             newAtt.setIndex(i+1)
             newList.append(newAtt)
-            newMap.update({newAtt.name(),i+1})
+            newMap.update({newAtt.name():i+1})
         self.m_Attributes=newList
         self.m_NamesToAttributeIndices=newMap
         if self.m_ClassIndex >= pos:

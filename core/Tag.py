@@ -28,7 +28,7 @@ class Tag():
                 self.m_IDStr=a1
                 if a3:
                     self.m_IDStr=a1.upper()
-            self.m_Readable=a3
+            self.m_Readable=a2
 
 
     def __str__(self):

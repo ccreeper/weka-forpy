@@ -6,23 +6,26 @@ from SingleIndex import SingleIndex
 from Capabilities import Capabilities,CapabilityEnum
 from Tag import Tag
 from Utils import Utils
-
+from Range import Range
 from core.SelectedTag import SelectedTag
 from filters.Filter import Filter
+import copy
 
 
 class Add(Filter):
-    TAGS_TYPE=[Tag(Attribute.NUMERIC,"NUM","Numeric attribute"),
+    TAGS_TYPE=[Tag(Attribute.NUMERIC, "NUM", "Numeric attribute"),
                Tag(Attribute.NOMINAL,"NOM","Nominal attribute"),
                Tag(Attribute.STRING,"STR","String attribute"),
                Tag(Attribute.DATE,"DAT","Date attribute")]
-
+    propertyList = {"attributeType":"TAGS_TYPE","attributeName":"unnamed","attributeIndex":"","nominalLabels":""}
+    methodList = {"attributeType":"setAttributeType","attributeName":"setAttributeName",
+                  "nominalLabels":"setNominalLabels","attributeIndex":"setAttributeIndex"}
     def __init__(self):
         super().__init__()
-        self.m_AttributeType=Attribute.NUMERIC
-        self.m_Name="unnamed"
-        self.m_Insert=SingleIndex("last")
-        self.m_Labels=[]
+        self.attributeType=Attribute.NUMERIC
+        self.attributeName= "unnamed"
+        self.attributeIndex=SingleIndex("last")
+        self.nominalLabels=[]
         self.m_DateFormat="%Y-%m-%d'T'%H:%M:%S"
         self.m_Weight=1
 
@@ -37,59 +40,51 @@ class Add(Filter):
         return result
 
     def getAttributeType(self):
-        return SelectedTag(self.m_AttributeType,self.TAGS_TYPE)
+        return SelectedTag(self.attributeType, self.TAGS_TYPE)
 
     def getWeight(self):
         return self.m_Weight
 
     def getAttributeName(self):
-        return self.m_Name
+        return self.attributeName
 
     def getAttributeIndex(self):
-        return self.m_Insert.getSingleIndex()
+        return self.attributeIndex.getSingleIndex()
 
     def getDateFormat(self):
         return self.m_DateFormat
 
     def getNominalLabels(self):
         labelList=""
-        for i in range(len(self.m_Labels)):
+        for i in range(len(self.nominalLabels)):
             if i==0:
-                labelList=self.m_Labels[i]
+                labelList=self.nominalLabels[i]
             else:
-                labelList+=","+self.m_Labels[i]
+                labelList+=","+self.nominalLabels[i]
         return labelList
 
-    def setAttributeType(self,value:SelectedTag):
-        if value.getTags() == self.TAGS_TYPE:
-            self.m_AttributeType=value.getSelectedTag().getID()
+    def setAttributeType(self,value:int):
+        self.attributeType=self.TAGS_TYPE[value].getID()
 
     def setAttributeIndex(self,attrIndex:str):
-        self.m_Insert.setSingleIndex(attrIndex)
+        self.attributeIndex.setSingleIndex(attrIndex)
+        self.propertyList.update({"attributeIndex":attrIndex})
 
     def setAttributeName(self,name:str):
         if name.strip()=="":
-            self.m_Name="unnamed"
+            self.attributeName= "unnamed"
         else:
-            self.m_Name=name
+            self.attributeName=name
+            self.propertyList.update({"attributeName":name})
 
     def setNominalLabels(self,labelList:str):
-        labels=[]
-        commaLoc=labelList.index(',')
-        while commaLoc >= 0:
-            label=labelList[0:commaLoc].strip()
-            if label != "":
-                labels.append(label)
-            labelList=labelList[commaLoc+1:]
-        label=labelList.strip()
-        if label != "":
-            labels.append(label)
-
-        self.m_Labels=labels
-        if len(labels)==0:
-            self.m_AttributeType=Attribute.NUMERIC
-        else:
-            self.m_AttributeType=Attribute.NOMINAL
+        labels=labelList.split(',')
+        self.nominalLabels=labels
+        self.propertyList.update({"nominalLabels":labelList})
+        # if len(labels)==0:
+        #     self.attributeType=Attribute.NUMERIC
+        # else:
+        #     self.attributeType=Attribute.NOMINAL
 
     def setWeight(self,weight):
         self.m_Weight=weight
@@ -99,20 +94,24 @@ class Add(Filter):
 
     def setInputFormat(self,instanceInfo:Instances):
         super().setInputFormat(instanceInfo)
-        self.m_Insert.setUpper(instanceInfo.numAttributes())
+        self.attributeIndex.setUpper(instanceInfo.numAttributes())
         outputFormat=Instances(instanceInfo,0)
         newAttribute=None
-        if self.m_AttributeType == Attribute.NUMERIC:
-            newAttribute=Attribute(self.m_Name)
-        elif self.m_AttributeType == Attribute.NOMINAL:
-            newAttribute=Attribute(self.m_Name,self.m_Labels)
-        elif self.m_AttributeType == Attribute.STRING:
-            newAttribute=Attribute(self.m_Name,True)
-        elif self.m_AttributeType == Attribute.DATE:
-            newAttribute=Attribute(self.m_Name,self.m_DateFormat)
+        if self.attributeType == Attribute.NUMERIC:
+            newAttribute=Attribute(self.attributeName)
+        elif self.attributeType == Attribute.NOMINAL:
+            newAttribute=Attribute(self.attributeName, self.nominalLabels)
+        elif self.attributeType == Attribute.STRING:
+            newAttribute=Attribute(self.attributeName, True)
+        elif self.attributeType == Attribute.DATE:
+            newAttribute=Attribute(self.attributeName, self.m_DateFormat)
         newAttribute.setWeight(self.getWeight())
-        outputFormat.insertAttributeAt(newAttribute,self.m_Insert.getIndex())
+        outputFormat.insertAttributeAt(newAttribute, self.attributeIndex.getIndex())
         self.setOutputFormat(outputFormat)
+        atts=Range(self.attributeIndex.getSingleIndex())
+        atts.setInvert(True)
+        atts.setUpper(outputFormat.numAttributes()-1)
+        self.initOutputLocators(outputFormat,atts.getSelection())
         return True
 
     def input(self,instance:Instance):
@@ -121,13 +120,12 @@ class Add(Filter):
         if self.m_NewBatch:
             self.resetQueue()
             self.m_NewBatch=False
-        inst=instance.copy()
+        inst=copy.deepcopy(instance)
         self.copyValues(inst,True,inst.dataset(),self.outputFormatPeek())
         inst.setDataset()
-        inst.insertAttributeAt(self.m_Insert.getIndex())
+        inst.insertAttributeAt(self.attributeIndex.getIndex())
         self.push(inst)
         return True
-
 
 
     # def getCapabilities(self):

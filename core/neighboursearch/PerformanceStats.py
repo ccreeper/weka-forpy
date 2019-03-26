@@ -19,3 +19,6 @@ class PerformanceStats():
 
     def incrPointCount(self):
         self.m_PointCount+=1
+
+    def incrCoordCount(self):
+        self.m_CoordCount+=1

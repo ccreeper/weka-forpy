@@ -1,13 +1,15 @@
 from PyQt5.QtWidgets import *
 from Utils import Utils
+from Tag import Tag
+from typing import *
 import copy
 
 class PropertySheetPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.m_env = self.width()
-        self.m_Properties = None
-        self.m_Methods = None
+        self.m_Properties = None    #type:Dict
+        self.m_Methods = None       #type:Dict
         self.m_Editors = []
         self.m_Labels = []  # type:List[QLabel]
         self.m_Views = []  # type:List[QWidget]
@@ -26,9 +28,8 @@ class PropertySheetPanel(QWidget):
         self.m_NumEditable = 0
         self.m_Target = target
         # 忽略类型，直接固定的接口，接口包括返回所有属性name的List和所有方法name的List
-        self.m_Properties = target.getAllProperties()
-        self.m_Methods = target.getAllMethods()
-
+        self.m_Properties = target.getAllProperties()       #type:Dict
+        self.m_Methods = target.getAllMethods()         #type:Dict
         def setValue(name: str,attrType:type):
             if attrType is bool:
                 def callSet(option:str):
@@ -45,16 +46,21 @@ class PropertySheetPanel(QWidget):
                             setattr(target,name,float(option))
             return callSet
 
-        for i in range(len(self.m_Properties)):
-            name = self.m_Properties[i]
+        for name,value in self.m_Properties.items():
+            val=None
             try:
                 property = getattr(target, name)
+                if value != "":
+                    try:
+                        val=getattr(target,value)
+                    except AttributeError:
+                        pass
             except AttributeError:
                 continue
 
-            print("name:", name, "type:", type(property))
+            # print("name:", name, "type:", type(property))
             label = QLabel(name)
-            func = setValue(name,type(property))
+            # func = setValue(name,type(property))
             if isinstance(property, bool):
                 view = QComboBox()
                 view.addItems(['False', 'True'])
@@ -62,11 +68,23 @@ class PropertySheetPanel(QWidget):
                     view.setCurrentIndex(1)
                 else:
                     view.setCurrentIndex(0)
-                view.currentIndexChanged[str].connect(copy.deepcopy(func))
+                # view.currentIndexChanged[str].connect(copy.deepcopy(func))
+            elif val is not None:
+                items=[]
+                view=QComboBox()
+                cur=i=0
+                for item in val:
+                    if isinstance(item,Tag):
+                        items.append(item.getReadable())
+                        if property == item.getID():
+                            cur=i
+                        i+=1
+                view.addItems(items)
+                view.setCurrentIndex(cur)
             else:
                 view = QLineEdit()
-                view.setText(str(property))
-                view.textChanged.connect(copy.deepcopy(func))
+                view.setText(str(value))
+                # view.textChanged.connect(copy.deepcopy(func))
             layout.addRow(label, view)
             self.m_Labels.append(label)
             self.m_Views.append(view)
@@ -78,6 +96,21 @@ class PropertySheetPanel(QWidget):
     def setLayout(self, a0: 'QLayout'):
         super().setLayout(a0)
         self.layoutMgr = a0
+
+    def updateObject(self):
+        for index in range(len(self.m_Labels)):
+            labelName=self.m_Labels[index].text()
+            setMethodName=self.m_Methods.get(labelName)
+            if setMethodName is not None:
+                try:
+                    setMethod=getattr(self.m_Target,setMethodName)
+                except AttributeError:
+                    continue
+                view=self.m_Views[index]
+                if isinstance(view,QLineEdit):
+                    setMethod(view.text())
+                elif isinstance(view,QComboBox):
+                    setMethod(view.currentIndex())
 
 # Test
 # from PyQt5.QtCore import *

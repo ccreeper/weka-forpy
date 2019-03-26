@@ -9,6 +9,7 @@ from core.Utils import Utils
 from PlotData2D import PlotData2D
 from gui.classifier.Plot2D import Plot2D
 from Instances import Instances,Instance
+import ast
 import math
 
 class MyMplCanvas(FigureCanvas):
@@ -23,15 +24,15 @@ class MyMplCanvas(FigureCanvas):
         "green": "#00FF00",
         "orange": "#FFC800",
         "light_pink": "#FF00FF"}
-    m_defaultColorsName=["white","black","blue","red","cyan","grey_blue","pink","green","orange","light_pink"]
+    m_defaultColorsName=["blue","red","cyan","grey_blue","pink","green","orange","light_pink","red","grenn","white"]
     m_markers={
-        Plot2D.MISSING_SHAPE:"1",
-        Plot2D.ERROR_SHAPE:"s",
-        Plot2D.DIAMOND_SHAPE:"D",
-        Plot2D.X_SHAPE:"x",
-        Plot2D.PLUS_SHAPE:"+",
-        Plot2D.TRIANGLEDOWN_SHAPE:"v",
-        Plot2D.TRIANGLEUP_SHAPE:"^"
+        Plot2D.MISSING_SHAPE.value:"1",
+        Plot2D.ERROR_SHAPE.value:"s",
+        Plot2D.DIAMOND_SHAPE.value:"D",
+        Plot2D.X_SHAPE.value:"x",
+        Plot2D.PLUS_SHAPE.value:"+",
+        Plot2D.TRIANGLEDOWN_SHAPE.value:"v",
+        Plot2D.TRIANGLEUP_SHAPE.value:"^"
     }
     def __init__(self,parent=None,width=5,height=4,dpi=100):
         #显示中文
@@ -49,7 +50,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_xticks([])
         self.axes.set_yticks([])
         #去留白
-        self.fig.subplots_adjust(top=0.99, bottom=0.05, left=0.05, right=0.99, hspace=0, wspace=0)
+        self.fig.subplots_adjust(top=1, bottom=0.1, left=0, right=1, hspace=0, wspace=0)
 
         #去边框
         self.showFrame(False)
@@ -199,7 +200,8 @@ class MyMplCanvas(FigureCanvas):
         self.fig.gca().spines['right'].set_visible(flag)
 
     def paintRect(self,dataSet:np.ndarray,barWidth:int,isNumeric:bool=False,colorList:List[str]=("black")):
-        self.fig.subplots_adjust(top=0.99, bottom=0.05, left=0.05, right=0.99, hspace=0, wspace=0)
+        self.showFrame(False)
+        self.fig.subplots_adjust(top=0.99, bottom=0.1, left=0.05, right=0.99, hspace=0, wspace=0)
         x = np.arange(len(dataSet[0]))
         # 堆积柱状图
         #width=(max-min)/(x-1)
@@ -247,9 +249,13 @@ class MyMplCanvas(FigureCanvas):
         self.clear()
         # print("xStart: ",self.m_XaxisStart,"xEnd: ",self.m_XaxisEnd)
         # print("yStart: ",self.m_YaxisStart,"yEnd: ",self.m_YaxisEnd)
-        self.fig.subplots_adjust(top=0.95, bottom=0.1, left=0.2, right=0.95, hspace=0, wspace=0)
+        self.fig.subplots_adjust(top=0.95, bottom=0.1, left=0.15, right=0.95, hspace=0, wspace=0)
         self.paintAxis()
+        #去除上边框右边框
         self.showFrame(True)
+        ax=plt.gca()
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
         if self.m_plotInstances is not None and self.m_plotInstances.numInstances() > 0\
             and self.m_plotInstances.numAttributes() > 0:
             self.paintAxis()
@@ -421,9 +427,10 @@ class MyMplCanvas(FigureCanvas):
                         #TODO 上点坐标，可用于连线
                         # prevx=temp_plot.m_pointLookup[i-1][0]+temp_plot.m_pointLookup[i-1][2]
                         # prevy=temp_plot.m_pointLookup[i-1][1]+temp_plot.m_pointLookup[i-1][3]
+                    # self.m_cIndex=12
                     if temp_plot.m_plotInstances.attribute(self.m_cIndex).isNominal():
                         if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
-                            color="#808080"
+                            color="#708090"
                         else:
                             ind=temp_plot.m_plotInstances.instance(i).value(self.m_cIndex)
                             color=self.m_colorList[ind]
@@ -445,7 +452,7 @@ class MyMplCanvas(FigureCanvas):
                             r=r*240+15
                             color=Utils.rgb((int(r),150,int(255-r)))
                         else:
-                            color="#808080"
+                            color="#708090"
                         if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
                             # if temp_plot.m_connecctPoints[i]:
                             self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value)
@@ -630,6 +637,10 @@ class MatplotlibWidget(QWidget):
     def clear(self):
         self.m_plot2D.clear()
 
+    def createTree(self,dotty:str):
+        d=ast.literal_eval(dotty)
+        self.m_plot2D.create_plot(d)
+
 #
 # def retrieve_tree(i):
 #     list_of_trees = [{'no surfacing': {0: 'no', 1: {'flippers': {0: 'no', 1: 'yes'}}}},
@@ -640,8 +651,11 @@ class MatplotlibWidget(QWidget):
 # if __name__=="__main__":
 #     app=QApplication(sys.argv)
 #     win=MatplotlibWidget()
-#     mytree = retrieve_tree(1)
-#     mytree['no surfacing'][3] = "maybe"
+#     # mytree = retrieve_tree(1)
+#     # mytree['no surfacing'][3] = "maybe"
+#     mytree={"IncomeBracket":{"=0":"A","=1":"B","=2":"C","=3":{"FirstPurchase":{"<=200":"a",">200":"b"}},
+#                              "=4":"E","=5":"F","=6":{"FirstPurchase":{"<=2003":"x",">2003":"y"}},
+#                              "=7":"G"}}
 #     win.m_plot2D.create_plot(mytree)
 #     win.show()
 #     sys.exit(app.exec_())

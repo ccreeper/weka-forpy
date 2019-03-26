@@ -15,11 +15,12 @@ class LinearRegression(AbstractClassifier):
     SELECTION_M5=0      #default
     SELECTION_NONE=1
     SELECTION_GREEDY=2
-    TAGS_SELECTION=[Tag(SELECTION_NONE,"No attribute selection"),
-                    Tag(SELECTION_M5,"M5 method"),
+    TAGS_SELECTION=[Tag(SELECTION_M5,"M5 method"),
+                    Tag(SELECTION_NONE,"No attribute selection"),
                     Tag(SELECTION_GREEDY,"Greedy method")]
-    propertyList=AbstractClassifier.propertyList[:]
-    propertyList.append('Ridge')
+    propertyList={"AttributeSelectionMethod":"TAGS_SELECTION","Ridge":"1e-8"}
+    methodList = {"AttributeSelectionMethod":"setAttributeSelectionMethod",
+                  "Ridge":"setRidge"}
     def __init__(self):
         super().__init__()
         self.m_Coefficients=None    #type:List[float]
@@ -109,6 +110,18 @@ class LinearRegression(AbstractClassifier):
         result.enable(CapabilityEnum.DATE_CLASS)
         result.enable(CapabilityEnum.MISSING_CLASS_VALUES)
         return result
+
+    def setAttributeSelectionMethod(self,value:str):
+        index=int(value)
+        self.AttributeSelectionMethod=self.TAGS_SELECTION[index].getID()
+
+    def setRidge(self,value:str):
+        try:
+            val=float(value)
+            self.Ridge=val
+            self.propertyList.update({"Ridge":value})
+        except ValueError:
+            pass
 
     def buildClassifier(self,data:Instances):
         self.m_ModelBuilt=False

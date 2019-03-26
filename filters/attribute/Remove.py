@@ -3,6 +3,7 @@ from Range import Range
 from OptionHandler import OptionHandler
 from Instances import Instances,Instance
 from typing import *
+import copy
 
 class Remove(Filter,OptionHandler):
     def __init__(self):
@@ -41,5 +42,23 @@ class Remove(Filter,OptionHandler):
         self.setOutputFormat(outputFormat)
         return True
 
-    def getInputFormat(self)->Instances:
-        return self.m_InputFormat
+    def input(self,instance:Instance):
+        if self.getInputFormat() is None:
+            raise Exception("No input instance format defined")
+        if self.m_NewBatch:
+            self.resetQueue()
+            self.m_NewBatch=False
+        if self.getOutputFormat().numAttributes() == 0:
+            return False
+        if len(self.m_SelectedAttributes) == self.getInputFormat().numAttributes():
+            inst=copy.deepcopy(instance)
+            inst.setDataset(None)
+        else:
+            vals=[0]*self.getOutputFormat().numAttributes()
+            for i in range(len(self.m_SelectedAttributes)):
+                current=self.m_SelectedAttributes[i]
+                vals[i]=instance.value(current)
+            inst=Instance(instance.weight(),vals)
+        self.copyValues(inst,False,instance.dataset(),self.outputFormatPeek())
+        self.push(inst)
+        return True

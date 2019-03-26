@@ -9,9 +9,11 @@ class EuclideanDistance(NormalizableDistance):
         super().__init__(data)
 
     def distance(self, first:Instance, second:Instance,a0=None,a1=None):
-        if a0 is None or isinstance(a0,PerformanceStats):
-            return math.sqrt(self.distance(first,second,float("inf"),a0))
-        return super().distance(first,second,a0,a1)
+        if a0 is None:
+            return math.sqrt(super().distance(first,second,float('inf')))
+        elif isinstance(a0,PerformanceStats):
+            return math.sqrt(super().distance(first,second,float("inf"),a0))
+        return super().distance(first,second,a0)
 
     def updateDistance(self,currDist:float,diff:float):
         result=currDist

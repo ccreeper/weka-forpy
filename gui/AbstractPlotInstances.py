@@ -31,12 +31,12 @@ class AbstractPlotInstances(OptionHandler):
         self.m_FinishUpCalled=True
 
     def canPlot(self,setup:bool):
-        try:
-            if setup:
-                self.setUp()
-            return self.getPlotInstances().numInstances()>0
-        except Exception:
-            return False
+        # try:
+        if setup:
+            self.setUp()
+        return self.getPlotInstances().numInstances()>0
+        # except Exception:
+        #     return False
 
     def getPlotData(self,name:str)->PlotData2D:
         if not self.m_FinishUpCalled:

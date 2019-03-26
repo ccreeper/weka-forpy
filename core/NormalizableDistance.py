@@ -81,11 +81,12 @@ class NormalizableDistance():
                     p2+=1
                 elif firstI>secondI:
                     diff=self.difference(secondI,0,second.valueSparse(p2))
+                    p2+=1
                 else:
                     diff=self.difference(firstI,first.valueSparse(p1),0)
                     p1+=1
                 if isinstance(a1,PerformanceStats):
-                    a1.incrPointCount()
+                    a1.incrCoordCount()
                 distance=self.updateDistance(distance,diff)
                 if distance>a0:
                     return float('inf')
@@ -118,7 +119,9 @@ class NormalizableDistance():
                             return diff-self.m_Ranges[index][self.R_MIN]
                     return diff
             else:
-                return (self.norm(val1,index)-self.norm(val2,index)) if not self.m_DontNormalize else (val1-val2)
+                if not self.m_DontNormalize:
+                    return self.norm(val1,index)-self.norm(val2,index)
+                return val1-val2
         else:
             return 0
 

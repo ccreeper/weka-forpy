@@ -41,13 +41,13 @@ class ReplaceMissingValues(Filter):
         inst=instance
         hasMissing=instance.hasMissingValue()
         if hasMissing:
-            vals=[]
+            vals=[0]*self.getInputFormat().numAttributes()
             for j in range(instance.numAttributes()):
                 if instance.isMissing(j) and self.getInputFormat().classIndex()!=j \
                     and (self.getInputFormat().attribute(j).isNominal() or self.getInputFormat().attribute(j).isNumeric()):
-                    vals.append(self.m_ModesAndMeans[j])
+                    vals[j]=self.m_ModesAndMeans[j]
                 else:
-                    vals.append(instance.value(j))
+                    vals[j]=instance.value(j)
             inst=Instance(instance.weight(),vals)
         inst.setDataset(instance.dataset())
         self.push(inst,not hasMissing)
@@ -84,16 +84,16 @@ class ReplaceMissingValues(Filter):
                                 counts[inst.index(i)][0]-=inst.weight()
                         elif inst.attributeSparse(i).isNumeric():
                             sums[inst.index(i)]-=inst.weight()
-            self.m_ModesAndMeans=[]
+            self.m_ModesAndMeans=[0]*self.getInputFormat().numAttributes()
             for i in range(self.getInputFormat().numAttributes()):
                 if self.getInputFormat().attribute(i).isNominal():
                     if len(counts[i]) == 0:
-                        self.m_ModesAndMeans.append(Utils.missingValue())
+                        self.m_ModesAndMeans[i]=Utils.missingValue()
                     else:
-                        self.m_ModesAndMeans.append(Utils.maxIndex(counts[i]))
+                        self.m_ModesAndMeans[i]=Utils.maxIndex(counts[i])
                 elif self.getInputFormat().attribute(i).isNumeric():
                     if Utils.gr(sums[i],0):
-                        self.m_ModesAndMeans.append(results[i]/sums[i])
+                        self.m_ModesAndMeans[i]=results[i]/sums[i]
             for i in range(self.getInputFormat().numInstances()):
                 self.convertInstance(self.getInputFormat().instance(i))
         self.flushInput()

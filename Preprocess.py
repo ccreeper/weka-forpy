@@ -4,33 +4,48 @@ from AttributeVisualizationPanel import AttributeVisualizationPanel
 from InstanceSummaryPanel import InstanceSummaryPanel
 from Instances import Instances,Instance
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 from ViewerDialog import ViewerDialog
 from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel
 from copy import *
 from Utils import Utils
+from filters.attribute.Remove import Remove
+from GenericObjectEditor import GenericObjectEditor
+from PropertyPanel import PropertyPanel
+from filters.Filter import Filter
+from Thread import Thread
 from Attributes import Attribute
 from typing import *
+# from CallMain import MainWindow
 import os
 
-class PreprocessPanel():
-    def __init__(self,win:'MainWindow'):
+class PreprocessPanel(QObject):
+    def __init__(self,win:'MainWindow',parent=None):
+        super().__init__(parent)
         # self.m_FilterEditor=GenericObjectEditor()
         # self.m_FilterEditor
         self.instanceSummaryPanel=InstanceSummaryPanel(win)
-        self.attributePanel=AttributeSelectionPanel(win)
-        self.attributeSummaryPanel=AttributeSummaryPanel(win)
-        self.attributeVisualizationPanel=AttributeVisualizationPanel(win)
+        self.m_AttPanel=AttributeSelectionPanel(win)
+        self.m_AttSummaryPanel=AttributeSummaryPanel(win)
+        self.m_AttVisualizePanel=AttributeVisualizationPanel(win)
         self.m_Instances=None     #type:Instances
         self.m_Explor=win
         self.m_openBut=win.open_btn
         self.m_editBut=win.edit_btn
         self.m_tab=win.tab
         self.m_tabWidget=win.tabWidget      #type:QTabWidget
-        self.m_applyBut=win.apply_btn
-        self.m_saveBut=win.save_btn
-
+        self.m_ApplyBut=win.apply_btn       #type:QPushButton
+        self.m_StopBut=win.filter_stop_btn      #type:QPushButton
+        self.m_SaveBut=win.save_btn
+        self.m_Option=win.option_filter
+        self.m_ChooseBut=win.chose_btn
+        self.m_RemoveButton=win.remove_btn
         self.m_FileName=""
-        self.m_Data=None        #type:Dict
+        self.m_RunThread=None       #type:Thread
+        self.m_FilterEditor=GenericObjectEditor()
+        self.m_FilterPanel=PropertyPanel(self,self.m_FilterEditor)
+
+        self.m_FilterEditor.setClassType(Filter)
 
         self.initSetting()
         self.attachListener()
@@ -45,7 +60,6 @@ class PreprocessPanel():
         with file:
             s = file.read().decode('utf-8')
         data = arff.loads(s)
-        self.m_Data=data
         inst = Instances(data)
         print(data)
         self.setInstances(inst)
@@ -54,53 +68,34 @@ class PreprocessPanel():
         self.m_tabWidget.setTabEnabled(2, True)
 
     def saveFile(self):
-        relation=self.m_Instances.relationName()
-        self.m_Data.update({"relation":relation})
-        attributes=[]
-        for i in range(self.m_Instances.numAttributes()):
-            t=[]
-            t.append(self.m_Instances.attribute(i).name())
-            if self.m_Instances.attribute(i).type() == Attribute.NUMERIC:
-                t.append("REAL")
-            else:
-                t.append(self.m_Instances.attribute(i).m_AttributeInfo.m_Values)
-            attributes.append(tuple(t))
-        self.m_Data.update({"attributes":attributes})
-        data=[]
-        for i in range(self.m_Instances.numInstances()):
-            val=[]
-            for j in range(self.m_Instances.numAttributes()):
-                if self.m_Instances.instance(i).isMissing(j):
-                    val.append(None)
-                elif self.m_Instances.attribute(j).isNominal():
-                    val.append(self.m_Instances.attribute(j).value(self.m_Instances.instance(i).value(j)))
-                else:
-                    val.append(str(self.m_Instances.instance(i).value(j)))
-            data.append(val)
-        self.m_Data.update({"data":data})
         filename=QFileDialog.getSaveFileName(self.m_tab,'保存文件','/'+self.m_FileName,'Arff data files(*.arff)')
         with open(filename[0],'w') as f:
-            text=arff.dumps(self.m_Data)
+            text=self.m_Instances.toArffString()
             f.write(text)
 
+    def getOptionBut(self):
+        return self.m_Option
+
+    def getChooseBut(self):
+        return self.m_ChooseBut
 
     def setInstances(self,inst:Instances):
         self.m_Instances=inst
         # 数据集信息面板
         self.instanceSummaryPanel.setInstance(self.m_Instances)
         # 属性面板
-        self.attributePanel.setInstance(self.m_Instances)
+        self.m_AttPanel.setInstance(self.m_Instances)
         # 属性详情面板
-        self.attributeSummaryPanel.setInstance(self.m_Instances)
+        self.m_AttSummaryPanel.setInstance(self.m_Instances)
         # 下拉框
-        self.attributeVisualizationPanel.setInstance(self.m_Instances)
+        self.m_AttVisualizePanel.setInstance(self.m_Instances)
 
         # UI初始化
-        self.attributeSummaryPanel.setAttribute(0)
-        self.attributeVisualizationPanel.setAttribute(0)
+        self.m_AttSummaryPanel.setAttribute(0)
+        self.m_AttVisualizePanel.setAttribute(0)
 
-        self.m_applyBut.setEnabled(True)
-        self.m_saveBut.setEnabled(True)
+        self.m_ApplyBut.setEnabled(True)
+        self.m_SaveBut.setEnabled(True)
         self.m_editBut.setEnabled(True)
 
     # def mousePressEvent(self, a0:QMouseEvent):
@@ -110,31 +105,31 @@ class PreprocessPanel():
     def initSetting(self):
         #禁用控件
         self.m_editBut.setEnabled(False)
-        self.m_saveBut.setEnabled(False)
-        self.m_applyBut.setEnabled(False)
+        self.m_SaveBut.setEnabled(False)
+        self.m_ApplyBut.setEnabled(False)
+        self.m_StopBut.setEnabled(False)
         self.m_tabWidget.setTabEnabled(1, False)
         self.m_tabWidget.setTabEnabled(2, False)
 
 
     def attachListener(self):
         self.m_openBut.clicked.connect(self.openFile)
-        self.m_saveBut.clicked.connect(self.saveFile)
-        self.attributePanel.m_TableModel.m_Table.cellClicked.connect(self.tableCellClick)
+        self.m_SaveBut.clicked.connect(self.saveFile)
+        self.m_AttPanel.m_TableModel.m_Table.cellClicked.connect(self.tableCellClick)
         self.m_editBut.clicked.connect(self.edit)
-        self.m_tabWidget.currentChanged.connect(self.tabChangedListener)
+        # self.m_tabWidget.currentChanged.connect(self.tabChangedListener)
+        self.m_Explor.tab_changed_signal.connect(self.tabChangedListener)
+        self.m_RemoveButton.clicked.connect(self.removeClicked)
 
-    def tabChangedListener(self,index:int):
-        if index ==1:
-            self.m_Explor.getClassiferPanel().setInstances(self.m_Instances)
-        elif index == 2:
-            self.m_Explor.getClustererPanel().setInstances(self.m_Instances)
+    def tabChangedListener(self,panel:QObject):
+        panel.setInstances(self.m_Instances)
 
     def tableCellClick(self,row,column):
-        self.attributeSummaryPanel.setAttribute(row)
-        self.attributeVisualizationPanel.setAttribute(row)
+        self.m_AttSummaryPanel.setAttribute(row)
+        self.m_AttVisualizePanel.setAttribute(row)
 
     def edit(self):
-        classIndex=self.attributeVisualizationPanel.getColoringIndex()
+        classIndex=self.m_AttVisualizePanel.getColoringIndex()
         cpInstance=deepcopy(self.m_Instances)
         cpInstance.setClassIndex(classIndex)
         self.dialog=ViewerDialog()
@@ -148,3 +143,44 @@ class PreprocessPanel():
             inst.setClassIndex(-1)
         Utils.debugOut("\n\nnewInstance numAttribute:",inst.numAttributes())
         self.setInstances(inst)
+
+
+    def removeClicked(self):
+        r=Remove()
+        selected=self.m_AttPanel.m_TableModel.getSelectedAttributes()
+        if len(selected) == 0:
+            return
+        if len(selected) == self.m_Instances.numAttributes():
+            Utils.DiglogWarning(self.m_Explore,"Can't remove all attributes from data!\n")
+            return
+        r.setAttributeIndicesArray(selected)
+        self.applyFilter(r)
+
+    def applyFilter(self,filter:Filter):
+        if self.m_RunThread is None:
+            self.m_RunThread=Thread(target=self.threadRun,args=(filter,))
+            self.m_RunThread.setPriority(QThread.LowPriority)
+            self.m_RunThread.start()
+
+
+    def threadRun(self,filter:Filter):
+        if filter is not None:
+            #addUndo
+            classIndex=self.m_AttVisualizePanel.getColoringIndex()
+            cp=Instances(self.m_Instances)
+            cp.setClassIndex(classIndex)
+            self.m_StopBut.setEnabled(True)
+            filterCopy=deepcopy(filter)
+            filterCopy.setInputFormat(cp)
+            newInstances=Filter.useFilter(cp,filterCopy)
+            self.m_StopBut.setEnabled(False)
+            if newInstances is None or newInstances.numAttributes() < 1:
+                raise Exception("Dataset is empty.")
+            #addUndo
+            self.m_AttVisualizePanel.setColoringIndex(cp.classIndex())
+            if self.m_Instances.classIndex() < 0:
+                newInstances.setClassIndex(-1)
+            self.m_Instances=newInstances
+            self.setInstances(self.m_Instances)
+            self.m_RunThread=None
+

@@ -5,11 +5,12 @@ from Attributes import Attribute
 from Instances import Instances,Instance
 from Utils import Utils
 from typing import *
+import copy
 
 
 class ZeroR(AbstractClassifier):
-    propertyList=AbstractClassifier.propertyList[:]
-    methodList=AbstractClassifier.methodList[:]
+    propertyList=copy.deepcopy(AbstractClassifier.propertyList)
+    methodList=copy.deepcopy(AbstractClassifier.methodList)
     def __init__(self):
         super().__init__()
         self.m_ClassValue=0

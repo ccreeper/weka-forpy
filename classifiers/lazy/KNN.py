@@ -11,15 +11,14 @@ import math
 
 #默认距离权重为0，不使用交叉验证
 class KNN(AbstractClassifier):
-    WEIGHT_NONE=1
-    WEIGHT_INVERSE=2
-    WEIGHT_SIMILARITY=4
+    WEIGHT_NONE=0
+    WEIGHT_INVERSE=1
+    WEIGHT_SIMILARITY=2
     TAGS_WEIGHTING=[Tag(WEIGHT_NONE,"No distance weighting"),
                     Tag(WEIGHT_INVERSE,"Weight by 1/distance"),
                     Tag(WEIGHT_SIMILARITY,"Weight by 1-distance")]
-    propertyList=AbstractClassifier.propertyList[:]
-    methodList=AbstractClassifier.methodList[:]
-    propertyList.append("kNN")
+    propertyList={"kNN":"1","DistanceWeighting":"TAGS_WEIGHTING"}
+    methodList = {"kNN":"setkNN","DistanceWeighting":"setDistanceWeighting"}
     def __init__(self,k:int=None):
         super().__init__()
         self.m_NNSearch=LinearNNSearch()
@@ -43,6 +42,17 @@ class KNN(AbstractClassifier):
         if self.WindowSize != 0:
             result+="using a maximum of " + str(self.WindowSize) + " (windowed) training instances\n"
         return result
+
+    def setkNN(self,value:str):
+        try:
+            val=int(value)
+            self.kNN=val
+            self.propertyList.update({"kNN":value})
+        except ValueError:
+            pass
+
+    def setDistanceWeighting(self,value:int):
+        self.DistanceWeighting=self.TAGS_WEIGHTING[value].getID()
 
 
     def initilize(self):

@@ -9,21 +9,25 @@ from PropertyPanel import PropertyPanel
 from clusterers.SimpleKMeans import SimpleKMeans
 from clusterers.ClusterEvaluation import ClusterEvaluation
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 from filters.attribute.Remove import Remove
 from CapabilitiesHandler import CapabilitiesHandler
 from SetInstancesPanel import SetInstancesPanel
 from Capabilities import Capabilities,CapabilityEnum
 from clusterers.Clusterer import Clusterer
 from Thread import Thread
-from OptionHandler import OptionHandler
+from VisualizePanel import VisualizePanel
+from PlotData2D import PlotData2D
 from PyQt5.QtCore import *
 from Utils import Utils
 import time
 import copy
 
 
-class ClustererPanel():
-    def __init__(self,win:'MainWindow'):
+class ClustererPanel(QObject):
+    history_add_visualize_signal=pyqtSignal(str,list,str,PlotData2D)
+    def __init__(self,win:'MainWindow',parent=None):
+        super().__init__(parent)
         self.m_Explorer=win
         self.m_OutText=win.outText_cluster          #type:QTextEdit
         self.m_History=win.resultList_cluster   #type:ResultHistoryPanel
@@ -44,6 +48,13 @@ class ClustererPanel():
     def updateOutputText(self,text:str):
         self.m_OutText.setText(text)
 
+    def addToHistoryVisualize(self,name:str, vv:List, visName:str, data:PlotData2D):
+        self.m_CurrentVis = VisualizePanel()
+        self.m_CurrentVis.setName(visName)
+        self.m_CurrentVis.addPlot(data)
+        vv.append(self.m_CurrentVis)
+        self.m_History.addObject(name, vv)
+
     def initalize(self):
         self.m_OutText.setReadOnly(True)
         self.m_OutText.setLineWrapMode(QTextEdit.NoWrap)
@@ -58,6 +69,8 @@ class ClustererPanel():
         self.m_TrainBut.clicked.connect(self.updateRadioLinks)
         self.m_TestSplitBut.clicked.connect(self.updateRadioLinks)
         self.m_SetTestBut.clicked.connect(self.setTestSet)
+        self.history_add_visualize_signal.connect(self.addToHistoryVisualize)
+        self.m_History.menu_expand_signal.connect(self.createMenu)
         self.m_StartBut.clicked.connect(self.startClusterer)
 
     def startClusterer(self):
@@ -144,14 +157,19 @@ class ClustererPanel():
         outBuff+=evaluation.clusterResultsToString()
         outBuff+='\n'
         self.m_History.updateResult(name,outBuff)
-
-        #TODO right-click visizalition
         if plotInstances is not None and plotInstances.canPlot(True):
-            pass
+            visName = name + " (" + inst.relationName() + ")"
+            pl2d = plotInstances.getPlotData(name)
+            plotInstances.cleanUp()
+            vv = []
+            trainHeader = Instances(self.m_Instances, 0)
+            vv.append(trainHeader)
+            self.history_add_visualize_signal.emit(name, vv, visName, pl2d)
         self.m_RunThread=None
         self.m_StartBut.setEnabled(True)
         self.m_StopBut.setEnabled(False)
-        Utils.debugOut(outBuff)
+        # Utils.debugOut(outBuff)
+        print("Run Finished")
 
     def removeClass(self,inst:Instances):
         af=Remove()
@@ -164,6 +182,35 @@ class ClustererPanel():
             retI=Filter.useFilter(inst,af)
         return retI
 
+    def createMenu(self):
+        menu = QMenu()
+        showClusterAssign = menu.addAction(u"Visualize cluster assignments")  # type:QAction
+
+        selectedNames = [i.text() for i in self.m_History.selectedItems()]
+        o = None  # type:List
+        if selectedNames is not None and len(selectedNames) == 1:
+            Utils.debugOut("history_name: ", selectedNames)
+            o = self.m_History.getNamedObject(selectedNames[0])
+        temp_vp = None  # type:VisualizePanel
+        if o is not None:
+            for i in range(len(o)):
+                temp = o[i]
+                if isinstance(temp, VisualizePanel):
+                    temp_vp = temp
+        if temp_vp is not None:
+            showClusterAssign.setEnabled(True)
+            showClusterAssign.triggered.connect(self.visualizeClusterAssignTrigger(temp_vp))
+        else:
+            showClusterAssign.setEnabled(False)
+        menu.exec_(QCursor.pos())
+
+    def visualizeClusterAssignTrigger(self, vp:VisualizePanel):
+        def visualizeClusterAssignments():
+            plotName = vp.getName()
+            vp.setWindowTitle("Classifier Visualize: " + plotName)
+            vp.draw()
+            vp.show()
+        return visualizeClusterAssignments
 
     def getOptionBut(self):
         return self.m_Option
@@ -175,7 +222,7 @@ class ClustererPanel():
         self.m_Instances = inst
         self.m_StartBut.setEnabled(self.m_RunThread is None)
         self.m_StopBut.setEnabled(self.m_RunThread is not None)
-        self.updateRadioLinks()
+        # self.updateRadioLinks()
 
 
     def updateRadioLinks(self):
@@ -183,7 +230,6 @@ class ClustererPanel():
         if self.m_SetTestFrame is not None and not self.m_TestSplitBut.isChecked():
             self.m_SetTestFrame.setVisible(False)
         self.updateCapabilitiesFilter(self.m_ClustererEditor.getCapabilitiesFilter())
-
 
     def updateCapabilitiesFilter(self,filter:Capabilities):
         if filter is None:
@@ -204,6 +250,7 @@ class ClustererPanel():
             currentSchemeCapabilities=clusterer.getCapabilities()       #type:Capabilities
             if not currentSchemeCapabilities.supportsMaybe(currentFilter) and not currentSchemeCapabilities.supports(currentFilter):
                 self.m_StartBut.setEnabled(False)
+        self.m_RunThread=None
 
 
     def setTestSet(self):

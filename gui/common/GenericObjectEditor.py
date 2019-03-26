@@ -42,6 +42,9 @@ class GenericObjectEditor(QObject):
             kvs = cf.items("Clusterer")
             for item in kvs:
                 PluginManager.addPlugin("Clusterer",item[1])
+            kvs = cf.items("Filter")
+            for item in kvs:
+                PluginManager.addPlugin("Filter", item[1])
         except BaseException as e:
             print(repr(e))
 
@@ -220,6 +223,7 @@ from PyQt5.QtCore import *
 
 
 class GOEPanel(QWidget, Ui_Form):
+    update_object_signal=pyqtSignal()
     def __init__(self, editor: GenericObjectEditor, parent=None):
         super().__init__(parent)
         super().setupUi(self)
@@ -231,6 +235,7 @@ class GOEPanel(QWidget, Ui_Form):
         self.m_Editor.m_Backup = copy.deepcopy(editor.m_Object)
         self.m_ChildPropertySheet = self.propertyWidget
         self.m_ChildPropertySheet.setEnabled(True)
+        self.update_object_signal.connect(self.m_ChildPropertySheet.updateObject)
         # TODO 监听改变
         self.m_okBut.clicked.connect(self.okButtonClick)
         self.m_cancelBut.clicked.connect(self.cancelButtonClick)
@@ -242,6 +247,7 @@ class GOEPanel(QWidget, Ui_Form):
                 self.updateChildPropertySheet()
 
     def okButtonClick(self):
+        self.update_object_signal.emit()
         self.m_Editor.m_CancelWasPressed = False
         self.m_Editor.m_Backup = copy.deepcopy(self.m_Editor.m_Object)
         self.close()

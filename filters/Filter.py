@@ -1,5 +1,4 @@
 from Instances import Instances,Instance
-from core.OptionHandler import OptionHandler
 from typing import *
 from Capabilities import Capabilities,CapabilityEnum
 from StringLocator import StringLocator
@@ -11,10 +10,11 @@ from core.OptionHandler import OptionHandler
 
 
 class Filter():
-    m_Methods = []
+    propertyList=[]
+    methodList = []
     def __init__(self):
         self.m_OutputFormat=None #type:Instances
-        self.m_OutputQueue=Queue()
+        self.m_OutputQueue=None     #type:Queue
         self.m_InputFormat=None #type:Instances
         self.m_NewBatch=True
         self.m_FirstBatchDone=False
@@ -29,8 +29,13 @@ class Filter():
         return self.m_FirstBatchDone
 
     @classmethod
-    def getMethods(cls):
-        return cls.m_Methods
+    def getAllProperties(cls):
+        return cls.propertyList
+
+    @classmethod
+    def getAllMethods(cls):
+        return cls.methodList
+
 
     def setInputFormat(self,instanceInfo:Instances):
         self.testInputFormat(instanceInfo)
@@ -69,10 +74,6 @@ class Filter():
             self.m_OutputFormat = outputFormat.stringFreeStructure()
             self.initOutputLocators(self.m_OutputFormat)
             relationName = outputFormat.relationName() + "-" +self.__class__.__name__
-            if isinstance(self,OptionHandler):
-                options=self.getOptions()
-                for option in options:
-                    relationName+=option.strip()
             self.m_OutputFormat.setRelationName(relationName)
         else:
             self.m_OutputFormat=None
@@ -163,7 +164,7 @@ class Filter():
 
     def bufferInput(self,instance:Instance):
         if instance is not None:
-            instance=instance.copy()
+            instance=copy.deepcopy(instance)
             self.m_InputFormat.add(instance)
 
 
@@ -183,4 +184,5 @@ class Filter():
         while processed is not None:
             newData.add(processed)
             processed=filter.output()
+
         return newData

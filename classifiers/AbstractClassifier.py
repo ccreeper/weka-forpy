@@ -9,8 +9,9 @@ from typing import *
 class AbstractClassifier(Classifier,CapabilitiesHandler):
     NUM_DECIMAL_PLACES_DEFAULT=2
     BATCH_SIZE_DEFAULT="100"
-    propertyList=['numDecimalPlaces','doNotCheckCapabilities','batchSize']
-    methodList=[]
+    propertyList={'numDecimalPlaces':'2','doNotCheckCapabilities':'False','batchSize':'100'}
+    methodList={"numDecimalPlaces":"setNumDecimalPlaces","doNotCheckCapabilities":"setDoNotCheckCapabilities",
+                "batchSize":"setBatchSize"}
     def __init__(self):
         self.numDecimalPlaces=self.NUM_DECIMAL_PLACES_DEFAULT
         self.batchSize=self.BATCH_SIZE_DEFAULT
@@ -52,6 +53,29 @@ class AbstractClassifier(Classifier,CapabilitiesHandler):
         result=Capabilities(self)
         result.enableAll()
         return result
+
+    def setNumDecimalPlaces(self,value:str):
+        try:
+            val=int(value)
+            self.numDecimalPlaces=val
+            self.propertyList.update({"numDecimalPlaces":value})
+        except ValueError:
+            pass
+
+    def setDoNotCheckCapabilities(self,value:int):
+        if value == 0:
+            self.doNotCheckCapabilities=False
+        else:
+            self.doNotCheckCapabilities=True
+
+    def setBatchSize(self,value:str):
+        try:
+            val=int(value)
+            self.batchSize=val
+            self.propertyList.update({"batchSize":value})
+        except ValueError:
+            pass
+
 
     @classmethod
     def getAllMethods(cls):

@@ -9,10 +9,11 @@ from classifiers.trees.J48Component.C45ModelSelection import C45ModelSelection
 from classifiers.trees.J48Component.C45PruneableClassifierTree import C45PruneableClassifierTree
 from classifiers.trees.J48Component.PruneableClassifierTree import PruneableClassifierTree
 from Drawable import Drawable
+import copy
 
 class J48(AbstractClassifier,Drawable):
-    propertyList=AbstractClassifier.propertyList[:]
-    methodList=AbstractClassifier.methodList[:]
+    propertyList=copy.deepcopy(AbstractClassifier.propertyList)
+    methodList=copy.deepcopy(AbstractClassifier.methodList)
     def __init__(self):
         super().__init__()
         self.m_root=None        #type:ClassifierTree

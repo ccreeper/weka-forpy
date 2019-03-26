@@ -41,25 +41,23 @@ class ClassifierTree(CapabilitiesHandler,Drawable):
         return Drawable.TREE
 
     def graph(self):
-        text=""
-        self.assignIDs(-1)
-        text+="digraph J48Tree {\n"
+        text="{"
+        # self.assignIDs(-1)
+        # text+="digraph J48Tree {\n"
         if self.m_isLeaf:
-            text+="N" + str(self.m_id) + " [label=\""\
-                + Utils.backQuoteChars(self.m_localModel.dumpLabel(0, self.m_train)) + "\" "\
-                + "shape=box style=filled "
-            if self.m_train is not None and self.m_train.numInstances() > 0:
-                text+="data =\n" + str(self.m_train) + "\n"
-                text+=",\n"
-            text+="]\n"
+            text+='"'+ Utils.backQuoteChars(self.m_localModel.dumpLabel(0, self.m_train)) + '"'
+            # if self.m_train is not None and self.m_train.numInstances() > 0:
+            #     text+="data =\n" + str(self.m_train) + "\n"
+            #     text+=",\n"
+            # text+="]\n"
         else:
-            text+="N" + str(self.m_id) + ' [label="'+ Utils.backQuoteChars(self.m_localModel.leftSide(self.m_train)) + '" '
-            if self.m_train is not None and self.m_train.numInstances() > 0:
-                text+="data =\n" + str(self.m_train) + "\n"
-                text+=",\n"
-            text+=']\n'
+            text+='"'+Utils.backQuoteChars(self.m_localModel.leftSide(self.m_train)) + '":'
+            # if self.m_train is not None and self.m_train.numInstances() > 0:
+            #     text+="data =\n" + str(self.m_train) + "\n"
+            #     text+=",\n"
+            # text+=']\n'
             text=self.graphTree(text)
-        text+="}\n"
+        text+="}"
         return text
 
 
@@ -195,25 +193,25 @@ class ClassifierTree(CapabilitiesHandler,Drawable):
                 son.cleanup(justHeaderInfo)
 
     def graphTree(self,text:str):
+        text+="{"
         for i in range(len(self.m_sons)):
-            text+="N" + str(self.m_id) + "->" + "N" + str(self.m_sons[i].m_id) + " [label=\""\
-                    + Utils.backQuoteChars(self.m_localModel.rightSide(i, self.m_train).strip())\
-                    + "\"]\n"
+            if i != 0:
+                text+=","
+            text+='"'+ Utils.backQuoteChars(self.m_localModel.rightSide(i, self.m_train).strip())+'":'
             if self.m_sons[i].m_isLeaf:
-                text+="N" + str(self.m_sons[i].m_id) + " [label=\""\
-                      + Utils.backQuoteChars(self.m_localModel.dumpLabel(i, self.m_train)) + "\" "\
-                      + "shape=box style=filled "
-                if self.m_train is not None and self.m_train.numInstances() > 0:
-                    text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
-                text+="]\n"
+                text+='"'+ Utils.backQuoteChars(self.m_localModel.dumpLabel(i, self.m_train)) + '"'
+                # if self.m_train is not None and self.m_train.numInstances() > 0:
+                #     text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
+                # text+="]\n"
             else:
-                text+="N" + str(self.m_sons[i].m_id) + " [label=\""\
-                          + Utils.backQuoteChars(self.m_sons[i].m_localModel.leftSide(self.m_train))\
-                          + "\" "
-                if self.m_train is not None and self.m_train.numInstances() > 0:
-                    text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
-                text+=']\n'
+                text+='{'
+                text+='"'+ Utils.backQuoteChars(self.m_sons[i].m_localModel.leftSide(self.m_train))+'":'
+                # if self.m_train is not None and self.m_train.numInstances() > 0:
+                #     text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
+                # text+=']\n'
                 text=self.m_sons[i].graphTree(text)
+                text+="}"
+        text+="}"
         return text
 
     def son(self,index:int):

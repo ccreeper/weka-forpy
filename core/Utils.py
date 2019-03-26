@@ -2,6 +2,7 @@ import math
 from functools import partial
 from typing import *
 from Statistics import Statistics
+from PyQt5.QtWidgets import *
 import importlib
 
 
@@ -36,6 +37,10 @@ class Utils():
     def normalize(cls,numbers:List,sum:float):
         for i in range(len(numbers)):
             numbers[i]/=sum
+
+    @classmethod
+    def DiglogWarning(cls,parent,text:str):
+        QMessageBox.critical(parent,"Error",text,QMessageBox.Yes)
 
     @classmethod
     def rgb(cls,value):

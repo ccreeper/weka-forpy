@@ -61,7 +61,7 @@ class ClassifierSplitModel():
                 for j in range(self.m_numSubsets):
                     if Utils.gr(weights[j],0):
                         instances[j].add(inst)
-                        instances[j].lastInstance().setWeight(weights[j]*inst.weight())
+                        instances[j].lastInstance().setWeight(float(weights[j]*inst.weight()))
         return instances
 
     def classProbLaplace(self,classIndex:int,instance:Instance,theSubset:int):

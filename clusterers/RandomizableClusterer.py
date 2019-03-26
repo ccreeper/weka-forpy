@@ -8,8 +8,8 @@ class RandomizableClusterer(AbstractClusterer,OptionHandler):
     propertyList.append('seed')
     def __init__(self):
         super().__init__()
-        self.m_SeedDefault=1
-        self.seed=self.m_SeedDefault
+        self.Seed=1
+        self.seed=self.Seed
 
     def setSeed(self,value:int):
         self.seed=value

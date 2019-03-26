@@ -20,8 +20,11 @@ class ClusterEvaluation():
         self.m_clusteringResult=""
         self.m_clusterAssignments=None      #type:List
 
+    def getNumClusters(self):
+        return self.m_numClusters
+
     def getClusterAssignments(self):
-        return self.m_clusteringResult
+        return self.m_clusterAssignments
 
     def getClassesToClusters(self):
         return self.m_classToCluster
@@ -48,34 +51,25 @@ class ClusterEvaluation():
             filter.setAttributeIndices(str(testRaw.classIndex()+1))
             filter.setInvertSelection(False)
             filter.setInputFormat(testRaw)
-        if filter is not None:
-            forBatchPredictors=Instances(filter.getOutputFormat(),0)
-        else:
-            forBatchPredictors=Instances(testRaw,0)
         for inst in testRaw:
             if filter is not None:
                 filter.input(inst)
                 filter.batchFinished()
                 inst=filter.output()
-
-            cnum=-1
-            if isinstance(self.m_Clusterer,DensityBasedClusterer):
-                loglk+=self.m_Clusterer.logDensityForInstance(inst)
-                if isinstance(self.m_Clusterer,Clusterer):
-                    cnum=self.m_Clusterer.clusterInstance(inst)
-                clusterAssignments.append(cnum)
-            else:
-                cnum=self.m_Clusterer.clusterInstance(inst)
-                clusterAssignments.append(cnum)
+            cnum=self.m_Clusterer.clusterInstance(inst)
+            clusterAssignments.append(cnum)
             if cnum != -1:
                 instanceStats[cnum]+=1
         sumNum=sum(instanceStats)
         loglk/=sumNum
         self.m_logL=loglk
         self.m_clusterAssignments=[]
+        # for i in clusterAssignments:
+        #     print(",",i,end="")
+        # print()
         for i in range(len(clusterAssignments)):
             self.m_clusterAssignments.append(clusterAssignments[i])
-        numInstFieldWidth=int(math.log(len(clusterAssignments)/math.log(10))+1)
+        numInstFieldWidth=int(math.log(len(clusterAssignments))/math.log(10)+1)
         if outputModel:
             self.m_clusteringResult+=str(self.m_Clusterer)
         self.m_clusteringResult+="Clustered Instances\n\n"
@@ -89,8 +83,6 @@ class ClusterEvaluation():
                                         +"%)\n"
         if unclusteredInstances > 0:
             self.m_clusteringResult+="\nUnclustered instances : "+str(unclusteredInstances)
-        if isinstance(self.m_Clusterer,DensityBasedClusterer):
-            self.m_clusteringResult+="\n\nLog likelihood: "+ Utils.doubleToString(loglk, 1, 5) + "\n"
         if hasClass:
             self.evaluateClustersWithRespectToClass(test)
 

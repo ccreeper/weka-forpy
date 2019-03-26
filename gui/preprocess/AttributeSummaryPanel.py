@@ -52,7 +52,8 @@ class AttributeSummaryPanel():
         self.setHeader(index)
         if self.m_AttributeStats[index] is None:
             self.m_AttributeStats[index]=self.m_Instance.attributeStats(index)
-        self.setDerived(index)
+        else:
+            self.setDerived(index)
 
 
     def setHeader(self,index:int):

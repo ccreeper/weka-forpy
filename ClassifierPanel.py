@@ -5,6 +5,7 @@ from typing import *
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 from copy import *
 from Attributes import Attribute
 from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
@@ -20,6 +21,7 @@ from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from classifiers.rules.ZeroR import ZeroR
 from VisualizePanel import VisualizePanel
+from MatplotlibWidget import MatplotlibWidget
 from PlotData2D import PlotData2D
 from Drawable import Drawable
 
@@ -71,7 +73,6 @@ class ClassifierPanel(QObject):
         vv.append(self.m_CurrentVis)
         self.m_History.addObject(name, vv)
 
-    #TODO 未完成
     def initalize(self):
         self.m_selectedEvalMetrics.remove("Coverage")
         self.m_selectedEvalMetrics.remove("Region size")
@@ -89,6 +90,7 @@ class ClassifierPanel(QObject):
         self.m_TestSplitBut.clicked.connect(self.updateRadioLinks)
         self.m_SetTestBut.clicked.connect(self.setTestSet)
         self.m_StartBut.clicked.connect(self.startClassifier)
+        self.m_History.menu_expand_signal.connect(self.createMenu)
         self.history_add_visualize_signal.connect(self.addToHistoryVisualize)
 
 
@@ -318,6 +320,58 @@ class ClassifierPanel(QObject):
         self.mutex.unlock()
         print("RunFinished")
 
+
+    def createMenu(self):
+        menu=QMenu()
+        showClassifierErrors = menu.addAction(u"Visualize classifier errors")        #type:QAction
+        showVisualizeTree = menu.addAction(u"Visualize tree")        #type:QAction
+
+        selectedNames = [i.text() for i in self.m_History.selectedItems()]
+        o = None  # type:List
+        if selectedNames is not None and len(selectedNames) == 1:
+            Utils.debugOut("history_name: ", selectedNames)
+            o = self.m_History.getNamedObject(selectedNames[0])
+        temp_vp = None  # type:VisualizePanel
+        temp_grph = None  # type:str
+        if o is not None:
+            for i in range(len(o)):
+                temp = o[i]
+                if isinstance(temp, VisualizePanel):
+                    temp_vp = temp
+                elif isinstance(temp, str):
+                    temp_grph = temp
+        if temp_vp is not None:
+            showClassifierErrors.setEnabled(True)
+            showClassifierErrors.triggered.connect(self.classifierErrorTrigger(temp_vp))
+        else:
+            showClassifierErrors.setEnabled(False)
+
+        if temp_grph is not None:
+            showVisualizeTree.setEnabled(True)
+            showVisualizeTree.triggered.connect(self.visualizeTreeTrigger(temp_grph))
+        else:
+            showVisualizeTree.setEnabled(False)
+        menu.exec_(QCursor.pos())
+
+
+    def classifierErrorTrigger(self,sp:VisualizePanel):
+        def visualizeClassifierErrors():
+            if sp is not None:
+                if sp.getXIndex() == 0 and sp.getYIndex() == 1:
+                    sp.setXIndex(sp.getInstances().classIndex())
+                    sp.setYIndex(sp.getInstances().classIndex() - 1)
+                    plotName = sp.getName()
+                    sp.setWindowTitle("Classifier Visualize: " + plotName)
+                    sp.draw()
+                    sp.show()
+        return visualizeClassifierErrors
+
+    def visualizeTreeTrigger(self,dotty:str):
+        def visualizeTree():
+            self.mp=MatplotlibWidget()
+            self.mp.createTree(dotty)
+            self.mp.show()
+        return visualizeTree
 
     def setupEval(self,evaluation:Evaluation,classifier:Classifier,inst:Instances,plotInstances:ClassifierErrorsPlotInstances,onlySetPriors:bool):
         # if isinstance(classifier,InputMappedClassifier)...

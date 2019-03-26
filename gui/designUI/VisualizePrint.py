@@ -11,12 +11,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(865, 535)
+        Form.resize(865, 579)
         self.canvas = MatplotlibWidget(Form)
-        self.canvas.setGeometry(QtCore.QRect(10, 90, 841, 431))
+        self.canvas.setGeometry(QtCore.QRect(10, 130, 841, 431))
         self.canvas.setObjectName("canvas")
         self.relation_lab = QtWidgets.QLabel(Form)
-        self.relation_lab.setGeometry(QtCore.QRect(20, 70, 72, 15))
+        self.relation_lab.setGeometry(QtCore.QRect(20, 110, 72, 15))
         self.relation_lab.setObjectName("relation_lab")
         self.y_comboBox = QtWidgets.QComboBox(Form)
         self.y_comboBox.setGeometry(QtCore.QRect(399, 21, 441, 31))
@@ -34,6 +34,17 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.x_comboBox.sizePolicy().hasHeightForWidth())
         self.x_comboBox.setSizePolicy(sizePolicy)
         self.x_comboBox.setObjectName("x_comboBox")
+        self.c_comboBox = QtWidgets.QComboBox(Form)
+        self.c_comboBox.setGeometry(QtCore.QRect(20, 60, 361, 31))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.c_comboBox.sizePolicy().hasHeightForWidth())
+        self.c_comboBox.setSizePolicy(sizePolicy)
+        self.c_comboBox.setObjectName("c_comboBox")
+        self.saveBtn = QtWidgets.QPushButton(Form)
+        self.saveBtn.setGeometry(QtCore.QRect(400, 60, 93, 28))
+        self.saveBtn.setObjectName("saveBtn")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -42,5 +53,6 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.relation_lab.setText(_translate("Form", "TextLabel"))
+        self.saveBtn.setText(_translate("Form", "Save"))
 
 from MatplotlibWidget import MatplotlibWidget

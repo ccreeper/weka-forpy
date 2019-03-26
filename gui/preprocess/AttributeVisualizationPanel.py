@@ -166,6 +166,12 @@ class AttributeVisualizationPanel():
     def getColoringIndex(self):
         return self.m_classIndex
 
+    def setColoringIndex(self,ci:int):
+        self.m_classIndex=ci
+        if self.m_colorAttribute is not None:
+            self.m_colorAttribute.setCurrentIndex(ci+1)
+        else:
+            self.setAttribute(self.m_attrIndex)
 
 
 class BarCalc(QThread):

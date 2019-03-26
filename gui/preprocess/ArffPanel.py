@@ -23,6 +23,7 @@ class ArffPanel(QObject):
         self.setTable()
         self.createMenu()
         self.attachMenuItemListener()
+        self.m_Pass=False
 
     def initalize(self):
         #当前选中的列
@@ -102,19 +103,27 @@ class ArffPanel(QObject):
         self.m_Table.itemChanged.connect(self.itemValueChanged)
 
     def itemValueChanged(self,item:QTableWidgetItem):
-        row=item.row()
-        column=item.column()-1
-        if item.text() == "":
-            val=float('nan')
-            item.setBackground(QBrush(QColor(232, 232, 232)))
-        elif self.model.getInstance().attribute(column).isNumeric():
-            val=float(item.text())
-        else:
-            val=self.model.getInstance().attribute(column).value(self.model.getInstance().instance(row).value(column))
-        self.getInstance().instance(row).setValue(column,val)
+        if not self.m_Pass:
+            row=item.row()
+            column=item.column()
+            if item.text() == "":
+                val=None
+                self.m_Pass=True
+                item.setBackground(QBrush(QColor(232, 232, 232)))
+                self.m_Pass=False
+            elif self.model.getInstance().attribute(column-1).isNumeric():
+                val=float(item.text())
+            else:
+                val=self.model.getInstance().attribute(column-1).value(self.model.getInstance().instance(row).value(column-1))
+            self.model.setValueAt(val,[row],column)
+            print("A=================")
 
     def getInstance(self):
         return self.model.getInstance()
+
+    # def getStandardInstances(self):
+    #     inst=self.model.getInstance()
+    #     for i in range()
 
     def getSelectedRows(self)->List:
         res=set(index.row() for index in self.m_Table.selectedIndexes())
@@ -148,16 +157,17 @@ class ArffPanel(QObject):
 
 
     def selectedCombox(self,item:QTableWidgetItem):
+        self.m_Pass=True
         if self.m_CurrentCombobox is not None:
             # newItem=QTableWidgetItem(self.m_Data.attribute(self.m_CurrentItem[1]-1).value(self.m_Data.instance(self.m_CurrentItem[0]).value(self.m_CurrentItem[1]-1)))
-            widget=self.m_Table.cellWidget(self.m_CurrentCombobox[0], self.m_CurrentCombobox[1])
+            widget=self.m_Table.cellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
             newItem=QTableWidgetItem(widget.currentText())
             if widget.currentText()=="":
                 newItem.setBackground(QBrush(QColor(232,232,232)))
             elif widget.currentText()==self.m_LastSearch:
                 newItem.setBackground(QBrush(Qt.red))
-            self.m_Table.removeCellWidget(self.m_CurrentCombobox[0], self.m_CurrentCombobox[1])
-            self.m_Table.setItem(self.m_CurrentCombobox[0], self.m_CurrentCombobox[1], newItem)
+            self.m_Table.removeCellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
+            self.m_Table.setItem(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column(), newItem)
             self.m_CurrentCombobox=None
         if item.column() == 0:
             return
@@ -170,10 +180,18 @@ class ArffPanel(QObject):
             else:
                 newItem.setCurrentIndex(self.model.getInstance().instance(item.row()).value(item.column()-1)+1)
             self.m_Table.setCellWidget(item.row(),item.column(),newItem)
-            self.m_CurrentCombobox=(item.row(), item.column())
+            self.m_CurrentCombobox=item
+            newItem.currentIndexChanged[str].connect(self.itemComboBoxChanged)
             newItem.showPopup()
+
+        self.m_Pass = False
+
+    def itemComboBoxChanged(self,text:str):
+        if text == "":
+            val=None
         else:
-            self.m_CurrentCombobox=None
+            val=text
+        self.model.setValueAt(val,[self.m_CurrentCombobox.row()],self.m_CurrentCombobox.column())
 
     #表格菜单
     def generateMenu(self,pos):
@@ -235,23 +253,32 @@ class ArffPanel(QObject):
 
     #删除回调
     def deleteInstanceEvent(self,row:int):
+        self.m_Pass=True
+        if self.m_CurrentCombobox is not None and self.m_CurrentCombobox.row() == row:
+            self.m_CurrentCombobox=None
         self.m_Table.removeRow(row)
         Utils.debugOut("delete position:",row)
         Utils.debugOut("delete after table rowCount:",self.m_Table.rowCount())
         self.adjustRowNo(row)
         Utils.debugOut("delete after current instance count:",self.model.getInstance().numInstances())
+        self.m_Pass=False
 
+
+    def setSearchString(self,searchString:str):
+        self.m_Pass=True
+        self.m_Table.setSearchString(searchString)
+        self.m_Pass=False
 
     #查找
     def search(self):
         searchStr,ok=QInputDialog.getText(self.m_Table,"Search...","输入查找的字符串")
         if ok:
             self.m_LastSearch=searchStr
-            self.m_Table.setSearchString(searchStr)
+            self.setSearchString(searchStr)
 
     #清除查找记录
     def clearSearch(self):
-        self.m_Table.setSearchString("")
+        self.setSearchString("")
 
     #插入新的实例
     def addInstance(self):
@@ -301,7 +328,7 @@ class ArffPanel(QObject):
                 value = None
             for i in range(self.m_Table.rowCount()):
                 if menuItem == self.setAllValuesToMenuItem:
-                    if value != self.model.getInstance().instance(i).value(self.m_CurrentCol):
+                    if value != self.model.getInstance().instance(i).value(self.m_CurrentCol-1):
                         # self.model.setValueAt(value,i,self.m_CurrentCol)
                         updateIndexList.append(i)
                 elif menuItem == self.setMissingValuesToMenuItem and self.model.isMissingAt(i,self.m_CurrentCol) and value is not None:
@@ -317,11 +344,18 @@ class ArffPanel(QObject):
                 self.model.setValueAt(value,updateIndexList,self.m_CurrentCol)
 
     def updateValueEvent(self,rowIndexList:List[int],columnIndex:int,newValue):
+        self.m_Pass=True
         for i in rowIndexList:
+            if self.m_CurrentCombobox is not None:
+                self.m_Table.removeCellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
+                self.m_CurrentCombobox=None
             newItem=QTableWidgetItem(newValue)
             if newValue is None:
                 newItem.setBackground(QBrush(QColor(232,232,232)))
+            elif newValue == self.m_LastSearch:
+                newItem.setBackground(QBrush(Qt.red))
             self.m_Table.setItem(i,columnIndex,newItem)
+        self.m_Pass=False
 
     #重命名
     def renameAttribute(self):
@@ -370,9 +404,13 @@ class ArffPanel(QObject):
 
     def deleteAttributeEvent(self, columnIndex):
         if isinstance(columnIndex,int):
+            if self.m_CurrentCombobox is not None and self.m_CurrentCombobox.column() == columnIndex:
+                self.m_CurrentCombobox=None
             self.m_Table.removeColumn(columnIndex)
         elif isinstance(columnIndex,list):
             for i in columnIndex:
+                if self.m_CurrentCombobox is not None and self.m_CurrentCombobox.column() == i:
+                    self.m_CurrentCombobox = None
                 self.m_Table.removeColumn(i)
         headerLabels = ["No."]
         for column in range(self.model.getInstance().numAttributes()):
@@ -395,8 +433,20 @@ class ArffPanel(QObject):
             self.model.undo()
 
     def undoEvent(self,inst:Instances):
-        self.m_CurrentCombobox=None     #tyep:tuple
+        self.m_Pass=True
+        if self.m_CurrentCombobox is not None:
+            # newItem=QTableWidgetItem(self.m_Data.attribute(self.m_CurrentItem[1]-1).value(self.m_Data.instance(self.m_CurrentItem[0]).value(self.m_CurrentItem[1]-1)))
+            widget=self.m_Table.cellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
+            newItem=QTableWidgetItem(widget.currentText())
+            if widget.currentText()=="":
+                newItem.setBackground(QBrush(QColor(232,232,232)))
+            elif widget.currentText()==self.m_LastSearch:
+                newItem.setBackground(QBrush(Qt.red))
+            self.m_Table.removeCellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
+            self.m_Table.setItem(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column(), newItem)
+            self.m_CurrentCombobox=None
         self.setModel(inst)
+        self.m_Pass=False
 
     def stateChangedEvent(self):
         self.state_changed_signal.emit()
@@ -476,7 +526,6 @@ class ArffModel(QObject):
     def setValueAt(self,value,rowIndexList:List,columnIndex:int):
         self.addUndoPoint()
         for rowIndex in rowIndexList:
-            oldValue=self.getValueAt(rowIndex,columnIndex)
             type=self.getType(columnIndex)
             index=columnIndex-1
             inst=self.m_Data.instance(rowIndex)
@@ -490,6 +539,7 @@ class ArffModel(QObject):
                 elif type == Attribute.NOMINAL:
                     if att.indexOfValue(value) > -1:
                         inst.setValue(index,att.indexOfValue(value))
+                        # print(att.indexOfValue(value))
                     else:
                         rowIndexList=[]
                         break

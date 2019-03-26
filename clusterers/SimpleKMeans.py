@@ -11,9 +11,9 @@ import math
 import random
 
 class SimpleKMeans(RandomizableClusterer):
-    propertyList = RandomizableClusterer.propertyList[:]
-    methodList = RandomizableClusterer.methodList[:]
-    propertyList.extend(['NumClusters','DontReplaceMissing'])
+    methodList = {"NumClusters":"setNumClusters","DontReplaceMissing":"setDontReplaceMissing",
+                  "Seed":"setSeedDefault"}
+    propertyList = {"NumClusters":"2","DontReplaceMissing":"False","Seed":"10"}
     def __init__(self):
         super().__init__()
         self.NumClusters=2
@@ -22,12 +22,12 @@ class SimpleKMeans(RandomizableClusterer):
         self.m_Iterations=0
         self.m_PreserveOrder=False
         self.m_FastDistanceCalc=False
-        self.m_SeedDefault=10
+        self.Seed=10
         self.m_speedUpDistanceCompWithCanopies=False
         self.m_maxCanopyCandidates=100
         self.m_minClusterDensity=2
         self.m_periodicPruningRate=10000
-        self.setSeed(self.m_SeedDefault)
+        self.setSeed(self.Seed)
         self.m_ClusterNominalCounts=None        #type:List[List[List[float]]]
         self.m_ClusterMissingCounts=None        #type:List[List[float]]
         self.m_FullMeansOrMediansOrModes=None   #type:List[float]
@@ -154,6 +154,20 @@ class SimpleKMeans(RandomizableClusterer):
         inst=self.m_ReplaceMissingFilter.output()
         return self.clusterProcessedInstance(inst,False,True)
 
+    def setNumClusters(self,value:str):
+        try:
+            val=int(value)
+            self.NumClusters=int(val)
+            self.propertyList.update({"NumClusters":value})
+        except ValueError:
+            pass
+
+    def setDontReplaceMissing(self,value:int):
+        if value == 0:
+            self.DontReplaceMissing=False
+        else:
+            self.DontReplaceMissing=True
+
     def pad(self,source:str,padChar:str,length:int,leftPad:bool):
         temp=""
         if leftPad:
@@ -265,6 +279,9 @@ class SimpleKMeans(RandomizableClusterer):
         if not self.m_FastDistanceCalc:
             for i in range(instances.numInstances()):
                 self.clusterProcessedInstance(instances.instance(i),True,False)
+
+        # for i in self.m_squaredErrors:
+        #     print("squ:",i)
         self.m_ClusterSizes=[]
         for i in range(self.NumClusters):
             self.m_ClusterSizes.append(tempI[i].sumOfWeight())
@@ -272,6 +289,14 @@ class SimpleKMeans(RandomizableClusterer):
 
     def numberOfClusters(self):
         return self.NumClusters
+
+    def setSeedDefault(self,value:str):
+        try:
+            val=int(value)
+            self.Seed=val
+            self.propertyList.update({"Seed":value})
+        except ValueError:
+            pass
 
     def clusterProcessedInstance(self,instance:Instance,updateErrors:bool,useFastDistCalc:bool):
         minDist=float('inf')
@@ -287,6 +312,7 @@ class SimpleKMeans(RandomizableClusterer):
         if updateErrors:
             minDist*=minDist*instance.weight()
             self.m_squaredErrors[bestCluster]+=minDist
+        # print("bestCluster:  ",bestCluster)
         return bestCluster
 
     def moveCentroid(self,centroidIndex:int,members:Instances,updateClusterInfo:bool,addToCentroidInstances:bool):

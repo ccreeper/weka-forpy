@@ -11,7 +11,7 @@ from Main import Ui_MainWindow
 
 
 class MainWindow(QMainWindow,Ui_MainWindow):
-
+    tab_changed_signal=pyqtSignal(QObject)
     def __init__(self,parent=None):
         super().__init__(parent)
         super().setupUi(self)
@@ -28,6 +28,15 @@ class MainWindow(QMainWindow,Ui_MainWindow):
 
         #窗口禁止拉伸
         self.setFixedSize(self.width(),self.height())
+
+        self.tabWidget.currentChanged.connect(self.TabClicked)
+
+
+    def TabClicked(self,index:int):
+        if index ==1:
+            self.tab_changed_signal.emit(self.classifierPanel)
+        elif index == 2:
+            self.tab_changed_signal.emit(self.clusterPanel)
 
     def mousePressEvent(self, a0:QMouseEvent):
         if a0.button()==Qt.LeftButton:

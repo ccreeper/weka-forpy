@@ -18,7 +18,7 @@ class PlotData2D():
         self.m_alwaysDisplayPointsOfThisSize=-1
         self.m_displayAllPoints=False
         for i in range(insts.numInstances()):
-            self.m_shapeSize.append(Plot2D.DEFAULT_SHAPE_SIZE)
+            self.m_shapeSize.append(Plot2D.DEFAULT_SHAPE_SIZE.value)
             if self.m_plotInstances.instance(i).weight() >= 0:
                 self.m_shapeType.append(Plot2D.CONST_AUTOMATIC_SHAPE)
             else:
@@ -106,6 +106,8 @@ class PlotData2D():
         addF.setInputFormat(self.m_plotInstances)
         self.m_plotInstances=Filter.useFilter(self.m_plotInstances,addF)
         self.m_plotInstances.setClassIndex(originalClassIndex+1)
+        # for i in range(self.m_plotInstances.numInstances()):
+        #     print("ind : ",self.m_plotInstances.instance(i).value(12))
         for i in range(self.m_plotInstances.numInstances()):
             self.m_plotInstances.instance(i).setValue(0,i)
         self.m_plotInstances.setRelationName(originalRelationName)
@@ -128,3 +130,6 @@ class PlotData2D():
 
     def getCindex(self):
         return self.m_cIndex
+
+    def getPlotInstances(self)->Instances:
+        return Instances(self.m_plotInstances)
