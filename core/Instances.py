@@ -472,13 +472,17 @@ class Instances(object):
             newMap.update({oldAtt.name():i})
         newList.append(att)
         newMap.update({att.name():pos})
-        for i in range(len(self.m_Attributes)):
+        for i in range(pos,len(self.m_Attributes)):
             newAtt=self.m_Attributes[i]
             newAtt.setIndex(i+1)
             newList.append(newAtt)
             newMap.update({newAtt.name():i+1})
         self.m_Attributes=newList
         self.m_NamesToAttributeIndices=newMap
+        for i in range(self.numInstances()):
+            self.instance(i).setDataset(None)
+            self.instance(i).insertAttributeAt(pos)
+            self.instance(i).setDataset(self)
         if self.m_ClassIndex >= pos:
             self.m_ClassIndex+=1
 

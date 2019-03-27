@@ -5,6 +5,8 @@ from Capabilities import Capabilities,CapabilityEnum
 from Utils import Utils
 
 class ReplaceMissingValues(Filter):
+    propertyList = {}
+    methodList = {}
     def __init__(self):
         super().__init__()
 

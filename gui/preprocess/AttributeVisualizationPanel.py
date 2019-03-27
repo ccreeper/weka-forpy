@@ -98,8 +98,13 @@ class AttributeVisualizationPanel():
                             barWidth = 1
                         #计算y轴最大值
                         dataList=None
+                        labels=None
                         first=True
                         nullBarCount=[]
+                        if self.m_data.attribute(self.m_classIndex).isNominal():
+                            labels=[None]
+                            for k in range(self.m_data.attribute(self.m_classIndex).numValues()):
+                                labels.append(self.m_data.attribute(self.m_classIndex).value(k))
                         for i in range(len(self.m_histBarClassCounts)):
                             if self.m_histBarClassCounts[i] is not None:
                                 if first:
@@ -113,8 +118,7 @@ class AttributeVisualizationPanel():
                             for j in range(len(dataList)):
                                 dataList[j].insert(nullBarCount[i],0)
                         dataList=np.array(dataList)
-
-                        self.m_Painter.mpl.paintRect(dataList,barWidth,colorList=self.m_colorList)
+                        self.m_Painter.mpl.paintRect(dataList,barWidth,colorList=self.m_colorList,labels=labels)
                     else:
                         intervalWidth = self.m_Painter.width() / len(self.m_histBarCounts)
                         if intervalWidth > 5:
@@ -133,6 +137,11 @@ class AttributeVisualizationPanel():
                         newColor=[]
                         first = True
                         nullBarCount=[]
+                        labels=None
+                        if self.m_data.attribute(self.m_classIndex).isNominal():
+                            labels=[None]
+                            for k in range(self.m_data.attribute(self.m_classIndex).numValues()):
+                                labels.append(self.m_data.attribute(self.m_classIndex).value(k))
                         for i in range(len(self.m_histBarClassCounts)):
                             if self.m_histBarClassCounts[i] is not None:
                                 if first:
@@ -151,7 +160,7 @@ class AttributeVisualizationPanel():
                         dataList=np.array(dataList)
                         Utils.debugOut("AttrVisual_paint_dataList:",dataList)
                         Utils.debugOut("AttrVisual_paint_barWidth:",barWidth)
-                        self.m_Painter.mpl.paintRect(dataList,barWidth,isNumeric=True,colorList=newColor)
+                        self.m_Painter.mpl.paintRect(dataList,barWidth,isNumeric=True,colorList=newColor,labels=labels)
                     else:
                         if (self.m_Painter.width()-6)/len(self.m_histBarCounts)<1:
                             barWidth=1
@@ -365,7 +374,10 @@ class HistCalc(QThread):
             self.m_panel.m_barRange=barRange
         else:
             intervalWidth=3.49*self.m_panel.m_as.numericStats.stdDev*math.pow(self.m_panel.m_data.numInstances(),-1/3)
-            intervals=max(1,round((self.m_panel.m_as.numericStats.max-self.m_panel.m_as.numericStats.min)/intervalWidth))
+            if Utils.isMissingValue(intervalWidth):
+                intervals=1
+            else:
+                intervals=max(1,round((self.m_panel.m_as.numericStats.max-self.m_panel.m_as.numericStats.min)/intervalWidth))
             if intervals > self.m_panel.m_Painter.width():
                 intervals=self.m_panel.m_Painter.width()-6
                 if intervals<1:

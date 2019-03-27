@@ -17,7 +17,7 @@ class Add(Filter):
                Tag(Attribute.NOMINAL,"NOM","Nominal attribute"),
                Tag(Attribute.STRING,"STR","String attribute"),
                Tag(Attribute.DATE,"DAT","Date attribute")]
-    propertyList = {"attributeType":"TAGS_TYPE","attributeName":"unnamed","attributeIndex":"","nominalLabels":""}
+    propertyList = {"attributeType":"TAGS_TYPE","attributeName":"unnamed","attributeIndex":"last","nominalLabels":""}
     methodList = {"attributeType":"setAttributeType","attributeName":"setAttributeName",
                   "nominalLabels":"setNominalLabels","attributeIndex":"setAttributeIndex"}
     def __init__(self):

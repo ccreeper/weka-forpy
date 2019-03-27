@@ -88,7 +88,7 @@ class PropertySheetPanel(QWidget):
             layout.addRow(label, view)
             self.m_Labels.append(label)
             self.m_Views.append(view)
-        self.setFixedHeight(35 * len(self.m_Properties))
+        self.setFixedHeight(40 * len(self.m_Properties))
         Utils.debugOut("layout row count:", layout.rowCount())
         self.repaint()
         self.show()

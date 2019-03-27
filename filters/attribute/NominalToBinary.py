@@ -6,11 +6,15 @@ from Attributes import Attribute
 from Utils import Utils
 
 class NominalToBinary(Filter):
+
+    propertyList = {"binaryAttributesNominal":"True","transformAllValues":"False"}
+    methodList = {"binaryAttributesNominal":"setBinaryAttributesNominal",
+                  "transformAllValues":"setTransformAllValues"}
     def __init__(self):
         super().__init__()
         self.m_Indices=None     #type:List[List[int]]
-        self.m_Numeric=True
-        self.m_TransformAll=False
+        self.binaryAttributesNominal=True
+        self.transformAllValues=False
         self.m_needToTransform=False
         self.m_SpreadAttributeWeight=False
 
@@ -24,6 +28,18 @@ class NominalToBinary(Filter):
         result.enable(CapabilityEnum.NOMINAL_CLASS)
         result.enable(CapabilityEnum.MISSING_CLASS_VALUES)
         return result
+
+    def setBinaryAttributesNominal(self,value:int):
+        if value == 0:
+            self.binaryAttributesNominal=False
+        else:
+            self.binaryAttributesNominal=True
+
+    def setTransformAllValues(self,value:int):
+        if value == 0:
+            self.transformAllValues=False
+        else:
+            self.transformAllValues=True
 
     def setInputFormat(self,instanceInfo:Instances):
         super().setInputFormat(instanceInfo)
@@ -158,7 +174,7 @@ class NominalToBinary(Filter):
         for i in range(self.getInputFormat().numAttributes()):
             att=self.getInputFormat().attribute(i)
             if att.isNominal() and i != self.getInputFormat().classIndex() and\
-                    (att.numValues() > 2 or self.m_TransformAll or self.m_Numeric):
+                    (att.numValues() > 2 or self.m_TransformAll or self.binaryAttributesNominal):
                 self.m_needToTransform=True
                 break
         if not self.m_needToTransform:
@@ -172,7 +188,7 @@ class NominalToBinary(Filter):
                 newAtts.append(att.copy())
             else:
                 if att.numValues() <=2 and not self.m_TransformAll:
-                    if self.m_Numeric:
+                    if self.binaryAttributesNominal:
                         value=""
                         if att.numValues() == 2:
                             value="="+att.value(1)
@@ -187,7 +203,7 @@ class NominalToBinary(Filter):
                     for k in range(att.numValues()):
                         attributeName=att.name()+"="
                         attributeName+=att.value(k)
-                        if self.m_Numeric:
+                        if self.binaryAttributesNominal:
                             a=Attribute(attributeName)
                             if self.getSpreadAttributeWeight():
                                 a.setWeight(att.weight()/att.numValues())
@@ -205,7 +221,7 @@ class NominalToBinary(Filter):
         self.m_needToTransform=False
         for i in range(self.getInputFormat().numAttributes()):
             att=self.getInputFormat().attribute(i)
-            if att.isNominal() and (att.numValues() > 2 or self.m_Numeric or self.m_TransformAll):
+            if att.isNominal() and (att.numValues() > 2 or self.binaryAttributesNominal or self.m_TransformAll):
                 self.m_needToTransform=True
                 break
         if not self.m_needToTransform:
@@ -226,7 +242,7 @@ class NominalToBinary(Filter):
                         if l > k:
                             attributeName+=','
                         attributeName+=att.value(att.value(self.m_Indices[j][l]))
-                    if self.m_Numeric:
+                    if self.binaryAttributesNominal:
                         a=Attribute(attributeName)
                         if self.getSpreadAttributeWeight():
                             a.setWeight(att.weight()/(att.numValues()-1))

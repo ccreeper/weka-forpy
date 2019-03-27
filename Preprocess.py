@@ -44,13 +44,13 @@ class PreprocessPanel(QObject):
         self.m_RunThread=None       #type:Thread
         self.m_FilterEditor=GenericObjectEditor()
         self.m_FilterPanel=PropertyPanel(self,self.m_FilterEditor)
-
         self.m_FilterEditor.setClassType(Filter)
 
         self.initSetting()
         self.attachListener()
 
-
+    def propertyChanged(self,value:str):
+        self.m_ApplyBut.setEnabled(self.getInstances() is not None)
 
     def openFile(self):
         filename = QFileDialog.getOpenFileName(self.m_tab, '打开文件', '/', 'Arff data files(*.arff);;CSV data files(*.csv)')
@@ -120,6 +120,11 @@ class PreprocessPanel(QObject):
         # self.m_tabWidget.currentChanged.connect(self.tabChangedListener)
         self.m_Explor.tab_changed_signal.connect(self.tabChangedListener)
         self.m_RemoveButton.clicked.connect(self.removeClicked)
+        self.m_FilterEditor.classifier_changed.connect(self.propertyChanged)
+        self.m_ApplyBut.clicked.connect(self.applyButClicked)
+
+    def applyButClicked(self):
+        self.applyFilter(self.m_FilterEditor.getValue())
 
     def tabChangedListener(self,panel:QObject):
         panel.setInstances(self.m_Instances)
@@ -184,3 +189,5 @@ class PreprocessPanel(QObject):
             self.setInstances(self.m_Instances)
             self.m_RunThread=None
 
+    def getInstances(self):
+        return self.m_Instances

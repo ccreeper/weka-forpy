@@ -6,27 +6,29 @@ from typing import *
 import copy
 
 class Remove(Filter,OptionHandler):
+    propertyList = {"attributeIndices":""}
+    methodList = {"attributeIndices":"setAttributeIndices"}
     def __init__(self):
         super().__init__()
-        self.m_SelectCols=Range()
+        self.attributeIndices=Range()
         self.m_SelectedAttributes=[]        #type:List
-        self.m_SelectCols.setInvert(True)
+        self.attributeIndices.setInvert(True)
 
     def setAttributeIndicesArray(self,attributes:List):
         self.setAttributeIndices(Range.indicesToRangeList(attributes))
 
     def setAttributeIndices(self,rangeList:str):
-        self.m_SelectCols.setRanges(rangeList)
+        self.attributeIndices.setRanges(rangeList)
 
     def setInvertSelection(self,invert:bool):
-        self.m_SelectCols.setInvert(not invert)
+        self.attributeIndices.setInvert(not invert)
 
     def setInputFormat(self,instanceInfo:Instances):
         super().setInputFormat(instanceInfo)
-        self.m_SelectCols.setUpper(instanceInfo.numAttributes()-1)
+        self.attributeIndices.setUpper(instanceInfo.numAttributes() - 1)
         attributes=[]
         outputClass=-1
-        self.m_SelectedAttributes=self.m_SelectCols.getSelection()
+        self.m_SelectedAttributes=self.attributeIndices.getSelection()
         if len(self.m_SelectedAttributes) == instanceInfo.numAttributes():
             self.setOutputFormat(instanceInfo)
             self.initOutputLocators(self.getInputFormat(),self.m_SelectedAttributes)

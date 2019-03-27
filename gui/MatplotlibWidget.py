@@ -199,9 +199,9 @@ class MyMplCanvas(FigureCanvas):
         self.fig.gca().spines['left'].set_visible(flag)
         self.fig.gca().spines['right'].set_visible(flag)
 
-    def paintRect(self,dataSet:np.ndarray,barWidth:int,isNumeric:bool=False,colorList:List[str]=("black")):
+    def paintRect(self,dataSet:np.ndarray,barWidth:int,isNumeric:bool=False,colorList:List[str]=("black"),labels:List[str]=None):
         self.showFrame(False)
-        self.fig.subplots_adjust(top=0.99, bottom=0.1, left=0.05, right=0.99, hspace=0, wspace=0)
+        self.fig.subplots_adjust(top=0.99, bottom=0.1, left=0.01, right=0.99, hspace=0, wspace=0)
         x = np.arange(len(dataSet[0]))
         # 堆积柱状图
         #width=(max-min)/(x-1)
@@ -220,7 +220,11 @@ class MyMplCanvas(FigureCanvas):
                 colorName=colorList[i]
                 Utils.debugOut("Matplotlib_paintRect_width:",width)
                 Utils.debugOut("Matplotlib_paintRect_colorName:",colorName)
-                a=self.axes.bar(x, dataSet[i],bottom=bottom,color=self.m_defaultColors.get(colorName),width=width)
+                label=None
+                if labels is not None:
+                    label=labels[i]
+                a=self.axes.bar(x, dataSet[i],bottom=bottom,color=self.m_defaultColors.get(colorName),
+                                width=width,label=label)
                 bottom+=dataSet[i]
                 for j in range(len(dataSet[i])):
                     sum[j]+=dataSet[i][j]
@@ -231,13 +235,15 @@ class MyMplCanvas(FigureCanvas):
                 print("colorList.len:",len(colorList))
                 print("colorList:",colorList)
 
-
         for i in x:
             self.axes.text(a[i].get_x()+a[i].get_width()/2,height[i],"%d"%int(sum[i]),ha='center',va='bottom')
 
         self.axes.set_xticks([])
         self.axes.set_yticks([])
-        self.axes.set_ylim(0,maxHeight*1.1)
+        if labels is not None:
+            self.axes.legend(loc='upper right')
+        if maxHeight != 0:
+            self.axes.set_ylim(0,maxHeight*1.1)
         # 显示范围
         #l=min+width*x-(max-min)/2
         #r=max+width*x-(max-min)/2
