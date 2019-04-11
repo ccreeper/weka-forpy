@@ -21,6 +21,7 @@ class MainWindow(QMainWindow,Ui_MainWindow):
         self.initSetting()
 
     def initSetting(self):
+        self.setWindowTitle("WkPy")
         #窗口中置
         screen=QDesktopWidget().screenGeometry()
         size=self.geometry()

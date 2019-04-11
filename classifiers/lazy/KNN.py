@@ -57,6 +57,7 @@ class KNN(AbstractClassifier):
 
     def initilize(self):
         self.setKNN(1)
+        #多少个样本用于分类，默认整个样本集
         self.WindowSize=0
         self.DistanceWeighting=self.WEIGHT_NONE
         self.CrossValidate=False
@@ -95,7 +96,7 @@ class KNN(AbstractClassifier):
         self.m_NumClasses=instances.numClasses()
         self.m_ClassType=instances.classAttribute().type()
         self.m_Train=Instances(instances,0,instances.numInstances())
-
+        #只保存了样本集
         if self.WindowSize > 0 and instances.numInstances() > self.WindowSize:
             self.m_Train=Instances(self.m_Train,self.m_Train.numInstances()-self.WindowSize,self.WindowSize)
         self.m_NumAttributesUsed=0
@@ -107,11 +108,11 @@ class KNN(AbstractClassifier):
         self.m_defaultModel=ZeroR()
         self.m_defaultModel.buildClassifier(instances)
 
-    #TODO 高级选项待定
 
-    def distributionForInstance(self,instance:Instance):
+    def distributionForInstance(self,instance:Instance)->List[float]:
         if self.m_Train.numInstances() == 0:
             return self.m_defaultModel.distributionForInstance(instance)
+        #超过样本容量，则循环删除
         if self.WindowSize > 0 and self.m_Train.numInstances() > self.WindowSize:
             self.m_kNNValid=False
             deletedInstance=False
@@ -121,14 +122,15 @@ class KNN(AbstractClassifier):
                 self.m_NNSearch.setInstances(self.m_Train)
         if not self.m_kNNValid and self.CrossValidate and self.m_kNNUpper>=1:
             pass
-            #TODO crossValidate 高级选项
         self.m_NNSearch.addInstanceInfo(instance)
+        #获取k个邻居的样本集和距离
         neighbours=self.m_NNSearch.kNearestNeighbours(instance,self.kNN)
         distances=self.m_NNSearch.getDistances()
         distribution=self.makeDistribution(neighbours,distances)
         return distribution
 
-    def makeDistribution(self,neighbours:Instances,distances:List):
+    #获取k个邻近样本的概率分布
+    def makeDistribution(self,neighbours:Instances,distances:List)->List[float]:
         distribution=[0]*self.m_NumClasses
         total=0
         if self.m_ClassType == Attribute.NOMINAL:

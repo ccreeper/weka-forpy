@@ -31,6 +31,7 @@ class NormalizableDistance():
         self.m_Data=Instances(self.m_Data,0)
 
     def update(self,ins:Instance):
+        #初始化
         self.validate()
         self.m_Ranges=self.updateRanges(ins,self.m_Ranges)
 

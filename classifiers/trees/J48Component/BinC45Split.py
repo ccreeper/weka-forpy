@@ -4,7 +4,7 @@ from classifiers.trees.J48Component.Distribution import Distribution
 from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
 from Utils import Utils
 
-class C45Split(ClassifierSplitModel):
+class BinC45Split(ClassifierSplitModel):
 
     def __init__(self,attIndex:int,minNoObj:int,sumOfWeights:float,useMDLcorrection:bool):
         super().__init__()
@@ -103,7 +103,6 @@ class C45Split(ClassifierSplitModel):
         self.m_distribution.addRange(1, trainInstances, splitIndex + 1, firstMiss)
         self.m_gainRatio = self.gainRatioCrit.splitCritValue(self.m_distribution, self.m_sumOfWeights, self.m_infoGain)
 
-
     def whichSubset(self,instance:Instance):
         if instance.isMissing(self.m_attIndex):
             return -1
@@ -114,6 +113,15 @@ class C45Split(ClassifierSplitModel):
         elif instance.value(self.m_attIndex) <= self.m_splitPoint:
             return 0
         return 1
+
+    def resetDistribution(self,data:Instances):
+        insts=Instances(data,data.numInstances())
+        for i in range(data.numInstances()):
+            if self.whichSubset(data.instance(i)) > -1:
+                insts.add(data.instance(i))
+        newD=Distribution(insts,self)
+        newD.addInstWithUnknown(data,self.m_attIndex)
+        self.m_distribution=newD
 
     def rightSide(self,index:int,data:Instances):
         text=""

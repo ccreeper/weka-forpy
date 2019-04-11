@@ -1,5 +1,5 @@
 import arff
-from AttributeSummaryPanel import AttributeSummaryPanel
+from gui.preprocess.AttributeSummaryPanel import AttributeSummaryPanel
 from AttributeVisualizationPanel import AttributeVisualizationPanel
 from InstanceSummaryPanel import InstanceSummaryPanel
 from Instances import Instances,Instance

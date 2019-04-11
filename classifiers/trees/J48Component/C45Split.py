@@ -152,3 +152,12 @@ class C45Split(ClassifierSplitModel):
                     if tempValue > newSplitPoint and tempValue <= self.m_splitPoint:
                         newSplitPoint=tempValue
             self.m_splitPoint=newSplitPoint
+
+    def resetDistribution(self,data:Instances):
+        insts=Instances(data,data.numInstances())
+        for i in range(data.numInstances()):
+            if self.whichSubset(data.instance(i)) > -1:
+                insts.add(data.instance(i))
+        newD=Distribution(insts,self)
+        newD.addInstWithUnknown(data,self.m_attIndex)
+        self.m_distribution=newD

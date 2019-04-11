@@ -60,6 +60,7 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
                     hv.append(margin)
                 hv.append(predictedClass)
             hv.append(self.m_Instances.attribute(i).copy())
+        #添加预测属性
         self.m_PlotInstances=Instances(self.m_Instances.relationName()+"_predicted",hv,self.m_Instances.numInstances())
         if classAt.isNominal():
             self.m_PlotInstances.setClassIndex(self.m_ClassIndex+2)
@@ -70,15 +71,19 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
         probActual=probNext=pred=0
         classMissing=copy.deepcopy(toPredict)
         classMissing.setDataset(toPredict.dataset())
-        #TODO InputMappedClassifier    465
+
         if toPredict.classAttribute().isNominal():
+            #返回分类预测的概率分布
             preds=classifier.distributionForInstance(classMissing)
+            #若概率全部为0，则表示不属于任何一类
             if sum(preds) == 0:
                 pred=Utils.missingValue()
                 probActual=Utils.missingValue()
             else:
+                #分类结果为概率最大的一项下标
                 pred=Utils.maxIndex(preds)
                 if not Utils.isMissingValue(toPredict.classIndex()):
+                    #如果值不缺失，表示非预测样本，不做修改
                     probActual=preds[int(toPredict.classValue())]
                 else:
                     probActual=preds[Utils.maxIndex(preds)]
@@ -87,9 +92,11 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
                     probNext=preds[i]
             evaluation.evaluationForSingleInstance(preds,toPredict,True)
         else:
+            #单项评估
             pred=evaluation.evaluateModelOnceAndRecordPrediction(classifier,toPredict)
         if not self.m_SaveForVisualization:
             return
+        #保存可视化数据
         if self.m_PlotInstances is not None:
             isNominal=toPredict.classAttribute().isNominal()
             values=[0]*self.m_PlotInstances.numAttributes()
@@ -98,8 +105,11 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
                     values[i]=toPredict.value(i)
                 elif i == toPredict.classIndex():
                     if isNominal:
+                        #首选结果与备选结果的差值
                         values[i]=probActual-probNext
+                        #预测结果
                         values[i+1]=pred
+                        #原始值
                         values[i+2]=toPredict.value(i)
                         i+=2
                     else:

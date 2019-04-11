@@ -115,14 +115,11 @@ class ClassifierTree(CapabilitiesHandler,Drawable):
             self.m_test=None
             self.m_localModel = self.m_toSelectModel.selectModel(data)
             if self.m_localModel.numSubsets() > 1:
-                print("numSubsets:",self.localModel().numSubsets())
                 localInstances=self.m_localModel.split(data)
                 self.m_sons=[]
                 for i in range(self.m_localModel.numSubsets()):
                     self.m_sons.append(self.getNewTree(localInstances[i]))
                     localInstances[i]=None
-                print("sons len:", len(self.m_sons))
-                print("Leaves:", self.numLeaves())
             else:
                 self.m_isLeaf=True
                 if Utils.equal(data.sumOfWeight(),0):

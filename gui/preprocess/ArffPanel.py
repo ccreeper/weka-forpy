@@ -117,6 +117,7 @@ class ArffPanel(QObject):
                 val=self.model.getInstance().attribute(column-1).value(self.model.getInstance().instance(row).value(column-1))
             self.model.setValueAt(val,[row],column)
             print("A=================")
+            print("val:",val)
 
     def getInstance(self):
         return self.model.getInstance()
@@ -191,7 +192,15 @@ class ArffPanel(QObject):
             val=None
         else:
             val=text
+        self.m_Table.removeCellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
+        item=self.m_Table.item(self.m_CurrentCombobox.row(),self.m_CurrentCombobox.column())
+        item.setText(text)
+        if text == "":
+            item.setBackground(QBrush(QColor(232, 232, 232)))
+        elif text == self.m_LastSearch:
+            item.setBackground(QBrush(Qt.red))
         self.model.setValueAt(val,[self.m_CurrentCombobox.row()],self.m_CurrentCombobox.column())
+        self.m_CurrentCombobox = None
 
     #表格菜单
     def generateMenu(self,pos):
@@ -346,15 +355,11 @@ class ArffPanel(QObject):
     def updateValueEvent(self,rowIndexList:List[int],columnIndex:int,newValue):
         self.m_Pass=True
         for i in rowIndexList:
-            if self.m_CurrentCombobox is not None:
-                self.m_Table.removeCellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
-                self.m_CurrentCombobox=None
-            newItem=QTableWidgetItem(newValue)
+            item=self.m_Table.item(i,columnIndex)
             if newValue is None:
-                newItem.setBackground(QBrush(QColor(232,232,232)))
+                item.setBackground(QBrush(QColor(232,232,232)))
             elif newValue == self.m_LastSearch:
-                newItem.setBackground(QBrush(Qt.red))
-            self.m_Table.setItem(i,columnIndex,newItem)
+                item.setBackground(QBrush(Qt.red))
         self.m_Pass=False
 
     #重命名

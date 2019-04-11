@@ -114,9 +114,6 @@ class Attribute():
             result=-1
         return result
 
-    def index(self):
-        return self.m_Index
-
     def weight(self):
         return self.m_Weight
 

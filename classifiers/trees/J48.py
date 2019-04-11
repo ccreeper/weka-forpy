@@ -12,8 +12,9 @@ from Drawable import Drawable
 import copy
 
 class J48(AbstractClassifier,Drawable):
-    propertyList=copy.deepcopy(AbstractClassifier.propertyList)
-    methodList=copy.deepcopy(AbstractClassifier.methodList)
+    propertyList={"binarySplits":"False","confidenceFactor":"0.25","minNumObj":"2","unpruned":"False"}
+    methodList={"binarySplits":"setBinarySplits","confidenceFactor":"setConfidenceFactor","minNumObj":"setMinNumObj","unpruned":"setUnpruned"}
+
     def __init__(self):
         super().__init__()
         self.m_root=None        #type:ClassifierTree
@@ -58,6 +59,34 @@ class J48(AbstractClassifier,Drawable):
 
     def distributionForInstance(self,instance:Instance):
         return self.m_root.distributionForInstance(instance,self.useLaplace)
+
+    def setBinarySplits(self,value:int):
+        if value == 0:
+            self.binarySplits=False
+        else:
+            self.binarySplits=True
+
+    def setUnpruned(self,value:int):
+        if value == 0:
+            self.unpruned=False
+        else:
+            self.unpruned=True
+
+    def setConfidenceFactor(self,value:str):
+        try:
+            val=float(value)
+            self.confidenceFactor=val
+            self.propertyList.update({"confidenceFactor":value})
+        except ValueError:
+            pass
+
+    def setMinNumObj(self,value:str):
+        try:
+            val=float(value)
+            self.minNumObj=val
+            self.propertyList.update({"minNumObj":value})
+        except ValueError:
+            pass
 
     def buildClassifier(self,data:Instances):
         self.getCapabilities().testWithFail(data)
