@@ -221,6 +221,7 @@ class MyMplCanvas(FigureCanvas):
                 Utils.debugOut("Matplotlib_paintRect_width:",width)
                 Utils.debugOut("Matplotlib_paintRect_colorName:",colorName)
                 label=None
+                #图例标签
                 if labels is not None:
                     label=labels[i]
                 a=self.axes.bar(x, dataSet[i],bottom=bottom,color=self.m_defaultColors.get(colorName),
@@ -240,6 +241,7 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes.set_xticks([])
         self.axes.set_yticks([])
+        #图例绘制
         if labels is not None:
             self.axes.legend(loc='upper right')
         if maxHeight != 0:
@@ -276,7 +278,10 @@ class MyMplCanvas(FigureCanvas):
                 self.fillLookup()
                 self.m_plotResize=False
                 self.m_axisChanged=False
-            self.paintData()
+            try:
+                self.paintData()
+            except BaseException:
+                pass
         self.draw()
 
 
@@ -421,6 +426,7 @@ class MyMplCanvas(FigureCanvas):
     def paintData(self):
         for j in range(len(self.m_plots)):
             temp_plot=self.m_plots[j]
+            labels=set()
             for i in range(temp_plot.m_plotInstances.numInstances()):
                 if temp_plot.m_plotInstances.instance(i).isMissing(self.m_xIndex) or \
                     temp_plot.m_plotInstances.instance(i).isMissing(self.m_yIndex):
@@ -435,6 +441,11 @@ class MyMplCanvas(FigureCanvas):
                         # prevy=temp_plot.m_pointLookup[i-1][1]+temp_plot.m_pointLookup[i-1][3]
                     # self.m_cIndex=12
                     if temp_plot.m_plotInstances.attribute(self.m_cIndex).isNominal():
+                        lab=temp_plot.m_plotInstances.attribute(self.m_cIndex).value(temp_plot.m_plotInstances.instance(i).value(self.m_cIndex))
+                        if lab in labels:
+                            lab=None
+                        else:
+                            labels.add(lab)
                         if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
                             color="#708090"
                         else:
@@ -444,14 +455,14 @@ class MyMplCanvas(FigureCanvas):
                             #TODO 连线
                             # if temp_plot.m_connecctPoints[i]:
                             #     pass
-                            self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value)
+                            self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value,lab)
                         else:
                             if temp_plot.m_shapeType[i] == Plot2D.CONST_AUTOMATIC_SHAPE:
                                 # if temp_plot.m_connecctPoints[i]:
-                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j)
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j,lab)
                             else:
                                 # if temp_plot.m_connecctPoints[i]
-                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i])
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i],lab)
                     else:
                         if not temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
                             r=(temp_plot.m_plotInstances.instance(i).value(self.m_cIndex)-self.m_minC)/(self.m_maxC-self.m_minC)
@@ -461,26 +472,32 @@ class MyMplCanvas(FigureCanvas):
                             color="#708090"
                         if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
                             # if temp_plot.m_connecctPoints[i]:
-                            self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value)
+                            self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,Plot2D.MISSING_SHAPE.value,lab)
                         else:
                             if temp_plot.m_shapeType[i] == Plot2D.CONST_AUTOMATIC_SHAPE:
                                 # if temp_plot.m_connecctPoints[i]:
-                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j)
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,j,lab)
                             else:
                                 # if temp_plot.m_connecctPoints[i]:
-                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i])
+                                self.drawDataPoint(x,y,temp_plot.m_shapeSize[i],color,temp_plot.m_shapeType[i],lab)
+            if temp_plot.m_plotInstances.attribute(self.m_cIndex).isNominal():
+                self.axes.legend(loc='upper right')
 
 
 
 
 
-    def drawDataPoint(self,x:float,y:float,size:int,color:str,shape:int):
+
+    def drawDataPoint(self,x:float,y:float,size:int,color:str,shape:int,label:str):
         if size <= 0:
             size=1
         if shape != Plot2D.ERROR_SHAPE and shape != Plot2D.MISSING_SHAPE:
             shape=shape%5
         marker=self.m_markers.get(shape)
-        self.axes.scatter(x,y,s=size,c=color,marker=marker)
+        if label is not None:
+            self.axes.scatter(x,y,s=size,c=color,marker=marker,label=label)
+        else:
+            self.axes.scatter(x,y,s=size,c=color,marker=marker)
 
     # def paintPoint(self):
     #     self.m_XaxisStart=189900

@@ -59,7 +59,11 @@ class PreprocessPanel(QObject):
         # 解析arff
         with file:
             s = file.read().decode('utf-8')
-        data = arff.loads(s)
+        try:
+            data = arff.loads(s)
+        except arff.BadLayout:
+            Utils.DiglogWarning(self.m_Explor,"Syntax Errors in Data Sets")
+            return
         inst = Instances(data)
         print(data)
         self.setInstances(inst)

@@ -148,6 +148,13 @@ class ThresholdCurve():
                 cin=fpVals[n-1]
             area+=cip*(cumNeg+(0.5*cin))
             cumNeg+=cin
+        if totalNeg*totalPos == 0:
+            if area == 0:
+                return float("nan")
+            elif area > 0:
+                return float("inf")
+            else:
+                return float("-inf")
         area/=(totalNeg*totalPos)
         return area
 

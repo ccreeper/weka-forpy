@@ -193,16 +193,21 @@ class SimpleKMeans(RandomizableClusterer):
     def buildClusterer(self,data:Instances):
         self.getCapabilities().testWithFail(data)
         self.m_Iterations=0
+        #调用筛选器替换缺失值，Numeric使用平均值代替，Nominal使用出现次数最多的值代替
         self.m_ReplaceMissingFilter=ReplaceMissingValues()
         instances=Instances(data)
         instances.setClassIndex(-1)
-
         self.m_ReplaceMissingFilter.setInputFormat(instances)
         instances=Filter.useFilter(instances,self.m_ReplaceMissingFilter)
+
+        #保存每个簇的样本属性值频率，m_ClusterNominalCounts是个3维，1维n个簇，2维属性类，3维属性值频率
         self.m_ClusterNominalCounts=[[[] for i in range(instances.numAttributes())] for j in range(self.NumClusters)]
+        #每个簇不同属性缺失值频率
         self.m_ClusterMissingCounts=[[0]*instances.numAttributes() for  i in range(self.NumClusters)]
 
+        #移动质心
         self.m_FullMeansOrMediansOrModes=self.moveCentroid(0,instances,True,False)
+        #整个样本集的属性缺失率
         self.m_FullMissingCounts=self.m_ClusterMissingCounts[0]
         self.m_FullNominalCounts=self.m_ClusterNominalCounts[0]
         sumofWeights=instances.sumOfWeight()
@@ -237,6 +242,7 @@ class SimpleKMeans(RandomizableClusterer):
         self.m_squaredErrors=[0]*self.NumClusters
         self.m_ClusterNominalCounts=[[[] for i in range(instances.numAttributes())] for j in range(self.NumClusters)]
         self.m_ClusterMissingCounts=[[0]*instances.numAttributes() for  i in range(self.NumClusters)]
+        #循环更新质心
         while not converged:
             emptyClusterCount=0
             self.m_Iterations+=1

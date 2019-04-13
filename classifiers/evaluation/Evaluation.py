@@ -302,8 +302,14 @@ class Evaluation():
                     fract=float('inf')
                 if not fractional and math.log(fract)/math.log(10)>=-2:
                     fractional=True
-        IDWidth=1+max(int(math.log(maxval)/math.log(10)+3 if fractional else 0),
-                      int(math.log(self.m_NumClasses)/math.log(len(IDChars))))
+        try:
+            IDWidth=1+max(int(math.log(maxval)/math.log(10)+3 if fractional else 0),
+                          int(math.log(self.m_NumClasses)/math.log(len(IDChars))))
+        except ValueError:
+            if maxval == 0:
+                IDWidth=1+int(math.log(self.m_NumClasses)/math.log(len(IDChars)))
+            else:
+                raise ValueError
         text+=title+'\n'
         for i in range(self.m_NumClasses):
             if fractional:

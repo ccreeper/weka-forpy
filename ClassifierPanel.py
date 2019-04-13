@@ -219,7 +219,7 @@ class ClassifierPanel(QObject):
             trainTimeElapsed=time.time()-trainTimeStart
         outPutResult+="=== Classifier model (full training set) ===\n\n"
         outPutResult+=str(classifier)+"\n"
-        outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed / 1000.0,2)+ " seconds\n\n"
+        outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed,2)+ " seconds\n\n"
         self.m_History.updateResult(name,outPutResult)
         if isinstance(classifier,Drawable):
             grph=classifier.graph()
@@ -288,7 +288,7 @@ class ClassifierPanel(QObject):
                 mode="training data"
             elif testMode == 3:
                 mode="supplied test set"
-            outPutResult+="\nTime taken to test model on " + mode + ": "+ Utils.doubleToString(testTimeElapsed / 1000.0, 2)+ " seconds\n\n"
+            outPutResult+="\nTime taken to test model on " + mode + ": "+ Utils.doubleToString(testTimeElapsed, 2)+ " seconds\n\n"
         outPutResult+=evaluation.toSummaryString(False)+'\n'
         self.m_History.updateResult(name,outPutResult)
         if inst.attribute(classIndex).isNominal():
@@ -363,12 +363,13 @@ class ClassifierPanel(QObject):
                     plotName = sp.getName()
                     sp.setWindowTitle("Classifier Visualize: " + plotName)
                     sp.draw()
-                    sp.show()
+                sp.show()
         return visualizeClassifierErrors
 
     def visualizeTreeTrigger(self,dotty:str):
         def visualizeTree():
             self.mp=MatplotlibWidget()
+            self.mp.setWindowTitle("J48 Decision Tree")
             self.mp.createTree(dotty)
             self.mp.show()
         return visualizeTree

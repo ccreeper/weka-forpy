@@ -136,7 +136,7 @@ class ClustererPanel(QObject):
         outBuff+="\n=== Clustering model (full training set) ===\n\n"
         outBuff+=str(clusterer)+'\n'
         outBuff+="\nTime taken to build model (full training data) : "\
-                + Utils.doubleToString(trainTimeElapsed / 1000.0, 2)\
+                + Utils.doubleToString(trainTimeElapsed, 2)\
                 + " seconds\n\n"
         self.m_History.updateResult(name,outBuff)
         evaluation=ClusterEvaluation()

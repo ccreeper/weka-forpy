@@ -55,6 +55,7 @@ class VisualizePanel(QMainWindow,Ui_Form):
         self.m_plotName=plotName
 
     def setXIndex(self,index:int):
+        self.m_XCombo.setCurrentIndex(index)
         if index >= 0 and index < self.m_XCombo.count():
             self.m_xIndex=index
             self.m_plot.m_plot2D.setXindex(index)
@@ -63,6 +64,7 @@ class VisualizePanel(QMainWindow,Ui_Form):
             raise Exception("x index is out of range!")
 
     def setYIndex(self,index:int):
+        self.m_YCombo.setCurrentIndex(index)
         if index >= 0 and index < self.m_YCombo.count():
             self.m_yIndex=index
             self.m_plot.m_plot2D.setYindex(index)
@@ -84,7 +86,8 @@ class VisualizePanel(QMainWindow,Ui_Form):
 
     def plotReset(self,inst:Instances,cIndex:int):
         self.m_plotInstances=inst
-        self.m_xIndex=self.m_yIndex=0
+        self.m_XCombo.setCurrentIndex(0)
+        self.m_YCombo.setCurrentIndex(0)
         self.m_cIndex=cIndex
         self.cancelShapes()
 
@@ -128,7 +131,6 @@ class VisualizePanel(QMainWindow,Ui_Form):
             with open(filename[0], 'w') as f:
                 text = saveInsts.toArffString()
                 f.write(text)
-
 
     def draw(self):
         self.m_plot.m_plot2D.paintPoint()

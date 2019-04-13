@@ -76,6 +76,7 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
             #返回分类预测的概率分布
             preds=classifier.distributionForInstance(classMissing)
             #若概率全部为0，则表示不属于任何一类
+            val=0
             if sum(preds) == 0:
                 pred=Utils.missingValue()
                 probActual=Utils.missingValue()
@@ -84,11 +85,13 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
                 pred=Utils.maxIndex(preds)
                 if not Utils.isMissingValue(toPredict.classIndex()):
                     #如果值不缺失，表示非预测样本，不做修改
-                    probActual=preds[int(toPredict.classValue())]
+                    if not Utils.isMissingValue(toPredict.classValue()):
+                        val = int(toPredict.classValue())
+                    probActual=preds[val]
                 else:
                     probActual=preds[Utils.maxIndex(preds)]
             for i in range(toPredict.classAttribute().numValues()):
-                if i != int(toPredict.classValue()) and preds[i] > probNext:
+                if i != val and preds[i] > probNext:
                     probNext=preds[i]
             evaluation.evaluationForSingleInstance(preds,toPredict,True)
         else:
@@ -100,7 +103,9 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
         if self.m_PlotInstances is not None:
             isNominal=toPredict.classAttribute().isNominal()
             values=[0]*self.m_PlotInstances.numAttributes()
-            for i in range(self.m_PlotInstances.numAttributes()):
+            i=0
+            while i < self.m_PlotInstances.numAttributes():
+                #预测值前的所有值照原来的拷贝
                 if i<toPredict.classIndex():
                     values[i]=toPredict.value(i)
                 elif i == toPredict.classIndex():
@@ -121,6 +126,7 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
                         values[i]=toPredict.value(i-2)
                     else:
                         values[i]=toPredict.value(i-1)
+                i+=1
             # print("============")
             # for m in values:
             #     print("val:",m)
