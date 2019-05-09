@@ -3,14 +3,14 @@ import math
 from typing import *
 
 import numpy as np
-from Attributes import Attribute
-from Instances import Instances,Instance
+from core.Attributes import Attribute
+from core.Instances import Instances
 from PyQt5.QtCore import *
-from SparseInstance import SparseInstance
-from Utils import Utils
-from MatplotlibWidget import MatplotlibWidget
+from core.SparseInstance import SparseInstance
 
+from core.Utils import Utils
 from core.AttributeStats import AttributeStats
+from gui.MatplotlibWidget import MatplotlibWidget
 from gui.designUI.Main import Ui_MainWindow
 
 
@@ -114,9 +114,12 @@ class AttributeVisualizationPanel():
                                     dataList[j].append(self.m_histBarClassCounts[i].value(j))
                             else:
                                 nullBarCount.append(i)
-                        for i in range(len(nullBarCount)):
-                            for j in range(len(dataList)):
-                                dataList[j].insert(nullBarCount[i],0)
+                        if dataList is None:
+                            dataList=[[0]*len(nullBarCount)]
+                        else:
+                            for i in range(len(nullBarCount)):
+                                for j in range(len(dataList)):
+                                    dataList[j].insert(nullBarCount[i],0)
                         dataList=np.array(dataList)
                         self.m_Painter.mpl.paintRect(dataList,barWidth,colorList=self.m_colorList,labels=labels)
                     else:
@@ -154,12 +157,15 @@ class AttributeVisualizationPanel():
                                 first=False
                             else:
                                 nullBarCount.append(i)
-                        for i in range(len(nullBarCount)):
-                            for j in range(len(dataList)):
-                                dataList[j].insert(nullBarCount[i],0)
+                        if dataList is None:
+                            dataList=[[0]*len(nullBarCount)]
+                        else:
+                            for i in range(len(nullBarCount)):
+                                for j in range(len(dataList)):
+                                    dataList[j].insert(nullBarCount[i],0)
                         dataList=np.array(dataList)
-                        Utils.debugOut("AttrVisual_paint_dataList:",dataList)
-                        Utils.debugOut("AttrVisual_paint_barWidth:",barWidth)
+                        Utils.debugOut("AttrVisual_paint_dataList:", dataList)
+                        Utils.debugOut("AttrVisual_paint_barWidth:", barWidth)
                         self.m_Painter.mpl.paintRect(dataList,barWidth,isNumeric=True,colorList=newColor,labels=labels)
                     else:
                         if (self.m_Painter.width()-6)/len(self.m_histBarCounts)<1:
@@ -314,11 +320,11 @@ class HistCalc(QThread):
                 if intervals<1:
                     intervals=1
             histClassCounts=[[0]*(self.m_panel.m_data.attribute(self.m_panel.m_classIndex).numValues()+1) for i in range(intervals)]
-            Utils.debugOut("max",self.m_panel.m_as.numericStats.max)
-            Utils.debugOut("min",self.m_panel.m_as.numericStats.min)
-            Utils.debugOut("intervalWidth",intervalWidth)
-            Utils.debugOut("len",len(histClassCounts))
-            Utils.debugOut("histClasCount:",histClassCounts)
+            Utils.debugOut("max", self.m_panel.m_as.numericStats.max)
+            Utils.debugOut("min", self.m_panel.m_as.numericStats.min)
+            Utils.debugOut("intervalWidth", intervalWidth)
+            Utils.debugOut("len", len(histClassCounts))
+            Utils.debugOut("histClasCount:", histClassCounts)
             barRange=(self.m_panel.m_as.numericStats.max-self.m_panel.m_as.numericStats.min)/len(histClassCounts)
 
             self.m_panel.m_maxValue=0

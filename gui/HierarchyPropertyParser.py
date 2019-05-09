@@ -1,9 +1,6 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 from typing import *
-from Utils import Utils
+
 
 class HierarchyPropertyParser():
     class TreeNode():

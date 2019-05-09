@@ -1,27 +1,28 @@
-from typing import *
-from Instances import Instances,Instance
-from ClustererAssignmentsPlotInstances import ClustererAssignmentsPlotInstances
-from GenericObjectEditor import GenericObjectEditor,GOEPanel
-# from CallMain import MainWindow
-from ResultHistoryPanel import ResultHistoryPanel
-from filters.Filter import Filter
-from PropertyPanel import PropertyPanel
-from clusterers.SimpleKMeans import SimpleKMeans
-from clusterers.ClusterEvaluation import ClusterEvaluation
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from filters.attribute.Remove import Remove
-from CapabilitiesHandler import CapabilitiesHandler
-from SetInstancesPanel import SetInstancesPanel
-from Capabilities import Capabilities,CapabilityEnum
-from clusterers.Clusterer import Clusterer
-from Thread import Thread
-from VisualizePanel import VisualizePanel
-from PlotData2D import PlotData2D
-from PyQt5.QtCore import *
-from Utils import Utils
 import time
-import copy
+from typing import *
+
+from core.Capabilities import Capabilities
+from core.CapabilitiesHandler import CapabilitiesHandler
+from gui.ClustererAssignmentsPlotInstances import ClustererAssignmentsPlotInstances
+from gui.common.GenericObjectEditor import GenericObjectEditor
+from core.Instances import Instances
+from gui.PropertyPanel import PropertyPanel
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from gui.common.SetInstancesPanel import SetInstancesPanel
+from core.Thread import Thread
+from gui.VisualizePanel import VisualizePanel
+# from CallMain import MainWindow
+from gui.common.ResultHistoryPanel import ResultHistoryPanel
+
+from clusterers.ClusterEvaluation import ClusterEvaluation
+from clusterers.Clusterer import Clusterer
+from clusterers.SimpleKMeans import SimpleKMeans
+from core.Utils import Utils
+from filters.Filter import Filter
+from filters.attribute.Remove import Remove
+from gui.PlotData2D import PlotData2D
 
 
 class ClustererPanel(QObject):
@@ -135,8 +136,8 @@ class ClustererPanel(QObject):
         trainTimeElapsed=time.time()-trainTimeStart
         outBuff+="\n=== Clustering model (full training set) ===\n\n"
         outBuff+=str(clusterer)+'\n'
-        outBuff+="\nTime taken to build model (full training data) : "\
-                + Utils.doubleToString(trainTimeElapsed, 2)\
+        outBuff+="\nTime taken to build model (full training data) : " \
+                 + Utils.doubleToString(trainTimeElapsed, 2)\
                 + " seconds\n\n"
         self.m_History.updateResult(name,outBuff)
         evaluation=ClusterEvaluation()

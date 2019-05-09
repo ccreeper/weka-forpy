@@ -1,6 +1,9 @@
-from AttributeInfo import DateAttributeInfo,NominalAttributeInfo
 from typing import *
-from Utils import Utils
+
+from core.AttributeInfo import DateAttributeInfo, NominalAttributeInfo
+
+from core.Utils import Utils
+
 
 class Attribute():
     NUMERIC=0
@@ -40,16 +43,16 @@ class Attribute():
 
     def __str__(self):
         text=""
-        text+="@attribute "+Utils.quote(self.m_Name)+" "
+        text+="@attribute " + Utils.quote(self.m_Name) + " "
         if self.m_Type == Attribute.NOMINAL:
             text+="{"
             first=True
             for item in self.m_AttributeInfo.m_Values:
                 if first:
-                    text+=Utils.quote(item)
+                    text+= Utils.quote(item)
                     first=False
                 else:
-                    text+=","+Utils.quote(item)
+                    text+="," + Utils.quote(item)
             text+="}"
             if self.weight() != 1:
                 text+="{"+str(self.weight())+"}"

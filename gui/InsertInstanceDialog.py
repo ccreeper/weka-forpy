@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from typing import *
-from Instances import Instances,Instance
-from Utils import Utils
+from PyQt5.QtWidgets import *
+
+from core.Instances import Instances, Instance
+
 
 class InserInstanceDialog(QDialog):
 

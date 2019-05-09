@@ -1,9 +1,12 @@
-from Range import Range
 from typing import *
-from Instances import Instances,Instance
-from Attributes import Attribute
+
+from core.Attributes import Attribute
+from core.Instances import Instances, Instance
+from core.Range import Range
+
+from core.Utils import Utils
 from core.neighboursearch.PerformanceStats import PerformanceStats
-from Utils import Utils
+
 
 class NormalizableDistance():
     R_MIN=0

@@ -1,10 +1,12 @@
 from typing import *
-from classifiers.trees.J48Component.ModelSelection import ModelSelection
-from Instances import Instances,Instance
-from classifiers.trees.J48Component.Distribution import Distribution
-from classifiers.trees.J48Component.NoSplit import NoSplit
+
+from core.Instances import Instances
+
 from classifiers.trees.J48Component.BinC45Split import BinC45Split
-from Utils import Utils
+from classifiers.trees.J48Component.Distribution import Distribution
+from classifiers.trees.J48Component.ModelSelection import ModelSelection
+from classifiers.trees.J48Component.NoSplit import NoSplit
+from core.Utils import Utils
 
 
 class BinC45ModelSelection(ModelSelection):

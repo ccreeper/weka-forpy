@@ -1,8 +1,9 @@
-from typing import *
-from Instances import Instances,Instance
-from classifiers.trees.J48Component.Distribution import Distribution
+from core.Instances import Instances, Instance
+
 from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
-from Utils import Utils
+from classifiers.trees.J48Component.Distribution import Distribution
+from core.Utils import Utils
+
 
 class C45Split(ClassifierSplitModel):
 
@@ -61,21 +62,21 @@ class C45Split(ClassifierSplitModel):
             i+=1
         firstMiss=i
         minSplit=0.1*self.m_distribution.total()/trainInstances.numClasses()
-        if Utils.gr(self.m_minNoObj,minSplit) or Utils.equal(minSplit,self.m_minNoObj):
+        if Utils.gr(self.m_minNoObj, minSplit) or Utils.equal(minSplit, self.m_minNoObj):
             minSplit=self.m_minNoObj
-        elif Utils.gr(minSplit,25):
+        elif Utils.gr(minSplit, 25):
             minSplit=25
-        if Utils.gr(2*minSplit,firstMiss):
+        if Utils.gr(2*minSplit, firstMiss):
             return
         defaultEnt=self.infoGainCrit.oldEnt(self.m_distribution)
         print("dfalut", defaultEnt)
         while next < firstMiss:
             if trainInstances.instance(next-1).value(self.m_attIndex)+1e-5 < trainInstances.instance(next).value(self.m_attIndex):
                 self.m_distribution.shiftRange(1,0,trainInstances,last,next)
-                if (Utils.gr(self.m_distribution.perBag(0),minSplit) or Utils.equal(self.m_distribution.perBag(0),minSplit))\
-                        and (Utils.gr(self.m_distribution.perBag(1),minSplit) or Utils.equal(self.m_distribution.perBag(1),minSplit)):
+                if (Utils.gr(self.m_distribution.perBag(0), minSplit) or Utils.equal(self.m_distribution.perBag(0), minSplit))\
+                        and (Utils.gr(self.m_distribution.perBag(1), minSplit) or Utils.equal(self.m_distribution.perBag(1), minSplit)):
                     currentInfoGain=self.infoGainCrit.splitCritValue(self.m_distribution,self.m_sumOfWeights,defaultEnt)
-                    if Utils.gr(currentInfoGain,self.m_infoGain):
+                    if Utils.gr(currentInfoGain, self.m_infoGain):
                         self.m_infoGain=currentInfoGain
                         splitIndex=next-1
                     self.m_index+=1
@@ -84,8 +85,8 @@ class C45Split(ClassifierSplitModel):
         if self.m_index == 0:
             return
         if self.m_useMDLcorrection:
-            self.m_infoGain=self.m_infoGain-(Utils.log2(self.m_index)/self.m_sumOfWeights)
-        if Utils.gr(0,self.m_infoGain) or Utils.equal(0,self.m_infoGain):
+            self.m_infoGain=self.m_infoGain-(Utils.log2(self.m_index) / self.m_sumOfWeights)
+        if Utils.gr(0, self.m_infoGain) or Utils.equal(0, self.m_infoGain):
             return
         self.m_numSubsets=2
         self.m_splitPoint=(trainInstances.instance(splitIndex+1).value(self.m_attIndex)

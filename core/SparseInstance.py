@@ -1,6 +1,6 @@
-from Instances import Instances,Instance
-from typing import *
 import copy
+from typing import *
+
 
 class SparseInstance():
     def __init__(self,weight:float,attValues:List[float],indices:List[int],maxNumValues:int):

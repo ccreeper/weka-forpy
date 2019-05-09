@@ -1,16 +1,18 @@
-from filters.Filter import Filter
-from Range import Range
-from OptionHandler import OptionHandler
-from Instances import Instances,Instance
-from typing import *
 import copy
+from typing import *
 
-class Remove(Filter,OptionHandler):
+from core.Instances import Instances, Instance
+
+from core.Range import Range
+from filters.Filter import Filter
+
+
+class Remove(Filter):
     propertyList = {"attributeIndices":""}
     methodList = {"attributeIndices":"setAttributeIndices"}
     def __init__(self):
         super().__init__()
-        self.attributeIndices=Range()
+        self.attributeIndices= Range()
         self.m_SelectedAttributes=[]        #type:List
         self.attributeIndices.setInvert(True)
 

@@ -1,12 +1,15 @@
-from AbstractPlotInstances import AbstractPlotInstances
 from typing import *
-from clusterers.Clusterer import Clusterer
+
+from gui.AbstractPlotInstances import AbstractPlotInstances
+from core.Attributes import Attribute
+from core.Instances import Instances, Instance
+
 from clusterers.ClusterEvaluation import ClusterEvaluation
-from PlotData2D import PlotData2D
+from clusterers.Clusterer import Clusterer
+from core.Utils import Utils
+from gui.PlotData2D import PlotData2D
 from gui.classifier.Plot2D import Plot2D
-from Utils import Utils
-from Instances import Instances,Instance
-from Attributes import Attribute
+
 
 class ClustererAssignmentsPlotInstances(AbstractPlotInstances):
     def initialize(self):
@@ -54,7 +57,7 @@ class ClustererAssignmentsPlotInstances(AbstractPlotInstances):
             for j in range(self.m_Instances.numAttributes()):
                 values[j]=self.m_Instances.instance(i).value(j)
             if clusterAssignments[i] < 0:
-                values[j+1]=Utils.missingValue()
+                values[j+1]= Utils.missingValue()
             else:
                 values[j+1]=clusterAssignments[i]
             self.m_PlotInstances.add(Instance(1.0,values))

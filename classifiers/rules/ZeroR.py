@@ -1,11 +1,11 @@
-from classifiers.Classifier import Classifier
-from classifiers.AbstractClassifier import AbstractClassifier
-from Capabilities import Capabilities,CapabilityEnum
-from Attributes import Attribute
-from Instances import Instances,Instance
-from Utils import Utils
-from typing import *
 import copy
+
+from core.Attributes import Attribute
+from core.Capabilities import Capabilities, CapabilityEnum
+from core.Instances import Instances, Instance
+
+from classifiers.AbstractClassifier import AbstractClassifier
+from core.Utils import Utils
 
 
 class ZeroR(AbstractClassifier):
@@ -65,11 +65,11 @@ class ZeroR(AbstractClassifier):
                     self.m_ClassValue+=instance.weight()*classValue
                 sumOfWeights+=instance.weight()
         if instances.classAttribute().isNumeric():
-            if Utils.gr(sumOfWeights,0):
+            if Utils.gr(sumOfWeights, 0):
                 self.m_ClassValue/=sumOfWeights
         else:
-            self.m_ClassValue=Utils.maxIndex(self.m_Counts)
-            Utils.normalize(self.m_Counts,sumOfWeights)
+            self.m_ClassValue= Utils.maxIndex(self.m_Counts)
+            Utils.normalize(self.m_Counts, sumOfWeights)
 
     def classifyInstance(self,instance:Instance):
         return self.m_ClassValue

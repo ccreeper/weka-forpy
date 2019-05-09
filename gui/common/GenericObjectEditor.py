@@ -1,15 +1,19 @@
 import copy
 from configparser import ConfigParser
 from typing import *
-from PyQt5.QtCore import *
-from Capabilities import Capabilities,CapabilityEnum
+
+from gui.designUI.Editor import Ui_Form
 from PyQt5.QtWidgets import *
-from GOETreeNode import GOETreeNode
-from HierarchyPropertyParser import HierarchyPropertyParser
-from GenericObjectEditorHistory import GenericObjectEditorHistory
-from PluginManager import PluginManager
-from TreeWidget import TreeWidget
-from Utils import Utils
+from PyQt5.QtCore import *
+
+from core.Capabilities import Capabilities
+from core.PluginManager import PluginManager
+from core.Utils import Utils
+from gui.GOETreeNode import GOETreeNode
+from gui.HierarchyPropertyParser import HierarchyPropertyParser
+from gui.TreeWidget import TreeWidget
+from gui.common.GenericObjectEditorHistory import GenericObjectEditorHistory
+
 
 class GenericObjectEditor(QObject):
     classifier_changed = pyqtSignal(str)
@@ -216,10 +220,6 @@ class GenericObjectEditor(QObject):
     def getHistory(self):
         return self.m_History
 
-
-from Editor import Ui_Form
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
 
 
 class GOEPanel(QWidget, Ui_Form):

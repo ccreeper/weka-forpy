@@ -1,7 +1,7 @@
 from typing import *
 
-from Utils import Utils
 from classifiers.evaluation.Prediction import Prediction
+from core.Utils import Utils
 
 
 class NominalPrediction(Prediction):
@@ -11,7 +11,7 @@ class NominalPrediction(Prediction):
         self.m_Actual=actual
         self.m_Distribution=distribution[:]
         self.m_Weight=weight
-        self.m_Predicted=Utils.missingValue()
+        self.m_Predicted= Utils.missingValue()
         self.updatePredicted()
 
     def updatePredicted(self):
@@ -24,7 +24,7 @@ class NominalPrediction(Prediction):
         if predictedClass != -1:
             self.m_Predicted=predictedClass
         else:
-            self.m_Predicted=Utils.missingValue()
+            self.m_Predicted= Utils.missingValue()
 
     def distribution(self):
         return self.m_Distribution

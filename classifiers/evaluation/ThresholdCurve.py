@@ -1,9 +1,12 @@
 from typing import *
+
+from core.Attributes import Attribute
+from core.Instances import Instances, Instance
+
 from classifiers.evaluation.Prediction import Prediction
 from classifiers.evaluation.TwoClassStats import TwoClassStats
-from Utils import Utils
-from Instances import Instances,Instance
-from Attributes import Attribute
+from core.Utils import Utils
+
 
 class ThresholdCurve():
     RELATION_NAME = "ThresholdCurve"
@@ -38,7 +41,7 @@ class ThresholdCurve():
             else:
                 totNeg+=pred.weight()
         insts=self.makeHeader()
-        sorted=Utils.sortDouble(probs)
+        sorted= Utils.sortDouble(probs)
         tc=TwoClassStats(totPos,totNeg,0,0)
         threshold=cumulativePos=cumulativeNeg=0
         for i in range(len(sorted)):
@@ -96,7 +99,7 @@ class ThresholdCurve():
         count+=1
         expectedByChance=ss*(tc.getTruePositive()+tc.getFalseNegative())
         if expectedByChance < 1:
-            vals[count]=Utils.missingValue()
+            vals[count]= Utils.missingValue()
         else:
             vals[count]=tc.getTruePositive()/expectedByChance
         count+=1

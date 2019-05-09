@@ -1,16 +1,17 @@
-from typing import *
-from enum import Enum
-from CapabilitiesHandler import CapabilitiesHandler
-from configparser import ConfigParser
-from PyQt5.QtCore import *
-import classifiers.UpdateableClassifier
-import clusterers.UpdateableClusterer
-from Instances import Instances,Instance
-from CapabilitiesIgnorer import CapabilitiesIgnorer
-from Attributes import Attribute
 import copy
 import importlib
 import sys
+from configparser import ConfigParser
+from enum import Enum
+from typing import *
+
+from core.CapabilitiesHandler import CapabilitiesHandler
+from core.Instances import Instances
+
+import classifiers.UpdateableClassifier
+import clusterers.UpdateableClusterer
+from core.CapabilitiesIgnorer import CapabilitiesIgnorer
+from core.Attributes import Attribute
 
 
 class CapabilityError(BaseException):

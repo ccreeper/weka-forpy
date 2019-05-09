@@ -1,8 +1,10 @@
-from PyQt5.QtWidgets import *
-from Utils import Utils
-from Tag import Tag
 from typing import *
-import copy
+
+from PyQt5.QtWidgets import *
+from core.Tag import Tag
+
+from core.Utils import Utils
+
 
 class PropertySheetPanel(QWidget):
     def __init__(self, parent=None):

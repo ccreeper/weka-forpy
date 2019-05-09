@@ -1,13 +1,13 @@
 
 from typing import *
 
-from Attributes import Attribute
-from Instances import Instances,Instance
+from core.Attributes import Attribute
+from core.Instances import Instances
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from Utils import Utils
 
+from core.Utils import Utils
 from core.AttributeStats import AttributeStats
 from gui.designUI.Main import Ui_MainWindow
 
@@ -101,7 +101,7 @@ class AttributeSummaryPanel():
                 val.append(item_No)
                 val.append(QTableWidgetItem(att.value(i)))
                 val.append(QTableWidgetItem(str(int(attrStats.nominalCounts[i]))))
-                val.append(QTableWidgetItem(Utils.doubleToString(attrStats.nominalWeights[i],3)))
+                val.append(QTableWidgetItem(Utils.doubleToString(attrStats.nominalWeights[i], 3)))
                 data.append(val)
             #更新表头，填数据
             self.fillData(data,colNames)
@@ -110,16 +110,16 @@ class AttributeSummaryPanel():
             colNames=["Statistic","Value"]
             data=[]
             val=[QTableWidgetItem("Minimum")]
-            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.min,3)))
+            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.min, 3)))
             data.append(val)
             val=[QTableWidgetItem("Maximum")]
-            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.max,3)))
+            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.max, 3)))
             data.append(val)
             val=[QTableWidgetItem("Mean")]
-            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.mean,3)))
+            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.mean, 3)))
             data.append(val)
             val=[QTableWidgetItem("StdDev")]
-            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.stdDev,3)))
+            val.append(QTableWidgetItem(Utils.doubleToString(attrStats.numericStats.stdDev, 3)))
             data.append(val)
             self.fillData(data,colNames)
             self.m_StatsTable.horizontalHeader().resizeSection(0,self.m_StatsTable.width()/2)

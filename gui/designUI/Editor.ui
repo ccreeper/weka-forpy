@@ -79,7 +79,7 @@
   <customwidget>
    <class>PropertySheetPanel</class>
    <extends>QWidget</extends>
-   <header>PropertySheetPanel</header>
+   <header>gui.PropertySheetPanel</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

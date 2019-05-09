@@ -1,9 +1,9 @@
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from Instances import Instances,Instance
-from Utils import Utils
-from typing import *
+
+from core.Instances import Instances
+
 
 class TableWidget(QTableWidget):
     def __init__(self,parent=None):
@@ -19,7 +19,10 @@ class TableWidget(QTableWidget):
         elif e.button() == Qt.LeftButton:
             if not self.m_IsMenuClick:
                 super().mousePressEvent(e)
-                self.m_CurrentSelectedRow=self.currentItem().row()
+                if self.currentItem() is not None:
+                    self.m_CurrentSelectedRow=self.currentItem().row()
+                else:
+                    self.m_CurrentSelectedRow=None
             self.setMenuClickNow(False)
         else:
             super().mousePressEvent(e)

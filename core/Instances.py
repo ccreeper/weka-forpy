@@ -1,13 +1,16 @@
 
-from typing import *
-from Attributes import Attribute
-from Stats import Stats
-from Utils import Utils
-from core.AttributeStats import AttributeStats
 import copy
-import random
 import math
+import random
+from typing import *
+
 import arff
+from core.Attributes import Attribute
+from core.Stats import Stats
+
+from core.Utils import Utils
+from core.AttributeStats import AttributeStats
+
 
 class Instance():
     def __init__(self,a0,a1=None):
@@ -47,7 +50,7 @@ class Instance():
     def forceInsertAttributeAt(self,position:int):
         newValues=[0]*(len(self.m_AttValues)+1)
         newValues=self.m_AttValues[:position]+newValues[position:]
-        newValues[position]=Utils.missingValue()
+        newValues[position]= Utils.missingValue()
         # for i in self.m_AttValues:
         #     print(",",i,end="")
         # print()
@@ -88,12 +91,12 @@ class Instance():
             text+="?"
         else:
             if self.m_Dataset is None:
-                text+=Utils.doubleToString(self.value(attIndex),afterDecimalPoint)
+                text+= Utils.doubleToString(self.value(attIndex), afterDecimalPoint)
             else:
                 if self.m_Dataset.attribute(attIndex).type() == Attribute.NUMERIC:
-                    text+=Utils.doubleToString(self.value(attIndex),afterDecimalPoint)
+                    text+= Utils.doubleToString(self.value(attIndex), afterDecimalPoint)
                 else:
-                    text+=Utils.quote(self.stringValue(attIndex))
+                    text+= Utils.quote(self.stringValue(attIndex))
         return text
 
 
@@ -107,7 +110,7 @@ class Instance():
         self.setMissing(classIndex)
 
     def setMissing(self,attIndex):
-        self.setValue(attIndex,Utils.missingValue())
+        self.setValue(attIndex, Utils.missingValue())
 
     def value(self,index:int):
         return self.m_AttValues[index]
@@ -239,7 +242,7 @@ class Instances(object):
 
     def __str__(self):
         text=""
-        text+="@relation "+Utils.quote(self.m_RelationName)+"\n\n"
+        text+="@relation " + Utils.quote(self.m_RelationName) + "\n\n"
         for i in range(self.numAttributes()):
             text+=str(self.attribute(i))+"\n"
         text+="\n@data\n"
@@ -415,7 +418,7 @@ class Instances(object):
                 else:
                     vals[i]=val
 
-            sortOrder=Utils.sortWithNoMissingValues(vals)
+            sortOrder= Utils.sortWithNoMissingValues(vals)
             for i in range(len(vals)):
                 self.m_Instances[i]=backup[sortOrder[i]]
         else:
@@ -678,4 +681,4 @@ class Instances(object):
     def enumerateAttributes(self)->List[Attribute]:
         return self.m_Attributes
 
-Utils.debugOut("Instances id:",id(Instances))
+Utils.debugOut("Instances id:", id(Instances))

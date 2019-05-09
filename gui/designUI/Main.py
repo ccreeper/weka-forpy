@@ -638,7 +638,6 @@ class Ui_MainWindow(object):
         self.option_cluster.setText(_translate("MainWindow", "PushButton"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Cluster"))
 
-from MatplotlibWidget import MatplotlibWidget
-from ResultHistoryPanel import ResultHistoryPanel
-from TreeNodeButton import TreeNodeButton
-import apprcc_rc
+from gui.MatplotlibWidget import MatplotlibWidget
+from gui.TreeNodeButton import TreeNodeButton
+from gui.common.ResultHistoryPanel import ResultHistoryPanel

@@ -53,4 +53,4 @@ class Ui_Form(object):
         self.okBtn.setText(_translate("Form", "OK"))
         self.cancelBtn.setText(_translate("Form", "Cancel"))
 
-from PropertySheetPanel import PropertySheetPanel
+from gui.PropertySheetPanel import PropertySheetPanel

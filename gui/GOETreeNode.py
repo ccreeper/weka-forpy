@@ -1,10 +1,8 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from core.CapabilitiesHandler import CapabilitiesHandler
 from PyQt5.QtWidgets import *
-from HierarchyPropertyParser import HierarchyPropertyParser
-from CapabilitiesHandler import CapabilitiesHandler
-from Utils import Utils
-from typing import *
+
+from core.Utils import Utils
+
 
 class GOETreeNode(QTreeWidgetItem):
     NO_SUPPORT = "silver"
@@ -24,7 +22,7 @@ class GOETreeNode(QTreeWidgetItem):
         if self.isLeaf():
             return
         classname=self.getClassnameFromPath()
-        cls=Utils.loadClassForName(classname)
+        cls= Utils.loadClassForName(classname)
         if not issubclass(cls,CapabilitiesHandler):
             return
         obj=cls()

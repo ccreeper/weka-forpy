@@ -1,8 +1,8 @@
-from Instances import Instances,Instance
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from core.Instances import Instances
 from gui.designUI.Viewer import Ui_Form
 from gui.preprocess.ArffPanel import ArffPanel
 
@@ -32,7 +32,7 @@ class ViewerDialog(QMainWindow,Ui_Form):
         self.m_BaseTable.state_changed_signal.connect(self.setButton)
         self.m_AddInsBtn.clicked.connect(self.addInstanceClick)
 
-    def setInstances(self,inst:Instances):
+    def setInstances(self, inst: Instances):
         self.m_RelationNameLabel.setText(inst.relationName())
         self.m_BaseTable.setInstances(inst)
         self.setButton()

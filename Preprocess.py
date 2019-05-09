@@ -1,23 +1,24 @@
-import arff
-from gui.preprocess.AttributeSummaryPanel import AttributeSummaryPanel
-from AttributeVisualizationPanel import AttributeVisualizationPanel
-from InstanceSummaryPanel import InstanceSummaryPanel
-from Instances import Instances,Instance
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from ViewerDialog import ViewerDialog
-from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel
-from copy import *
-from Utils import Utils
-from filters.attribute.Remove import Remove
-from GenericObjectEditor import GenericObjectEditor
-from PropertyPanel import PropertyPanel
-from filters.Filter import Filter
-from Thread import Thread
-from Attributes import Attribute
-from typing import *
 # from CallMain import MainWindow
 import os
+from copy import *
+
+import arff
+from gui.preprocess.InstanceSummaryPanel import InstanceSummaryPanel
+from core.Instances import Instances
+from gui.PropertyPanel import PropertyPanel
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+from core.Thread import Thread
+from gui.ViewerDialog import ViewerDialog
+from gui.common.GenericObjectEditor import GenericObjectEditor
+
+from core.Utils import Utils
+from filters.Filter import Filter
+from filters.attribute.Remove import Remove
+from gui.preprocess.AttributeSelectionPanel import AttributeSelectionPanel
+from gui.preprocess.AttributeSummaryPanel import AttributeSummaryPanel
+from gui.preprocess.AttributeVisualizationPanel import AttributeVisualizationPanel
+
 
 class PreprocessPanel(QObject):
     def __init__(self,win:'MainWindow',parent=None):
@@ -62,7 +63,7 @@ class PreprocessPanel(QObject):
         try:
             data = arff.loads(s)
         except arff.BadLayout:
-            Utils.DiglogWarning(self.m_Explor,"Syntax Errors in Data Sets")
+            Utils.DiglogWarning(self.m_Explor, "Syntax Errors in Data Sets")
             return
         inst = Instances(data)
         print(data)
@@ -150,7 +151,7 @@ class PreprocessPanel(QObject):
     def viewTableCloseEvent(self,inst:Instances):
         if self.m_Instances.classIndex()<0:
             inst.setClassIndex(-1)
-        Utils.debugOut("\n\nnewInstance numAttribute:",inst.numAttributes())
+        Utils.debugOut("\n\nnewInstance numAttribute:", inst.numAttributes())
         self.setInstances(inst)
 
 
@@ -160,7 +161,7 @@ class PreprocessPanel(QObject):
         if len(selected) == 0:
             return
         if len(selected) == self.m_Instances.numAttributes():
-            Utils.DiglogWarning(self.m_Explore,"Can't remove all attributes from data!\n")
+            Utils.DiglogWarning(self.m_Explore, "Can't remove all attributes from data!\n")
             return
         r.setAttributeIndicesArray(selected)
         self.applyFilter(r)

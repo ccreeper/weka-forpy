@@ -1,10 +1,11 @@
-from typing import *
+from core.Instances import Instances
+
 from classifiers.trees.J48Component.ClassifierTree import ClassifierTree
+from classifiers.trees.J48Component.Distribution import Distribution
 from classifiers.trees.J48Component.ModelSelection import ModelSelection
 from classifiers.trees.J48Component.NoSplit import NoSplit
-from classifiers.trees.J48Component.Distribution import Distribution
-from Instances import Instances,Instance
-from Utils import Utils
+from core.Utils import Utils
+
 
 class PruneableClassifierTree(ClassifierTree):
     def __init__(self,toSelectLocModel:ModelSelection,pruneTree:bool,num:int,cleanup:bool,seed:int):
@@ -48,7 +49,7 @@ class PruneableClassifierTree(ClassifierTree):
                 localTest[i]=None
         else:
             self.m_isLeaf=True
-            if Utils.equal(data.sumOfWeight(),0):
+            if Utils.equal(data.sumOfWeight(), 0):
                 self.m_isEmpty=True
 
 
@@ -56,7 +57,7 @@ class PruneableClassifierTree(ClassifierTree):
         if not self.m_isLeaf:
             for i in range(len(self.m_sons)):
                 self.son(i).prune()
-            if Utils.gr(self.errorsForTree(),self.errorsForLeaf()) or Utils.equal(self.errorsForTree(),self.errorsForLeaf()):
+            if Utils.gr(self.errorsForTree(), self.errorsForLeaf()) or Utils.equal(self.errorsForTree(), self.errorsForLeaf()):
                 self.m_sons=None
                 self.m_isLeaf=None
                 self.m_localModel=NoSplit(self.localModel().distribution())
@@ -66,7 +67,7 @@ class PruneableClassifierTree(ClassifierTree):
         if self.m_isLeaf:
             return self.errorsForLeaf()
         for i in range(len(self.m_sons)):
-            if Utils.equal(self.localModel().distribution().perBag(i),0):
+            if Utils.equal(self.localModel().distribution().perBag(i), 0):
                 errors+=self.m_test.perBag(i)-self.m_test.perClassPerBag(i,self.localModel().distribution().maxClass())
             else:
                 errors+=self.son(i).errorsForTree()

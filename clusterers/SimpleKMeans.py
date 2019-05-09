@@ -1,14 +1,17 @@
-from typing import *
-from Capabilities import Capabilities,CapabilityEnum
-from clusterers.RandomizableClusterer import RandomizableClusterer
-from Instances import Instances,Instance
-from filters.attribute.ReplaceMissingValues import ReplaceMissingValues
-from filters.Filter import Filter
-from EuclideanDistance import EuclideanDistance
-from Utils import Utils
-from classifiers.rules.DecisionTableHashKey import DecisionTableHashKey
 import math
 import random
+from typing import *
+
+from core.Capabilities import Capabilities, CapabilityEnum
+from core.EuclideanDistance import EuclideanDistance
+from core.Instances import Instances, Instance
+
+from classifiers.rules.DecisionTableHashKey import DecisionTableHashKey
+from clusterers.RandomizableClusterer import RandomizableClusterer
+from core.Utils import Utils
+from filters.Filter import Filter
+from filters.attribute.ReplaceMissingValues import ReplaceMissingValues
+
 
 class SimpleKMeans(RandomizableClusterer):
     methodList = {"NumClusters":"setNumClusters","DontReplaceMissing":"setDontReplaceMissing",
@@ -127,7 +130,7 @@ class SimpleKMeans(RandomizableClusterer):
                 if math.isnan(self.m_FullMeansOrMediansOrModes[i]):
                     valMeanMode=self.pad("missing", " ", maxWidth + 1 - len("missing"), True)
                 else:
-                    strVal=Utils.doubleToString(self.m_FullMeansOrMediansOrModes[i],maxWidth,4).strip()
+                    strVal= Utils.doubleToString(self.m_FullMeansOrMediansOrModes[i], maxWidth, 4).strip()
                     valMeanMode=self.pad(strVal," ",maxWidth+1-len(strVal),True)
             temp+=valMeanMode
             for j in range(self.NumClusters):
@@ -141,7 +144,7 @@ class SimpleKMeans(RandomizableClusterer):
                     if self.m_ClusterCentroids.instance(j).isMissing(i):
                         valMeanMode=self.pad("missing", " ", maxWidth + 1 - len("missing"), True)
                     else:
-                        strVal=Utils.doubleToString(self.m_ClusterCentroids.instance(j).value(i),maxWidth,4).strip()
+                        strVal= Utils.doubleToString(self.m_ClusterCentroids.instance(j).value(i), maxWidth, 4).strip()
                         valMeanMode=self.pad(strVal," ",maxWidth+1-len(strVal),True)
                 temp+=valMeanMode
             temp+='\n'
@@ -344,7 +347,7 @@ class SimpleKMeans(RandomizableClusterer):
                 if weightNonMissing[j]>0:
                     vals[j]/=weightNonMissing[j]
                 else:
-                    vals[j]=Utils.missingValue()
+                    vals[j]= Utils.missingValue()
             else:
                 max=float('-inf')
                 maxIndex=-1
@@ -353,7 +356,7 @@ class SimpleKMeans(RandomizableClusterer):
                         max=nominalDists[j][i]
                         maxIndex=i
                     if max < weightMissing[j]:
-                        vals[j]=Utils.missingValue()
+                        vals[j]= Utils.missingValue()
                     else:
                         vals[j]=maxIndex
         if updateClusterInfo:

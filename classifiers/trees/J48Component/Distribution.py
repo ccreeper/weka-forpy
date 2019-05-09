@@ -1,7 +1,10 @@
 from typing import *
-from Utils import Utils
-from Instances import Instances,Instance
+
+from core.Instances import Instances, Instance
+
 import classifiers.trees.J48Component.ClassifierSplitModel
+from core.Utils import Utils
+
 
 class Distribution():
     @overload
@@ -93,7 +96,7 @@ class Distribution():
     def check(self,minNoObj:float):
         counter=0
         for i in range(len(self.m_perBag)):
-            if Utils.gr(self.m_perBag[i],minNoObj) or Utils.equal(self.m_perBag[i],minNoObj):
+            if Utils.gr(self.m_perBag[i], minNoObj) or Utils.equal(self.m_perBag[i], minNoObj):
                 counter+=1
                 if counter > 1:
                     return True
@@ -117,7 +120,7 @@ class Distribution():
         max=0
         maxIndex=-1
         for i in range(len(self.m_perBag)):
-            if Utils.gr(self.m_perBag[i],max) or Utils.equal(self.m_perBag[i],max):
+            if Utils.gr(self.m_perBag[i], max) or Utils.equal(self.m_perBag[i], max):
                 max=self.m_perBag[i]
                 maxIndex=i
         return maxIndex
@@ -136,7 +139,7 @@ class Distribution():
     def addInstWithUnknown(self,source:Instances,attIndex:int):
         probs=[]
         for j in range(len(self.m_perBag)):
-            if Utils.equal(self.totaL,0):
+            if Utils.equal(self.totaL, 0):
                 probs.append(1/len(self.m_perBag))
             else:
                 probs.append(self.m_perBag[j]/self.totaL)
@@ -154,11 +157,11 @@ class Distribution():
 
     def prob(self,classIndex:int,intIndex:int=None):
         if intIndex is None:
-            if not Utils.equal(self.totaL,0):
+            if not Utils.equal(self.totaL, 0):
                 return self.m_perClass[classIndex]/self.totaL
             return 0
         else:
-            if Utils.gr(self.m_perBag[intIndex],0):
+            if Utils.gr(self.m_perBag[intIndex], 0):
                 return self.m_perClassPerBag[intIndex][classIndex]/self.m_perBag[intIndex]
             return self.prob(classIndex)
 
@@ -166,7 +169,7 @@ class Distribution():
         if intIndex is None:
             return (self.m_perClass[classIndex]+1)/(self.totaL+len(self.m_perClass))
         else:
-            if Utils.gr(self.m_perBag[intIndex],0):
+            if Utils.gr(self.m_perBag[intIndex], 0):
                 return (self.m_perClassPerBag[intIndex][classIndex]+1)/(self.m_perBag[intIndex]+len(self.m_perClass))
             return self.laplaceProb(classIndex)
 
@@ -175,14 +178,14 @@ class Distribution():
         maxIndex=0
         if index is None:
             for i in range(len(self.m_perClass)):
-                if Utils.gr(self.m_perClass[i],maxCount):
+                if Utils.gr(self.m_perClass[i], maxCount):
                     maxCount=self.m_perClass[i]
                     maxIndex=i
             return maxIndex
         else:
-            if Utils.gr(self.m_perBag[index],0):
+            if Utils.gr(self.m_perBag[index], 0):
                 for i in range(len(self.m_perClass)):
-                    if Utils.gr(self.m_perClassPerBag[index][i],maxCount):
+                    if Utils.gr(self.m_perClassPerBag[index][i], maxCount):
                         maxCount=self.m_perClassPerBag[index][i]
                         maxIndex=i
                 return maxIndex

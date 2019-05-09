@@ -1,10 +1,11 @@
-from typing import *
+from core.Instances import Instances
+
 from classifiers.trees.J48Component.ClassifierTree import ClassifierTree
+from classifiers.trees.J48Component.Distribution import Distribution
 from classifiers.trees.J48Component.ModelSelection import ModelSelection
 from classifiers.trees.J48Component.NoSplit import NoSplit
-from classifiers.trees.J48Component.Distribution import Distribution
-from Instances import Instances,Instance
-from Utils import Utils
+from core.Utils import Utils
+
 
 class C45PruneableClassifierTree(ClassifierTree):
     def __init__(self,toSelectLocModel:ModelSelection,pruneTree:bool,
@@ -51,13 +52,13 @@ class C45PruneableClassifierTree(ClassifierTree):
                 errorsLargestBranch=float("inf")
             errorsLeaf=self.getEstimatedErrorsForDistribution(self.localModel().distribution())
             errorsTree=self.getEstimatedErrors()
-            if (Utils.gr(errorsTree+0.1,errorsLeaf) or Utils.equal(errorsTree+0.1,errorsLeaf)) and\
-                (Utils.gr(errorsLargestBranch+0.1,errorsLeaf) or Utils.equal(errorsLargestBranch+0.1,errorsLeaf)):
+            if (Utils.gr(errorsTree+0.1, errorsLeaf) or Utils.equal(errorsTree+0.1, errorsLeaf)) and\
+                (Utils.gr(errorsLargestBranch+0.1, errorsLeaf) or Utils.equal(errorsLargestBranch+0.1, errorsLeaf)):
                 self.m_sons=None
                 self.m_isLeaf=True
                 self.m_localModel=NoSplit(self.localModel().distribution())
                 return
-            if Utils.gr(errorsTree+0.1,errorsLargestBranch) or Utils.equal(errorsTree+0.1,errorsLargestBranch):
+            if Utils.gr(errorsTree+0.1, errorsLargestBranch) or Utils.equal(errorsTree+0.1, errorsLargestBranch):
                 largestBranch=self.son(indexOfLargestBranch)
                 self.m_sons=largestBranch.m_sons
                 self.m_localModel=largestBranch.localModel()
@@ -74,7 +75,7 @@ class C45PruneableClassifierTree(ClassifierTree):
             for i in range(len(self.m_sons)):
                 self.son(i).newDistribution(localInstances[i])
         else:
-            if not Utils.equal(data.sumOfWeight(),0):
+            if not Utils.equal(data.sumOfWeight(), 0):
                 self.m_isEmpty=False
 
 
@@ -100,9 +101,9 @@ class C45PruneableClassifierTree(ClassifierTree):
         return errors
 
     def getEstimatedErrorsForDistribution(self,theDistribution:Distribution):
-        if Utils.equal(theDistribution.total(),0):
+        if Utils.equal(theDistribution.total(), 0):
             return 0
-        return theDistribution.numIncorrect()+Utils.addErrs(theDistribution.total(),theDistribution.numIncorrect(),self.m_CF)
+        return theDistribution.numIncorrect() + Utils.addErrs(theDistribution.total(), theDistribution.numIncorrect(), self.m_CF)
 
     def getTrainingErrors(self):
         errors=0

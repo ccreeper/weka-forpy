@@ -1,11 +1,11 @@
-from typing import *
-from clusterers.Clusterer import Clusterer
-from OptionHandler import OptionHandler
-from Instances import Instances,Instance
-from Utils import Utils
-from Capabilities import Capabilities,CapabilityEnum
+from core.Capabilities import Capabilities
+from core.Instances import Instance
 
-class AbstractClusterer(Clusterer,OptionHandler):
+from clusterers.Clusterer import Clusterer
+from core.Utils import Utils
+
+
+class AbstractClusterer(Clusterer):
     propertyList = ['doNotCheckCapabilities']
     methodList = []
     def __init__(self):

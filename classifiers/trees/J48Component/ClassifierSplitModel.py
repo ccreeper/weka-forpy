@@ -1,9 +1,12 @@
 from typing import *
-from Instances import Instances,Instance
-from classifiers.trees.J48Component.InfoGainSplitCrit import InfoGainSplitCrit
-from classifiers.trees.J48Component.GainRatioSplitCrit import GainRatioSplitCrit
+
+from core.Instances import Instances, Instance
+
 from classifiers.trees.J48Component.GainRatioSplitCrit import Distribution
-from Utils import Utils
+from classifiers.trees.J48Component.GainRatioSplitCrit import GainRatioSplitCrit
+from classifiers.trees.J48Component.InfoGainSplitCrit import InfoGainSplitCrit
+from core.Utils import Utils
+
 
 class ClassifierSplitModel():
     infoGainCrit=InfoGainSplitCrit()
@@ -32,9 +35,9 @@ class ClassifierSplitModel():
     def dumpLabel(self,index:int,data:Instances):
         text=""
         text+=data.classAttribute().value(self.m_distribution.maxClass(index))
-        text+=" ("+str(Utils.roundDouble(self.m_distribution.perBag(index),2))
-        if Utils.gr(self.m_distribution.numIncorrect(index),0):
-            text+="/"+str(Utils.roundDouble(self.m_distribution.numIncorrect(index),2))
+        text+=" ("+str(Utils.roundDouble(self.m_distribution.perBag(index), 2))
+        if Utils.gr(self.m_distribution.numIncorrect(index), 0):
+            text+="/"+str(Utils.roundDouble(self.m_distribution.numIncorrect(index), 2))
         text+=")"
         return text
 
@@ -47,7 +50,7 @@ class ClassifierSplitModel():
             else:
                 weights=self.weights(inst)
                 for j in range(self.m_numSubsets):
-                    if Utils.gr(weights[j],0):
+                    if Utils.gr(weights[j], 0):
                         subsetSize[j]+=1
         instances=[]        #type:List[Instances]
         for j in range(self.m_numSubsets):
@@ -59,7 +62,7 @@ class ClassifierSplitModel():
             else:
                 weights=self.weights(inst)
                 for j in range(self.m_numSubsets):
-                    if Utils.gr(weights[j],0):
+                    if Utils.gr(weights[j], 0):
                         instances[j].add(inst)
                         instances[j].lastInstance().setWeight(float(weights[j]*inst.weight()))
         return instances

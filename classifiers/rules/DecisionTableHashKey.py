@@ -1,6 +1,7 @@
-from typing import *
-from Instances import Instances,Instance
 import math
+
+from core.Instances import Instance
+
 
 class DecisionTableHashKey():
     def __init__(self, t, numAtts:int, ignoreClass:bool):

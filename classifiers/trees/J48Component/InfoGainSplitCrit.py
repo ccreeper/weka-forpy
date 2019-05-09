@@ -1,13 +1,13 @@
-from typing import *
-from classifiers.trees.J48Component.EntropyBasedSplitCrit import EntropyBasedSplitCrit
 from classifiers.trees.J48Component.Distribution import Distribution
-from Utils import Utils
+from classifiers.trees.J48Component.EntropyBasedSplitCrit import EntropyBasedSplitCrit
+from core.Utils import Utils
+
 
 class InfoGainSplitCrit(EntropyBasedSplitCrit):
     def splitCritValue(self,bags:Distribution,totalNoInst:float=None,oldEnt:float=None):
         if totalNoInst is None:
             numerator=self.oldEnt(bags)-self.newEnt(bags)
-            if Utils.equal(numerator,0):
+            if Utils.equal(numerator, 0):
                 return float("inf")
             return bags.total()/numerator
         else:
@@ -18,6 +18,6 @@ class InfoGainSplitCrit(EntropyBasedSplitCrit):
             else:
                 numerator=self.oldEnt(bags)-self.newEnt(bags)
             numerator=(1-unknowRate)*numerator
-            if Utils.equal(numerator,0):
+            if Utils.equal(numerator, 0):
                 return 0
             return numerator/bags.total()

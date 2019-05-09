@@ -1,15 +1,14 @@
-from typing import *
+import copy
 
-from Attributes import Attribute
-from Instances import Instances,Instance
-from SingleIndex import SingleIndex
-from Capabilities import Capabilities,CapabilityEnum
-from Tag import Tag
-from Utils import Utils
-from Range import Range
+from core.Capabilities import CapabilityEnum
+from core.Instances import Instances, Instance
+from core.Range import Range
+from core.SingleIndex import SingleIndex
+from core.Tag import Tag
+
+from core.Attributes import Attribute
 from core.SelectedTag import SelectedTag
 from filters.Filter import Filter
-import copy
 
 
 class Add(Filter):

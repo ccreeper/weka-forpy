@@ -1,19 +1,19 @@
+import copy
 import math
 from typing import *
 
 import numpy as np
-from classifiers.evaluation import Prediction
+from core.Instances import Instances, Instance
 
-from Instances import Instances, Instance
-from Utils import Utils
-from classifiers.evaluation.NominalPrediction import NominalPrediction
-from classifiers.evaluation.NumericPrediction import NumericPrediction
 from classifiers.Classifier import Classifier
 from classifiers.ConditionalDensityEstimator import ConditionalDensityEstimator
-from classifiers.evaluation.ThresholdCurve import ThresholdCurve
 from classifiers.IntervalEstimator import IntervalEstimator
+from classifiers.evaluation import Prediction
+from classifiers.evaluation.NominalPrediction import NominalPrediction
+from classifiers.evaluation.NumericPrediction import NumericPrediction
+from classifiers.evaluation.ThresholdCurve import ThresholdCurve
+from core.Utils import Utils
 from estimators.UnivariateKernelEstimator import UnivariateKernelEstimator
-import copy
 
 
 class Evaluation():
@@ -118,9 +118,9 @@ class Evaluation():
     def evaluationForSingleInstance(self, a0, instance:Instance, storePredictions:bool):
         if isinstance(a0,List):
             if self.m_ClassIsNominal:
-                pred=Utils.maxIndex(a0)
+                pred= Utils.maxIndex(a0)
                 if a0[int(pred)] <= 0:
-                    pred=Utils.missingValue()
+                    pred= Utils.missingValue()
                 self.updateStatsForClassifier(a0, instance)
                 if storePredictions and not self.m_DiscardPredictions:
                     if self.m_Predictions is None:
@@ -217,13 +217,13 @@ class Evaluation():
             predictedProb=max(float('-inf'),predictedDistribution[actualClass])
             priorProb=max(float('-inf'),self.m_ClassPriors[actualClass]/self.m_ClassPriorsSum)
             if predictedProb >= priorProb:
-                self.m_SumKBInfo+=(Utils.log2(predictedProb)-Utils.log2(priorProb))*instance.weight()
+                self.m_SumKBInfo+= (Utils.log2(predictedProb) - Utils.log2(priorProb)) * instance.weight()
             else:
-                self.m_SumKBInfo-=(Utils.log2(1-predictedProb)-Utils.log2(1-priorProb))*instance.weight()
-            self.m_SumSchemeEntropy-=Utils.log2(predictedProb)*instance.weight()
-            self.m_SumPriorEntropy-=Utils.log2(priorProb)*instance.weight()
+                self.m_SumKBInfo-= (Utils.log2(1 - predictedProb) - Utils.log2(1 - priorProb)) * instance.weight()
+            self.m_SumSchemeEntropy-= Utils.log2(predictedProb) * instance.weight()
+            self.m_SumPriorEntropy-= Utils.log2(priorProb) * instance.weight()
             self.updateNumericScores(predictedDistribution,self.makeDistribution(instance.classValue()),instance.weight())
-            indices=Utils.stableSort(predictedDistribution)
+            indices= Utils.stableSort(predictedDistribution)
             sum=sizeOfregions=0
             for i in range(len(predictedDistribution)-1,-1,-1):
                 if sum >= self.m_ConfLevel:
@@ -319,7 +319,7 @@ class Evaluation():
         text+="<-- classified as\n"
         for i in range(self.m_NumClasses):
             for j in range(self.m_NumClasses):
-                text+=" "+Utils.doubleToString(self.m_ConfusionMatrix[i][j], IDWidth,2 if fractional else 0)
+                text+=" " + Utils.doubleToString(self.m_ConfusionMatrix[i][j], IDWidth, 2 if fractional else 0)
             text+=" | "+self.num2ShortID(i,IDChars,IDWidth)+" = "+self.m_ClassNames[i]+"\n"
         return text
 
@@ -469,7 +469,7 @@ class Evaluation():
         n=numTP*numTN-numFP*numFN
         d=(numTP+numFP)*(numTP+numFN)*(numTN+numFP)*(numTN+numFN)
         d=math.sqrt(d)
-        return Utils.division(n,d)
+        return Utils.division(n, d)
 
     def numTruePositives(self,classIndex:int):
         correct=0
@@ -521,7 +521,7 @@ class Evaluation():
             if i == classIndex:
                 correct+=self.m_ConfusionMatrix[i][classIndex]
             total+=self.m_ConfusionMatrix[i][classIndex]
-        return Utils.division(correct,total)
+        return Utils.division(correct, total)
 
     def truePositiveRate(self,classIndex:int):
         correct=total=0
@@ -529,7 +529,7 @@ class Evaluation():
             if j == classIndex:
                 correct+=self.m_ConfusionMatrix[classIndex][j]
             total+=self.m_ConfusionMatrix[classIndex][j]
-        return Utils.division(correct,total)
+        return Utils.division(correct, total)
 
     def falsePositiveRate(self,classIndex:int):
         incorrect=total=0
@@ -539,7 +539,7 @@ class Evaluation():
                     if j == classIndex:
                         incorrect+=self.m_ConfusionMatrix[i][j]
                     total+=self.m_ConfusionMatrix[i][j]
-        return Utils.division(incorrect,total)
+        return Utils.division(incorrect, total)
 
     def weightedTruePositiveRate(self):
         classCounts=[0]*self.m_NumClasses
@@ -553,7 +553,7 @@ class Evaluation():
             temp=self.truePositiveRate(i)
             if classCounts[i]>0:
                 truePosTotal+=temp*classCounts[i]
-        return Utils.division(truePosTotal,classCountSum)
+        return Utils.division(truePosTotal, classCountSum)
 
     def weightedFalsePositiveRate(self):
         classCounts=[0]*self.m_NumClasses
@@ -567,7 +567,7 @@ class Evaluation():
             temp=self.falsePositiveRate(i)
             if classCounts[i]>0:
                 falsePosTotal+=temp*classCounts[i]
-        return Utils.division(falsePosTotal,classCountSum)
+        return Utils.division(falsePosTotal, classCountSum)
 
     def weightedPrecision(self):
         classCounts=[0]*self.m_NumClasses
@@ -581,7 +581,7 @@ class Evaluation():
             temp=self.precision(i)
             if classCounts[i]>0:
                 precisionTotal+=temp*classCounts[i]
-        return Utils.division(precisionTotal,classCountSum)
+        return Utils.division(precisionTotal, classCountSum)
 
     def weightedRecall(self):
         return self.weightedTruePositiveRate()
@@ -598,7 +598,7 @@ class Evaluation():
             temp = self.fMeasure(i)
             if classCounts[i] > 0:
                 fMeasureTotal += temp * classCounts[i]
-        return Utils.division(fMeasureTotal,classCountSum)
+        return Utils.division(fMeasureTotal, classCountSum)
 
     def weightedMatthewsCorrelation(self):
         classCounts = [0] * self.m_NumClasses
@@ -612,7 +612,7 @@ class Evaluation():
             temp = self.matthewsCorrelationCoefficient(i)
             if classCounts[i] > 0:
                 mccTotal += temp * classCounts[i]
-        return Utils.division(mccTotal,classCountSum)
+        return Utils.division(mccTotal, classCountSum)
 
     def weightedAreaUnderROC(self):
         classCounts = [0] * self.m_NumClasses
@@ -626,7 +626,7 @@ class Evaluation():
             temp = self.areaUnderROC(i)
             if classCounts[i] > 0:
                 aucTotal += temp * classCounts[i]
-        return Utils.division(aucTotal,classCountSum)
+        return Utils.division(aucTotal, classCountSum)
 
     def weightedAreaUnderPRC(self):
         classCounts = [0] * self.m_NumClasses
@@ -640,7 +640,7 @@ class Evaluation():
             temp = self.areaUnderPRC(i)
             if classCounts[i] > 0:
                 auprcTotal += temp * classCounts[i]
-        return Utils.division(auprcTotal,classCountSum)
+        return Utils.division(auprcTotal, classCountSum)
 
     def num2ShortID(self,num:int,IDChars:List[str],IDWidth:int):
         ID=[]
@@ -667,29 +667,29 @@ class Evaluation():
 
                 if displayCorrect:
                     text+="Correctly Classified Instances     "
-                    text+=Utils.doubleToString(self.correct(), 12, 4) + "     "+ Utils.doubleToString(self.pctCorrect(), 12, 4) + " %\n"
+                    text+= Utils.doubleToString(self.correct(), 12, 4) + "     " + Utils.doubleToString(self.pctCorrect(), 12, 4) + " %\n"
                 if displayIncorrect:
                     text+="Incorrectly Classified Instances   "
-                    text+=Utils.doubleToString(self.incorrect(), 12, 4) + "     "+ Utils.doubleToString(self.pctIncorrect(), 12, 4) + " %\n"
+                    text+= Utils.doubleToString(self.incorrect(), 12, 4) + "     " + Utils.doubleToString(self.pctIncorrect(), 12, 4) + " %\n"
                 if displayKappa:
                     text+="Kappa statistic                    "
-                    text+=Utils.doubleToString(self.kappa(), 12, 4) + "\n"
+                    text+= Utils.doubleToString(self.kappa(), 12, 4) + "\n"
                 if printComplexityStatistics:
                     displayKBRelative="kb relative" in self.m_metricsToDisplay
                     displayKBInfo="kb information" in self.m_metricsToDisplay
                     if displayKBRelative:
                         text+="K&B Relative Info Score            "
-                        text+=Utils.doubleToString(self.KBRelativeInformation(), 12, 4)+ " %\n"
+                        text+= Utils.doubleToString(self.KBRelativeInformation(), 12, 4) + " %\n"
                     if displayKBInfo:
                         text+="K&B Information Score              "
-                        text+=Utils.doubleToString(self.KBInformation(), 12, 4)+ " bits"
-                        text+=Utils.doubleToString(self.KBMeanInformation(), 12, 4)+ " bits/instance\n"
+                        text+= Utils.doubleToString(self.KBInformation(), 12, 4) + " bits"
+                        text+= Utils.doubleToString(self.KBMeanInformation(), 12, 4) + " bits/instance\n"
                 #if self.m_pluginMetrics != null:
             else:
                 displayCorrelation="correlation" in self.m_metricsToDisplay
                 if displayCorrelation:
                     text+="Correlation coefficient            "
-                    text+=Utils.doubleToString(self.correlationCoefficient(), 12, 4)+ "\n"
+                    text+= Utils.doubleToString(self.correlationCoefficient(), 12, 4) + "\n"
                 # if self.m_pluginMetrics != null:
             if printComplexityStatistics and self.m_ComplexityStatisticsAvailable:
                 displayComplexityOrder0="complexity 0" in self.m_metricsToDisplay
@@ -697,51 +697,51 @@ class Evaluation():
                 displayComplexityImprovement="complexity improvement" in self.m_metricsToDisplay
                 if displayComplexityOrder0:
                     text+="Class complexity | order 0         "
-                    text+=Utils.doubleToString(self.SFPriorEntropy(), 12, 4) + " bits"
-                    text+=Utils.doubleToString(self.SFMeanPriorEntropy(), 12, 4)+ " bits/instance\n"
+                    text+= Utils.doubleToString(self.SFPriorEntropy(), 12, 4) + " bits"
+                    text+= Utils.doubleToString(self.SFMeanPriorEntropy(), 12, 4) + " bits/instance\n"
                 if displayComplexityScheme:
                     text+="Class complexity | scheme          "
-                    text+=Utils.doubleToString(self.SFSchemeEntropy(), 12, 4)+ " bits"
-                    text+=Utils.doubleToString(self.SFMeanSchemeEntropy(), 12, 4)+ " bits/instance\n"
+                    text+= Utils.doubleToString(self.SFSchemeEntropy(), 12, 4) + " bits"
+                    text+= Utils.doubleToString(self.SFMeanSchemeEntropy(), 12, 4) + " bits/instance\n"
                 if displayComplexityImprovement:
                     text+="Complexity improvement     (Sf)    "
-                    text+=Utils.doubleToString(self.SFEntropyGain(), 12, 4) + " bits"
-                    text+=Utils.doubleToString(self.SFMeanEntropyGain(), 12, 4)+ " bits/instance\n"
+                    text+= Utils.doubleToString(self.SFEntropyGain(), 12, 4) + " bits"
+                    text+= Utils.doubleToString(self.SFMeanEntropyGain(), 12, 4) + " bits/instance\n"
             displayMAE = "mae" in self.m_metricsToDisplay
             displayRMSE = "rmse" in self.m_metricsToDisplay
             displayRAE = "rae" in self.m_metricsToDisplay
             displayRRSE = "rrse" in self.m_metricsToDisplay
             if displayMAE:
                 text+="Mean absolute error                "
-                text+=Utils.doubleToString(self.meanAbsoluteError(), 12, 4) + "\n"
+                text+= Utils.doubleToString(self.meanAbsoluteError(), 12, 4) + "\n"
             if displayRMSE:
                 text+="Root mean squared error            "
-                text+=Utils.doubleToString(self.rootMeanSquaredError(), 12, 4)+ "\n"
+                text+= Utils.doubleToString(self.rootMeanSquaredError(), 12, 4) + "\n"
             if not self.m_NoPriors:
                 if displayRAE:
                     text+="Relative absolute error            "
-                    text+=Utils.doubleToString(self.relativeAbsoluteError(), 12, 4)+ " %\n"
+                    text+= Utils.doubleToString(self.relativeAbsoluteError(), 12, 4) + " %\n"
                 if displayRRSE:
                     text+="Root relative squared error        "
-                    text+=Utils.doubleToString(self.rootRelativeSquaredError(), 12, 4)+ " %\n"
+                    text+= Utils.doubleToString(self.rootRelativeSquaredError(), 12, 4) + " %\n"
             if self.m_CoverageStatisticsAvailable:
                 displayCoverage="coverage" in self.m_metricsToDisplay
                 displayRegionSize="region size" in self.m_metricsToDisplay
                 if displayCoverage:
-                    text+="Coverage of cases "+ Utils.doubleToString(self.m_ConfLevel, 4, 2) + " level)     "
-                    text+=Utils.doubleToString(self.coverageOfTestCasesByPredictedRegions(), 12, 4) + " %\n"
+                    text+="Coverage of cases " + Utils.doubleToString(self.m_ConfLevel, 4, 2) + " level)     "
+                    text+= Utils.doubleToString(self.coverageOfTestCasesByPredictedRegions(), 12, 4) + " %\n"
                 if not self.m_NoPriors:
                     if displayRegionSize:
-                        text+="Mean rel. region size ("+ Utils.doubleToString(self.m_ConfLevel, 4, 2) + " level) "
-                        text+=Utils.doubleToString(self.sizeOfPredictedRegions(), 12, 4) + " %\n"
-        if Utils.gr(self.unclassified(),0):
+                        text+="Mean rel. region size (" + Utils.doubleToString(self.m_ConfLevel, 4, 2) + " level) "
+                        text+= Utils.doubleToString(self.sizeOfPredictedRegions(), 12, 4) + " %\n"
+        if Utils.gr(self.unclassified(), 0):
             text+="UnClassified Instances             "
-            text+=Utils.doubleToString(self.unclassified(), 12, 4) + "     "+ Utils.doubleToString(self.pctUnclassified(), 12, 4) + " %\n"
+            text+= Utils.doubleToString(self.unclassified(), 12, 4) + "     " + Utils.doubleToString(self.pctUnclassified(), 12, 4) + " %\n"
         text+="Total Number of Instances          "
-        text+=Utils.doubleToString(self.m_WithClass, 12, 4) + "\n"
+        text+= Utils.doubleToString(self.m_WithClass, 12, 4) + "\n"
         if self.m_MissingClass>0:
             text+="Ignored Class Unknown Instances            "
-            text+=Utils.doubleToString(self.m_MissingClass, 12, 4) + "\n"
+            text+= Utils.doubleToString(self.m_MissingClass, 12, 4) + "\n"
         return text
 
     def unclassified(self):

@@ -1,14 +1,15 @@
+import copy
 from typing import *
 
-from AbstractPlotInstances import AbstractPlotInstances
-from Attributes import Attribute
-from Instances import Instances, Instance
-from Utils import Utils
+from gui.AbstractPlotInstances import AbstractPlotInstances
+from core.Attributes import Attribute
+from core.Instances import Instances, Instance
+
 from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
+from core.Utils import Utils
+from gui.PlotData2D import PlotData2D
 from gui.classifier.Plot2D import Plot2D
-from PlotData2D import PlotData2D
-import copy
 
 
 class ClassifierErrorsPlotInstances(AbstractPlotInstances):
@@ -78,11 +79,11 @@ class ClassifierErrorsPlotInstances(AbstractPlotInstances):
             #若概率全部为0，则表示不属于任何一类
             val=0
             if sum(preds) == 0:
-                pred=Utils.missingValue()
-                probActual=Utils.missingValue()
+                pred= Utils.missingValue()
+                probActual= Utils.missingValue()
             else:
                 #分类结果为概率最大的一项下标
-                pred=Utils.maxIndex(preds)
+                pred= Utils.maxIndex(preds)
                 if not Utils.isMissingValue(toPredict.classIndex()):
                     #如果值不缺失，表示非预测样本，不做修改
                     if not Utils.isMissingValue(toPredict.classValue()):

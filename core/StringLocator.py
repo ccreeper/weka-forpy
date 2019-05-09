@@ -1,7 +1,10 @@
-from AttributeLocator import AttributeLocator
 from typing import *
-from Instances import Instances,Instance
-from Attributes import Attribute
+
+from core.Instances import Instances, Instance
+
+from core.AttributeLocator import AttributeLocator
+from core.Attributes import Attribute
+
 
 class StringLocator(AttributeLocator):
     def __init__(self,data:Instances,a0=None,a1=None):

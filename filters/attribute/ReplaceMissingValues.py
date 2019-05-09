@@ -1,8 +1,9 @@
-from typing import *
+from core.Capabilities import CapabilityEnum
+from core.Instances import Instances, Instance
+
+from core.Utils import Utils
 from filters.Filter import Filter
-from Instances import Instances,Instance
-from Capabilities import Capabilities,CapabilityEnum
-from Utils import Utils
+
 
 class ReplaceMissingValues(Filter):
     propertyList = {}
@@ -90,11 +91,11 @@ class ReplaceMissingValues(Filter):
             for i in range(self.getInputFormat().numAttributes()):
                 if self.getInputFormat().attribute(i).isNominal():
                     if len(counts[i]) == 0:
-                        self.m_ModesAndMeans[i]=Utils.missingValue()
+                        self.m_ModesAndMeans[i]= Utils.missingValue()
                     else:
-                        self.m_ModesAndMeans[i]=Utils.maxIndex(counts[i])
+                        self.m_ModesAndMeans[i]= Utils.maxIndex(counts[i])
                 elif self.getInputFormat().attribute(i).isNumeric():
-                    if Utils.gr(sums[i],0):
+                    if Utils.gr(sums[i], 0):
                         self.m_ModesAndMeans[i]=results[i]/sums[i]
             for i in range(self.getInputFormat().numInstances()):
                 self.convertInstance(self.getInputFormat().instance(i))

@@ -1,4 +1,4 @@
-from Instances import Instances,Instance
+from core.Instances import Instances
 
 from gui.designUI.Main import Ui_MainWindow
 
@@ -10,7 +10,7 @@ class InstanceSummaryPanel():
         self.m_NumAttributesLab=ui.attr_lab
         self.m_sumOfWeightsLab=ui.weight_lab
 
-    def setInstance(self,inst:Instances):
+    def setInstance(self, inst: Instances):
         self.m_Instance=inst
         self.m_RelationNameLab.setText(inst.m_RelationName)
         self.m_NumInstancesLab.setText(str(inst.numInstances()))

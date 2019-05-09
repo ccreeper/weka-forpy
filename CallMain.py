@@ -1,13 +1,14 @@
 import cgitb
 import sys
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from Preprocess import PreprocessPanel
-from ClustererPanel import ClustererPanel
 from ClassifierPanel import ClassifierPanel
-from Main import Ui_MainWindow
+from ClustererPanel import ClustererPanel
+from Preprocess import PreprocessPanel
+from gui.designUI.Main import Ui_MainWindow
 
 
 class MainWindow(QMainWindow,Ui_MainWindow):

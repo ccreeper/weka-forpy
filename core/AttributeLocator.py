@@ -1,7 +1,8 @@
-from typing import *
-from Instances import Instances,Instance
-from Attributes import Attribute
 import copy
+from typing import *
+
+from core.Instances import Instances
+
 
 class AttributeLocator():
     def __init__(self, data:Instances,tp:int, a0=None,a1=None):

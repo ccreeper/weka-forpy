@@ -1,8 +1,8 @@
-from typing import *
-from Instances import Instances,Instance
-from classifiers.trees.J48Component.Distribution import Distribution
+from core.Instances import Instances, Instance
+
 from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
-from Utils import Utils
+from classifiers.trees.J48Component.Distribution import Distribution
+from core.Utils import Utils
 
 class BinC45Split(ClassifierSplitModel):
 
@@ -39,14 +39,14 @@ class BinC45Split(ClassifierSplitModel):
                 newDistribution.add(int(inst.value(self.m_attIndex)),inst)
         self.m_distribution=newDistribution
         for i in range(numAttValues):
-            if Utils.gr(newDistribution.perBag(i),self.m_minNoObj) or\
-                    Utils.equal(newDistribution.perBag(i),self.m_minNoObj):
+            if Utils.gr(newDistribution.perBag(i), self.m_minNoObj) or\
+                    Utils.equal(newDistribution.perBag(i), self.m_minNoObj):
                 secondDistribution=Distribution(newDistribution,i)
                 if secondDistribution.check(self.m_minNoObj):
                     self.m_numSubsets=2
                     currIG=self.infoGainCrit.splitCritValue(secondDistribution,self.m_sumOfWeights)
                     currGR=self.gainRatioCrit.splitCritValue(secondDistribution,self.m_sumOfWeights,currIG)
-                    if i == 0 or Utils.gr(currGR,self.m_gainRatio):
+                    if i == 0 or Utils.gr(currGR, self.m_gainRatio):
                         self.m_gainRatio=currGR
                         self.m_infoGain=currIG
                         self.m_splitPoint=i
@@ -77,7 +77,7 @@ class BinC45Split(ClassifierSplitModel):
                     trainInstances.instance(next).value(self.m_attIndex):
                 self.m_distribution.shiftRange(1, 0, trainInstances, last, next)
                 if (Utils.gr(self.m_distribution.perBag(0), minSplit)
-                    or Utils.equal(self.m_distribution.perBag(0),minSplit)) and \
+                    or Utils.equal(self.m_distribution.perBag(0), minSplit)) and \
                     (Utils.gr(self.m_distribution.perBag(1), minSplit)
                     or Utils.equal(self.m_distribution.perBag(1), minSplit)):
                     currentInfoGain = self.infoGainCrit.splitCritValue(self.m_distribution, self.m_sumOfWeights,defaultEnt)

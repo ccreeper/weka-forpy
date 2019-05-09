@@ -1,10 +1,12 @@
 from typing import *
-from VisualizePrint import Ui_Form
-from Instances import Instances,Instance
+
 from PyQt5.QtWidgets import *
-from PlotData2D import PlotData2D
-from Attributes import Attribute
-import cgitb
+
+from core.Attributes import Attribute
+from core.Instances import Instances
+from gui.PlotData2D import PlotData2D
+from gui.designUI.VisualizePrint import Ui_Form
+
 
 class VisualizePanel(QMainWindow,Ui_Form):
     def __init__(self,parent=None):

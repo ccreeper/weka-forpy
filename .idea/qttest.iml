@@ -14,12 +14,12 @@
       <sourceFolder url="file://$MODULE_DIR$/gui/ui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gui/promoteUI" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/filter/attribute" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core2" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/filter" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/gui" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/gui/common" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/gui/designUI" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/gui/preprocess" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/common2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/designUI2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gui/preprocess2" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

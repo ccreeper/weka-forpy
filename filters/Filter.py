@@ -1,12 +1,12 @@
-from Instances import Instances,Instance
-from typing import *
-from Capabilities import Capabilities,CapabilityEnum
-from StringLocator import StringLocator
-from queue import Queue
-from Utils import Utils
 import copy
+from queue import Queue
+from typing import *
 
-from core.OptionHandler import OptionHandler
+from core.Capabilities import Capabilities, CapabilityEnum
+from core.Instances import Instances, Instance
+from core.StringLocator import StringLocator
+
+from core.Utils import Utils
 
 
 class Filter():
@@ -179,7 +179,7 @@ class Filter():
             filter.input(data.instance(i))
         filter.batchFinished()
         newData=filter.getOutputFormat()
-        Utils.debugOut("Queue size:",filter.m_OutputQueue.qsize())
+        Utils.debugOut("Queue size:", filter.m_OutputQueue.qsize())
         processed=filter.output()
         while processed is not None:
             newData.add(processed)

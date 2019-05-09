@@ -55,4 +55,4 @@ class Ui_Form(object):
         self.relation_lab.setText(_translate("Form", "TextLabel"))
         self.saveBtn.setText(_translate("Form", "Save"))
 
-from MatplotlibWidget import MatplotlibWidget
+from gui.MatplotlibWidget import MatplotlibWidget

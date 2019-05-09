@@ -1,5 +1,7 @@
-from Stats import Stats
-from Utils import Utils
+from core.Stats import Stats
+
+from core.Utils import Utils
+
 
 class AttributeStats():
     def __init__(self):
@@ -32,38 +34,38 @@ class AttributeStats():
         self.distinctCount+=1
 
     def toString(self):
-        string=Utils.padLeft("Type", 4)+Utils.padLeft("Nom", 5)+\
-                Utils.padLeft("Int", 5)+Utils.padLeft("Real", 5)+\
-                Utils.padLeft("Missing", 12)+\
-                Utils.padLeft("Unique", 12)+\
+        string= Utils.padLeft("Type", 4) + Utils.padLeft("Nom", 5) + \
+                Utils.padLeft("Int", 5) + Utils.padLeft("Real", 5) + \
+                Utils.padLeft("Missing", 12) + \
+                Utils.padLeft("Unique", 12) + \
                 Utils.padLeft("Dist", 6)
 
         if self.nominalCounts is not None:
             string=string+' '
             for i in range(len(self.nominalCounts)):
-                string=string+Utils.padLeft("C[" + i + "]", 5)
+                string= string + Utils.padLeft("C[" + i + "]", 5)
         string=string+'\n'
 
         percent = round(100.0 * self.intCount / self.totalCount)
         if self.nominalCounts is not None:
-            string=string+Utils.padLeft("Nom", 4)+' '
-            string=string+Utils.padLeft(str(percent), 3)+"% "
-            string=string+Utils.padLeft(str(0), 3)+"% "
+            string= string + Utils.padLeft("Nom", 4) + ' '
+            string= string + Utils.padLeft(str(percent), 3) + "% "
+            string= string + Utils.padLeft(str(0), 3) + "% "
         else:
-            string=string+Utils.padLeft("Num", 4)+' '
-            string=string+Utils.padLeft(str(0), 3)+"% "
-            string=string+Utils.padLeft(str(percent), 3)+"% "
+            string= string + Utils.padLeft("Num", 4) + ' '
+            string= string + Utils.padLeft(str(0), 3) + "% "
+            string= string + Utils.padLeft(str(percent), 3) + "% "
         percent = round(100.0 * self.realCount / self.totalCount)
-        string=string+Utils.padLeft(str(percent), 3)+"% "
-        string=string+Utils.padLeft(str(self.missingCount), 5)+" /"
+        string= string + Utils.padLeft(str(percent), 3) + "% "
+        string= string + Utils.padLeft(str(self.missingCount), 5) + " /"
         percent =round(100.0 * self.missingCount / self.totalCount)
-        string=string+Utils.padLeft(str(percent), 3)+"% "
-        string=string+Utils.padLeft(str(self.uniqueCount),5)+" /"
+        string= string + Utils.padLeft(str(percent), 3) + "% "
+        string= string + Utils.padLeft(str(self.uniqueCount), 5) + " /"
         percent =round(100.0 * self.uniqueCount / self.totalCount)
-        string=string+Utils.padLeft(str(percent), 3)+"% "
-        string=string+Utils.padLeft(str(self.distinctCount), 5)+' '
+        string= string + Utils.padLeft(str(percent), 3) + "% "
+        string= string + Utils.padLeft(str(self.distinctCount), 5) + ' '
         if self.nominalCounts is not None:
             for i in range(len(self.nominalCounts)):
-                string=string+Utils.padLeft(str(self.nominalCounts[i]), 5)
+                string= string + Utils.padLeft(str(self.nominalCounts[i]), 5)
         string=string+'\n'
         return string

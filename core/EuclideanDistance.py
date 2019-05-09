@@ -1,8 +1,11 @@
-from typing import *
-from Instances import Instances,Instance
-from NormalizableDistance import NormalizableDistance
-from core.neighboursearch.PerformanceStats import PerformanceStats
 import math
+from typing import *
+
+from core.NormalizableDistance import NormalizableDistance
+
+from core.Instances import Instances, Instance
+from core.neighboursearch.PerformanceStats import PerformanceStats
+
 
 class EuclideanDistance(NormalizableDistance):
     def __init__(self,data:Instances=None):

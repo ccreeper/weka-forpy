@@ -1,9 +1,12 @@
 from typing import *
+
+from core.Attributes import Attribute
+from core.Capabilities import CapabilityEnum
+from core.Instances import Instances, Instance
+
+from core.Utils import Utils
 from filters.Filter import Filter
-from Instances import Instances,Instance
-from Capabilities import Capabilities,CapabilityEnum
-from Attributes import Attribute
-from Utils import Utils
+
 
 class NominalToBinary(Filter):
 
@@ -90,13 +93,13 @@ class NominalToBinary(Filter):
                         avgClassValues[j][int(instance.value(j))]+=instance.weight()*instance.weight()
                 sums=sum(avgClassValues[j])
                 totalCounts=sum(counts)
-                if Utils.gr(totalCounts,0):
+                if Utils.gr(totalCounts, 0):
                     for k in range(att.numValues()):
-                        if Utils.gr(counts[k],0):
+                        if Utils.gr(counts[k], 0):
                             avgClassValues[j][k]/=counts[k]
                         else:
                             avgClassValues[j][k]=sums/totalCounts
-                self.m_Indices[j]=Utils.sortDouble(avgClassValues[j])
+                self.m_Indices[j]= Utils.sortDouble(avgClassValues[j])
 
     def convertInstance(self,inst:Instance):
         if self.getInputFormat().classAttribute().isNominal():

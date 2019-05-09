@@ -1,6 +1,7 @@
-from GenericObjectEditor import GenericObjectEditor,GOEPanel
-from TreeNodeButton import TreeNodeButton
-from typing import *
+from gui.common.GenericObjectEditor import GenericObjectEditor, GOEPanel
+
+from gui.TreeNodeButton import TreeNodeButton
+
 
 class PropertyPanel():
     def __init__(self,tab,pe:GenericObjectEditor):

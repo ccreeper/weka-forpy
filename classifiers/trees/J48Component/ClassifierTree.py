@@ -1,11 +1,14 @@
 from typing import *
-from CapabilitiesHandler import CapabilitiesHandler
-from Instances import Instances,Instance
-from classifiers.trees.J48Component.ModelSelection import ModelSelection
+
+from core.CapabilitiesHandler import CapabilitiesHandler
+from core.Drawable import Drawable
+from core.Instances import Instances, Instance
+
 from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
 from classifiers.trees.J48Component.Distribution import Distribution
-from Drawable import Drawable
-from Utils import Utils
+from classifiers.trees.J48Component.ModelSelection import ModelSelection
+from core.Utils import Utils
+
 
 class ClassifierTree(CapabilitiesHandler,Drawable):
     def __init__(self,toSelectLocModel:ModelSelection):
@@ -45,13 +48,13 @@ class ClassifierTree(CapabilitiesHandler,Drawable):
         # self.assignIDs(-1)
         # text+="digraph J48Tree {\n"
         if self.m_isLeaf:
-            text+='"'+ Utils.backQuoteChars(self.m_localModel.dumpLabel(0, self.m_train)) + '"'
+            text+='"' + Utils.backQuoteChars(self.m_localModel.dumpLabel(0, self.m_train)) + '"'
             # if self.m_train is not None and self.m_train.numInstances() > 0:
             #     text+="data =\n" + str(self.m_train) + "\n"
             #     text+=",\n"
             # text+="]\n"
         else:
-            text+='"'+Utils.backQuoteChars(self.m_localModel.leftSide(self.m_train)) + '":'
+            text+='"' + Utils.backQuoteChars(self.m_localModel.leftSide(self.m_train)) + '":'
             # if self.m_train is not None and self.m_train.numInstances() > 0:
             #     text+="data =\n" + str(self.m_train) + "\n"
             #     text+=",\n"
@@ -122,7 +125,7 @@ class ClassifierTree(CapabilitiesHandler,Drawable):
                     localInstances[i]=None
             else:
                 self.m_isLeaf=True
-                if Utils.equal(data.sumOfWeight(),0):
+                if Utils.equal(data.sumOfWeight(), 0):
                     self.m_isEmpty=True
 
         else:
@@ -138,7 +141,7 @@ class ClassifierTree(CapabilitiesHandler,Drawable):
                     localTest[i]=None
             else:
                 self.m_isLeaf=True
-                if Utils.equal(data.sumOfWeight(),0):
+                if Utils.equal(data.sumOfWeight(), 0):
                     self.m_isEmpty=True
 
     def getNewTree(self,data:Instances,test:Instances=None):
@@ -194,15 +197,15 @@ class ClassifierTree(CapabilitiesHandler,Drawable):
         for i in range(len(self.m_sons)):
             if i != 0:
                 text+=","
-            text+='"'+ Utils.backQuoteChars(self.m_localModel.rightSide(i, self.m_train).strip())+'":'
+            text+='"' + Utils.backQuoteChars(self.m_localModel.rightSide(i, self.m_train).strip()) + '":'
             if self.m_sons[i].m_isLeaf:
-                text+='"'+ Utils.backQuoteChars(self.m_localModel.dumpLabel(i, self.m_train)) + '"'
+                text+='"' + Utils.backQuoteChars(self.m_localModel.dumpLabel(i, self.m_train)) + '"'
                 # if self.m_train is not None and self.m_train.numInstances() > 0:
                 #     text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
                 # text+="]\n"
             else:
                 text+='{'
-                text+='"'+ Utils.backQuoteChars(self.m_sons[i].m_localModel.leftSide(self.m_train))+'":'
+                text+='"' + Utils.backQuoteChars(self.m_sons[i].m_localModel.leftSide(self.m_train)) + '":'
                 # if self.m_train is not None and self.m_train.numInstances() > 0:
                 #     text+="data =\n" + str(self.m_sons[i].m_train) + "\n,\n"
                 # text+=']\n'

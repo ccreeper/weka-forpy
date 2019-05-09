@@ -1,7 +1,8 @@
-from typing import *
-from classifiers.trees.J48Component.Distribution import Distribution
-from Utils import Utils
 import math
+
+from classifiers.trees.J48Component.Distribution import Distribution
+from core.Utils import Utils
+
 
 class EntropyBasedSplitCrit():
     def oldEnt(self,bags:Distribution):

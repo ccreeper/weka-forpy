@@ -1,9 +1,9 @@
+from gui.PlotData2D import PlotData2D
+from core.Instances import Instances,Instance
 from typing import *
-from OptionHandler import OptionHandler
-from Instances import Instances,Instance
-from PlotData2D import PlotData2D
 
-class AbstractPlotInstances(OptionHandler):
+
+class AbstractPlotInstances():
     def __init__(self):
         self.initialize()
 
@@ -19,7 +19,7 @@ class AbstractPlotInstances(OptionHandler):
 
     def determineFormat(self):pass
 
-    def setInstances(self,value:Instances):
+    def setInstances(self, value: Instances):
         self.m_Instances=value
 
     def getPlotInstances(self):

@@ -1,7 +1,7 @@
-from typing import *
-from Instances import Instances,Instance
-from classifiers.trees.J48Component.Distribution import Distribution
 from classifiers.trees.J48Component.ClassifierSplitModel import ClassifierSplitModel
+from classifiers.trees.J48Component.Distribution import Distribution
+from core.Instances import Instance,Instances
+
 
 class NoSplit(ClassifierSplitModel):
     def __init__(self,distribution:Distribution):
@@ -9,7 +9,7 @@ class NoSplit(ClassifierSplitModel):
         self.m_distribution=Distribution(distribution)
         self.m_numSubsets=1
 
-    def buildClassifer(self,instances:Instances):
+    def buildClassifer(self, instances: Instances):
         self.m_distribution=Distribution(instances)
         self.m_numSubsets=1
 
@@ -19,8 +19,8 @@ class NoSplit(ClassifierSplitModel):
     def whichSubset(self,instance:Instance):
         return 0
 
-    def leftSide(self,data:Instances):
+    def leftSide(self, data: Instances):
         return ""
 
-    def rightSide(self,index:int,data:Instances):
+    def rightSide(self, index:int, data: Instances):
         return ""

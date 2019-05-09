@@ -1,7 +1,7 @@
-#TODO tomorrow
 
 import importlib
 from typing import *
+
 class PluginManager():
     PLUGINS=dict()  #type:dict[str,dict[str,type]]
     @classmethod

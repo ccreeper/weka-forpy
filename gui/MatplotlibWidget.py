@@ -1,16 +1,18 @@
-import sys
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import *
-import numpy as np
-from typing import *
-from core.Utils import Utils
-from PlotData2D import PlotData2D
-from gui.classifier.Plot2D import Plot2D
-from Instances import Instances,Instance
 import ast
 import math
+from typing import *
+
+import matplotlib.pyplot as plt
+import numpy as np
+from core.Instances import Instances
+from PyQt5.QtWidgets import *
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+
+from core.Utils import Utils
+from gui.PlotData2D import PlotData2D
+from gui.classifier.Plot2D import Plot2D
+
 
 class MyMplCanvas(FigureCanvas):
     m_defaultColors = {
@@ -205,8 +207,8 @@ class MyMplCanvas(FigureCanvas):
         x = np.arange(len(dataSet[0]))
         # 堆积柱状图
         #width=(max-min)/(x-1)
-        Utils.debugOut("colorList:",colorList)
-        Utils.debugOut("barWidth:",barWidth)
+        Utils.debugOut("colorList:", colorList)
+        Utils.debugOut("barWidth:", barWidth)
         sum=[0]*x
         height=[0]*x
         bottom=np.array([0.0]*len(x))
@@ -218,8 +220,8 @@ class MyMplCanvas(FigureCanvas):
         for i in range(len(dataSet)):
             try:
                 colorName=colorList[i]
-                Utils.debugOut("Matplotlib_paintRect_width:",width)
-                Utils.debugOut("Matplotlib_paintRect_colorName:",colorName)
+                Utils.debugOut("Matplotlib_paintRect_width:", width)
+                Utils.debugOut("Matplotlib_paintRect_colorName:", colorName)
                 label=None
                 #图例标签
                 if labels is not None:
@@ -300,7 +302,7 @@ class MyMplCanvas(FigureCanvas):
             precisionXmax=1
         if precisionXmax > 10:
             precisionXmax=1
-        maxStringX=Utils.doubleToString(self.m_maxX,nondecimal+1+precisionXmax,precisionXmax)
+        maxStringX= Utils.doubleToString(self.m_maxX, nondecimal + 1 + precisionXmax, precisionXmax)
 
         whole=int(abs(self.m_minX))
         decimal=abs(self.m_minX)-whole
@@ -315,7 +317,7 @@ class MyMplCanvas(FigureCanvas):
             precisionXmin = 1
         if precisionXmin > 10:
             precisionXmin = 1
-        minStringX=Utils.doubleToString(self.m_minX,nondecimal+1+precisionXmin,precisionXmin)
+        minStringX= Utils.doubleToString(self.m_minX, nondecimal + 1 + precisionXmin, precisionXmin)
 
         whole = int(abs(self.m_maxY))
         decimal = abs(self.m_maxY) - whole
@@ -330,7 +332,7 @@ class MyMplCanvas(FigureCanvas):
             precisionYmax = 1
         if precisionYmax > 10:
             precisionYmax = 1
-        maxStringY=Utils.doubleToString(self.m_maxY,nondecimal+1+precisionYmax,precisionYmax)
+        maxStringY= Utils.doubleToString(self.m_maxY, nondecimal + 1 + precisionYmax, precisionYmax)
 
         whole = int(abs(self.m_minY))
         decimal = abs(self.m_minY) - whole
@@ -345,7 +347,7 @@ class MyMplCanvas(FigureCanvas):
             precisionYmin = 1
         if precisionYmin > 10:
             precisionYmin = 1
-        minStringY=Utils.doubleToString(self.m_minY,nondecimal+1+precisionYmin,precisionYmin)
+        minStringY= Utils.doubleToString(self.m_minY, nondecimal + 1 + precisionYmin, precisionYmin)
 
         if self.m_plotInstances.attribute(self.m_xIndex).isNumeric():
             mid=(self.m_minX+self.m_maxX)/2
@@ -362,7 +364,7 @@ class MyMplCanvas(FigureCanvas):
                 precisionXmid = 1
             if precisionXmid > 10:
                 precisionXmid = 1
-            maxString=Utils.doubleToString(mid,nondecimal+1+precisionXmid,precisionXmid)
+            maxString= Utils.doubleToString(mid, nondecimal + 1 + precisionXmid, precisionXmid)
 
             ticks = [self.m_minX,(self.m_minX+self.m_maxX)/2, self.m_maxX]
             self.axes.set_xticks(ticks)
@@ -467,7 +469,7 @@ class MyMplCanvas(FigureCanvas):
                         if not temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
                             r=(temp_plot.m_plotInstances.instance(i).value(self.m_cIndex)-self.m_minC)/(self.m_maxC-self.m_minC)
                             r=r*240+15
-                            color=Utils.rgb((int(r),150,int(255-r)))
+                            color= Utils.rgb((int(r), 150, int(255 - r)))
                         else:
                             color="#708090"
                         if temp_plot.m_plotInstances.instance(i).isMissing(self.m_cIndex):
@@ -642,9 +644,9 @@ class MatplotlibWidget(QWidget):
         self.layout.addWidget(self.mpl)
 
     def setXLimt(self,left,right,len):
-        Utils.debugOut("Xlimit_left:",left)
-        Utils.debugOut("Xlimit_right:",right)
-        Utils.debugOut("Xlimit_len:",len)
+        Utils.debugOut("Xlimit_left:", left)
+        Utils.debugOut("Xlimit_right:", right)
+        Utils.debugOut("Xlimit_len:", len)
         midX=len/2
         mid=(left+right)/2
         ticks=[-0.5,midX-0.5,len-0.5]

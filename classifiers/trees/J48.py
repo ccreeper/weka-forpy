@@ -1,15 +1,14 @@
+from core.Capabilities import Capabilities, CapabilityEnum
+from core.Instances import Instances, Instance
+
 from classifiers.AbstractClassifier import AbstractClassifier
-from typing import *
-from Instances import Instances,Instance
-from Utils import Utils
-from Capabilities import Capabilities,CapabilityEnum
-from classifiers.trees.J48Component.ClassifierTree import ClassifierTree
 from classifiers.trees.J48Component.BinC45ModelSelection import BinC45ModelSelection
 from classifiers.trees.J48Component.C45ModelSelection import C45ModelSelection
 from classifiers.trees.J48Component.C45PruneableClassifierTree import C45PruneableClassifierTree
+from classifiers.trees.J48Component.ClassifierTree import ClassifierTree
 from classifiers.trees.J48Component.PruneableClassifierTree import PruneableClassifierTree
-from Drawable import Drawable
-import copy
+from core.Drawable import Drawable
+
 
 class J48(AbstractClassifier,Drawable):
     propertyList={"binarySplits":"False","confidenceFactor":"0.25","minNumObj":"2","unpruned":"False"}

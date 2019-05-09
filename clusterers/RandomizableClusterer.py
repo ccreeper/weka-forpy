@@ -1,8 +1,7 @@
-from typing import *
 from clusterers.AbstractClusterer import AbstractClusterer
-from OptionHandler import OptionHandler
 
-class RandomizableClusterer(AbstractClusterer,OptionHandler):
+
+class RandomizableClusterer(AbstractClusterer):
     propertyList = AbstractClusterer.propertyList[:]
     methodList = AbstractClusterer.methodList[:]
     propertyList.append('seed')

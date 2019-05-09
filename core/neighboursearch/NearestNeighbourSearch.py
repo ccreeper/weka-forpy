@@ -1,6 +1,7 @@
-from typing import *
+from core.Instances import Instances, Instance
+
 from core.neighboursearch.PerformanceStats import PerformanceStats
-from Instances import Instances,Instance
+
 
 class NearestNeighbourSearch():
     def __init__(self,insts:Instances=None):

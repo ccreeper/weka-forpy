@@ -1,32 +1,34 @@
 
 # import CallMain
 import time
+from copy import *
 from typing import *
 
+from core.Attributes import Attribute
+from gui.ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
+from core.Drawable import Drawable
+from gui.common.GenericObjectEditor import GenericObjectEditor
+from core.Instances import Instances
+from gui.MatplotlibWidget import MatplotlibWidget
+from gui.PropertyPanel import PropertyPanel
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from copy import *
-from Attributes import Attribute
-from ClassifierErrorsPlotInstances import ClassifierErrorsPlotInstances
-from GenericObjectEditor import GenericObjectEditor,GOEPanel
-from Instances import Instances
-from OptionHandler import OptionHandler
-from PropertyPanel import PropertyPanel
-from ResultHistoryPanel import ResultHistoryPanel
-from SetInstancesPanel import SetInstancesPanel
-from Thread import Thread
-from Utils import Utils
+from PyQt5.QtWidgets import *
+from gui.common.SetInstancesPanel import SetInstancesPanel
+from core.Thread import Thread
+from gui.VisualizePanel import VisualizePanel
+from gui.common.ResultHistoryPanel import ResultHistoryPanel
+
 from classifiers.Classifier import Classifier
 from classifiers.evaluation.Evaluation import Evaluation
 from classifiers.rules.ZeroR import ZeroR
-from VisualizePanel import VisualizePanel
-from MatplotlibWidget import MatplotlibWidget
-from PlotData2D import PlotData2D
-from Drawable import Drawable
+from core.Utils import Utils
+from gui.PlotData2D import PlotData2D
+
 
 class ClassifierPanel(QObject):
     history_add_visualize_signal=pyqtSignal(str,list,str,PlotData2D)
+    error_diglog_signal=pyqtSignal(str)
     def __init__(self,win:'MainWindow'):
         super().__init__()
         self.m_Explorer=win
@@ -50,7 +52,6 @@ class ClassifierPanel(QObject):
         self.m_CEPanel=PropertyPanel(self,self.m_ClassifierEditor)  #type:PropertyPanel
         self.m_CurrentVis=None      #type:VisualizePanel
 
-
         self.m_History.outtext_write_signal.connect(self.updateOutputText)
         self.m_selectedEvalMetrics=Evaluation.getAllEvaluationMetricNames() #type:List[str]
         self.m_TestClassIndex=-1
@@ -73,6 +74,9 @@ class ClassifierPanel(QObject):
         vv.append(self.m_CurrentVis)
         self.m_History.addObject(name, vv)
 
+    def diglogError(self,txt:str):
+        Utils.DiglogWarning(self.m_Explorer,txt)
+
     def initalize(self):
         self.m_selectedEvalMetrics.remove("Coverage")
         self.m_selectedEvalMetrics.remove("Region size")
@@ -92,6 +96,7 @@ class ClassifierPanel(QObject):
         self.m_StartBut.clicked.connect(self.startClassifier)
         self.m_History.menu_expand_signal.connect(self.createMenu)
         self.history_add_visualize_signal.connect(self.addToHistoryVisualize)
+        self.error_diglog_signal.connect(self.diglogError)
 
 
     def setInstances(self,inst:Instances):
@@ -140,179 +145,180 @@ class ClassifierPanel(QObject):
             self.m_RunThread.start()
 
     def threadClassifierRun(self):
-        self.m_CEPanel.addToHistory()
-        inst=Instances(self.m_Instances)
-        trainTimeStart=trainTimeElapsed=testTimeStart=testTimeElapsed=0
-        userTestStructure=None
-        if self.m_SetTestFrame is not None:
-            userTestStructure=deepcopy(self.m_SetTestFrame.getInstances())    #type:Instances
-            userTestStructure.setClassIndex(self.m_TestClassIndex)
+        try:
+            self.m_CEPanel.addToHistory()
+            inst=Instances(self.m_Instances)
+            trainTimeStart=trainTimeElapsed=testTimeStart=testTimeElapsed=0
+            userTestStructure=None
+            if self.m_SetTestFrame is not None:
+                userTestStructure=deepcopy(self.m_SetTestFrame.getInstances())    #type:Instances
+                userTestStructure.setClassIndex(self.m_TestClassIndex)
 
-        #默认outputmodel,output per-class stats,output confusion matrix,store predictions for visualization
-        #outputPredictionsText=None
-        numFolds=10
-        classIndex=self.m_ClassCombo.currentIndex()
-        inst.setClassIndex(classIndex)
-        classifier=self.m_ClassifierEditor.getValue()           #type:Classifier
-        name=time.strftime("%H:%M:%S - ")
-        outPutResult=""
-        evaluation=None     #type:Evaluation
-        grph=None
+            #默认outputmodel,output per-class stats,output confusion matrix,store predictions for visualization
+            #outputPredictionsText=None
+            numFolds=10
+            classIndex=self.m_ClassCombo.currentIndex()
+            inst.setClassIndex(classIndex)
+            classifier=self.m_ClassifierEditor.getValue()           #type:Classifier
+            name=time.strftime("%H:%M:%S - ")
+            outPutResult=""
+            evaluation=None     #type:Evaluation
+            grph=None
 
-        if self.m_CVBut.isChecked():
-            testMode=1
-            numFolds=int(self.m_CVText.text())
-            if numFolds<=1:
-                raise Exception("Number of folds must be greater than 1")
-        elif self.m_TrainBut.isChecked():
-            testMode=2
-        elif self.m_TestSplitBut.isChecked():
-            testMode=3
-            # if source is None:
-            #     raise Exception("No user test set has been specified")
-            if not inst.equalHeaders(userTestStructure):
-                QMessageBox.critical(self.m_Explorer, "错误", "测试数据集属性不同")
-        else:
-            raise Exception("Unknown test mode")
-        cname=classifier.__module__
-        if cname.startswith("classifiers."):
-            name+=cname[len("classifiers."):]
-        else:
-            name+=cname
-        cmd = classifier.__module__
-        # if isinstance(classifier,OptionHandler):
-        #     cmd+=" "+Utils.joinOptions(classifier.getOptions())
-        plotInstances=ClassifierErrorsPlotInstances()
-        plotInstances.setInstances(userTestStructure if testMode == 4 else inst)
-        plotInstances.setClassifier(classifier)
-        plotInstances.setClassIndex(inst.classIndex())
-        plotInstances.setPointSizeProportionalToMargin(False)
-        outPutResult+="=== Run information ===\n\n"
-        outPutResult+="Scheme:       " + cname
+            if self.m_CVBut.isChecked():
+                testMode=1
+                numFolds=int(self.m_CVText.text())
+                if numFolds<=1:
+                    raise Exception("Number of folds must be greater than 1")
+            elif self.m_TrainBut.isChecked():
+                testMode=2
+            elif self.m_TestSplitBut.isChecked():
+                testMode=3
+                # if source is None:
+                #     raise Exception("No user test set has been specified")
+                if not inst.equalHeaders(userTestStructure):
+                    QMessageBox.critical(self.m_Explorer, "错误", "测试数据集属性不同")
+            else:
+                raise Exception("Unknown test mode")
+            cname=classifier.__module__
+            if cname.startswith("classifiers."):
+                name+=cname[len("classifiers."):]
+            else:
+                name+=cname
+            cmd = classifier.__module__
+            # if isinstance(classifier,OptionHandler):
+            #     cmd+=" "+Utils.joinOptions(classifier.getOptions())
+            plotInstances=ClassifierErrorsPlotInstances()
+            plotInstances.setInstances(userTestStructure if testMode == 4 else inst)
+            plotInstances.setClassifier(classifier)
+            plotInstances.setClassIndex(inst.classIndex())
+            plotInstances.setPointSizeProportionalToMargin(False)
+            outPutResult+="=== Run information ===\n\n"
+            outPutResult+="Scheme:       " + cname
 
-        # if isinstance(classifier,OptionHandler):
-        #     o=classifier.getOptions()
-        #     outPutResult+=" "+Utils.joinOptions(o)
-        outPutResult+="\n"
-        outPutResult+="Relation:     " + inst.relationName() + '\n'
-        outPutResult+="Instances:    " + str(inst.numInstances()) + '\n'
-        outPutResult+="Attributes:   " + str(inst.numAttributes()) + '\n'
-        if inst.numAttributes()<100:
-            for i in range(inst.numAttributes()):
-                outPutResult+="              " + inst.attribute(i).name()+ '\n'
-        else:
-            outPutResult+="              [list of attributes omitted]\n"
-        outPutResult+="Test mode:    "
-        if testMode == 1:
-            outPutResult+=str(numFolds) + "-fold cross-validation\n"
-        elif testMode == 2:
-            outPutResult+="evaluate on training data\n"
-        elif testMode == 3:
-            outPutResult+="user supplied test set: "+ str(userTestStructure.numInstances()) + " instances\n"
-        outPutResult+="\n"
-        self.m_History.addResult(name,outPutResult)
-        self.m_History.setSingle(name)
+            # if isinstance(classifier,OptionHandler):
+            #     o=classifier.getOptions()
+            #     outPutResult+=" "+Utils.joinOptions(o)
+            outPutResult+="\n"
+            outPutResult+="Relation:     " + inst.relationName() + '\n'
+            outPutResult+="Instances:    " + str(inst.numInstances()) + '\n'
+            outPutResult+="Attributes:   " + str(inst.numAttributes()) + '\n'
+            if inst.numAttributes()<100:
+                for i in range(inst.numAttributes()):
+                    outPutResult+="              " + inst.attribute(i).name()+ '\n'
+            else:
+                outPutResult+="              [list of attributes omitted]\n"
+            outPutResult+="Test mode:    "
+            if testMode == 1:
+                outPutResult+=str(numFolds) + "-fold cross-validation\n"
+            elif testMode == 2:
+                outPutResult+="evaluate on training data\n"
+            elif testMode == 3:
+                outPutResult+="user supplied test set: "+ str(userTestStructure.numInstances()) + " instances\n"
+            outPutResult+="\n"
+            self.m_History.addResult(name,outPutResult)
+            self.m_History.setSingle(name)
 
-        if testMode == 2  or testMode == 3:
-            trainTimeStart=time.time()
-            classifier.buildClassifier(inst)
-            trainTimeElapsed=time.time()-trainTimeStart
-        outPutResult+="=== Classifier model (full training set) ===\n\n"
-        outPutResult+=str(classifier)+"\n"
-        outPutResult+="\nTime taken to build model: "+ Utils.doubleToString(trainTimeElapsed,2)+ " seconds\n\n"
-        self.m_History.updateResult(name,outPutResult)
-        if isinstance(classifier,Drawable):
-            grph=classifier.graph()
+            if testMode == 2  or testMode == 3:
+                trainTimeStart=time.time()
+                classifier.buildClassifier(inst)
+                trainTimeElapsed=time.time()-trainTimeStart
+            outPutResult+="=== Classifier model (full training set) ===\n\n"
+            outPutResult+=str(classifier)+"\n"
+            outPutResult+="\nTime taken to build model: " + Utils.doubleToString(trainTimeElapsed, 2) + " seconds\n\n"
+            self.m_History.updateResult(name,outPutResult)
+            if isinstance(classifier,Drawable):
+                grph=classifier.graph()
 
-        print("==========update Compelte=================")
+            print("==========update Compelte=================")
 
-        if testMode == 2:
-            evaluation=Evaluation(inst)
-            evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
-            evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
-            plotInstances.setUp()
-            testTimeStart=time.time()
-            #TODO
-            # if isinstance(classifier,BatchPredictor)
-            # else:
-            for jj in range(inst.numInstances()):
-                plotInstances.process(inst.instance(jj),classifier,evaluation)
-            testTimeElapsed=time.time()-testTimeStart
-            outPutResult+="=== Evaluation on training set ===\n"
-        elif testMode == 1:
-            rnd=1
-            inst.randomize(rnd)
-            if inst.attribute(classIndex).isNominal():
-                inst.stratify(numFolds)
-            evaluation=Evaluation(inst)
-            evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
-            evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
-            plotInstances.setUp()
-            for fold in range(numFolds):
-                train=inst.trainCV(numFolds,fold,rnd)
-                evaluation=self.setupEval(evaluation,classifier,train,plotInstances,True)
+            if testMode == 2:
+                evaluation=Evaluation(inst)
+                evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
                 evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
-                current=deepcopy(classifier)
-                current.buildClassifier(train)
-                test=inst.testCV(numFolds,fold)
-                # TODO
+                plotInstances.setUp()
+                testTimeStart=time.time()
+                #TODO
                 # if isinstance(classifier,BatchPredictor)
                 # else:
-                for jj in range(test.numInstances()):
-                    plotInstances.process(test.instance(jj),current,evaluation)
-            if inst.attribute(classIndex).isNominal():
-                outPutResult+="=== Stratified cross-validation ===\n"
-            else:
-                outPutResult+="=== Cross-validation ===\n"
-        elif testMode == 3:
-            evaluation=Evaluation(inst)
-            evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
-
-            plotInstances.setInstances(userTestStructure)
-            evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
-            plotInstances.setUp()
-            # TODO
-            # if isinstance(classifier,BatchPredictor)
-            testTimeStart=time.time()
-            for i in range(userTestStructure.numInstances()):
-                instance=userTestStructure.instance(i)
-                # if isinstance(classifier,BatchPredictor)
-                #else
-                plotInstances.process(instance,classifier,evaluation)
-            # if isinstance(classifier,BatchPredictor)
-            testTimeElapsed=time.time()-testTimeStart
-            outPutResult+="=== Evaluation on test set ===\n"
-        if testMode != 1:
-            mode=""
-            if testMode == 2:
-                mode="training data"
+                for jj in range(inst.numInstances()):
+                    plotInstances.process(inst.instance(jj),classifier,evaluation)
+                testTimeElapsed=time.time()-testTimeStart
+                outPutResult+="=== Evaluation on training set ===\n"
+            elif testMode == 1:
+                rnd=1
+                inst.randomize(rnd)
+                if inst.attribute(classIndex).isNominal():
+                    inst.stratify(numFolds)
+                evaluation=Evaluation(inst)
+                evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
+                evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
+                plotInstances.setUp()
+                for fold in range(numFolds):
+                    train=inst.trainCV(numFolds,fold,rnd)
+                    evaluation=self.setupEval(evaluation,classifier,train,plotInstances,True)
+                    evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
+                    current=deepcopy(classifier)
+                    current.buildClassifier(train)
+                    test=inst.testCV(numFolds,fold)
+                    # TODO
+                    # if isinstance(classifier,BatchPredictor)
+                    # else:
+                    for jj in range(test.numInstances()):
+                        plotInstances.process(test.instance(jj),current,evaluation)
+                if inst.attribute(classIndex).isNominal():
+                    outPutResult+="=== Stratified cross-validation ===\n"
+                else:
+                    outPutResult+="=== Cross-validation ===\n"
             elif testMode == 3:
-                mode="supplied test set"
-            outPutResult+="\nTime taken to test model on " + mode + ": "+ Utils.doubleToString(testTimeElapsed, 2)+ " seconds\n\n"
-        outPutResult+=evaluation.toSummaryString(False)+'\n'
-        self.m_History.updateResult(name,outPutResult)
-        if inst.attribute(classIndex).isNominal():
-            outPutResult+=evaluation.toClassDetailsString()+'\n'
-            outPutResult+=evaluation.toMatrixString()+'\n'
-        self.m_History.updateResult(name,outPutResult)
-        Utils.debugOut(outPutResult)
+                evaluation=Evaluation(inst)
+                evaluation=self.setupEval(evaluation,classifier,inst,plotInstances,False)
 
-        if(plotInstances is not None and plotInstances.canPlot(False)):
-            visName=name+" ("+inst.relationName()+")"
-            pl2d=plotInstances.getPlotData(cname)
-            plotInstances.cleanUp()
-            vv=[]
-            trainHeader=Instances(self.m_Instances,0)
-            trainHeader.setClassIndex(classIndex)
-            vv.append(trainHeader)
-            if grph is not None:
-                vv.append(grph)
-            if evaluation is not None and evaluation.predictions() is not None:
-                vv.append(evaluation.predictions())
-                vv.append(inst.classAttribute())
-            self.history_add_visualize_signal.emit(name,vv,visName,pl2d)
+                plotInstances.setInstances(userTestStructure)
+                evaluation.setMetricsToDisplay(self.m_selectedEvalMetrics)
+                plotInstances.setUp()
+                # TODO
+                # if isinstance(classifier,BatchPredictor)
+                testTimeStart=time.time()
+                for i in range(userTestStructure.numInstances()):
+                    instance=userTestStructure.instance(i)
+                    # if isinstance(classifier,BatchPredictor)
+                    #else
+                    plotInstances.process(instance,classifier,evaluation)
+                # if isinstance(classifier,BatchPredictor)
+                testTimeElapsed=time.time()-testTimeStart
+                outPutResult+="=== Evaluation on test set ===\n"
+            if testMode != 1:
+                mode=""
+                if testMode == 2:
+                    mode="training data"
+                elif testMode == 3:
+                    mode="supplied test set"
+                outPutResult+="\nTime taken to test model on " + mode + ": " + Utils.doubleToString(testTimeElapsed, 2) + " seconds\n\n"
+            outPutResult+=evaluation.toSummaryString(False)+'\n'
+            self.m_History.updateResult(name,outPutResult)
+            if inst.attribute(classIndex).isNominal():
+                outPutResult+=evaluation.toClassDetailsString()+'\n'
+                outPutResult+=evaluation.toMatrixString()+'\n'
+            self.m_History.updateResult(name,outPutResult)
+            Utils.debugOut(outPutResult)
 
-
+            if(plotInstances is not None and plotInstances.canPlot(False)):
+                visName=name+" ("+inst.relationName()+")"
+                pl2d=plotInstances.getPlotData(cname)
+                plotInstances.cleanUp()
+                vv=[]
+                trainHeader=Instances(self.m_Instances,0)
+                trainHeader.setClassIndex(classIndex)
+                vv.append(trainHeader)
+                if grph is not None:
+                    vv.append(grph)
+                if evaluation is not None and evaluation.predictions() is not None:
+                    vv.append(evaluation.predictions())
+                    vv.append(inst.classAttribute())
+                self.history_add_visualize_signal.emit(name,vv,visName,pl2d)
+        except Exception as e:
+            self.error_diglog_signal.emit(str(e))
         self.mutex.lock()
         self.m_StartBut.setEnabled(True)
         self.m_StopBut.setEnabled(False)

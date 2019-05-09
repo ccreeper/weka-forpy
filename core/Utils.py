@@ -1,9 +1,11 @@
+import importlib
 import math
 from functools import partial
 from typing import *
-from Statistics import Statistics
+
 from PyQt5.QtWidgets import *
-import importlib
+
+from core.Statistics import Statistics
 
 
 #TODO  整合
@@ -134,7 +136,7 @@ class Utils():
             return base+e*(cls.addErrs(N,1,CF)-base)
         if e+0.5 >= N:
             return max(N-e,0)
-        z=Statistics.normalInverse(1-CF)
+        z= Statistics.normalInverse(1 - CF)
         f=(e+0.5)/N
         r=(f+(z*z)/(2*N)+z*math.sqrt(f/N-f*f/N+z*z/(4*N*N)))/(1+z*z/N)
         return r*N-e

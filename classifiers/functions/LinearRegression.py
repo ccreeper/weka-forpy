@@ -1,15 +1,18 @@
-from typing import *
-from classifiers.AbstractClassifier import AbstractClassifier
-from Instances import Instances,Instance
-from filters.Filter import Filter
-from filters.attribute.ReplaceMissingValues import ReplaceMissingValues
-from filters.attribute.NominalToBinary import NominalToBinary
-import classifiers.evaluation.RegressionAnalysis as RegressionAnalysis
-from Tag import Tag
-from Capabilities import Capabilities,CapabilityEnum
-from Utils import Utils
 import math
+from typing import *
+
 import numpy as np
+from core.Capabilities import CapabilityEnum
+from core.Instances import Instances, Instance
+from core.Tag import Tag
+
+import classifiers.evaluation.RegressionAnalysis as RegressionAnalysis
+from classifiers.AbstractClassifier import AbstractClassifier
+from core.Utils import Utils
+from filters.Filter import Filter
+from filters.attribute.NominalToBinary import NominalToBinary
+from filters.attribute.ReplaceMissingValues import ReplaceMissingValues
+
 
 class LinearRegression(AbstractClassifier):
     SELECTION_M5=0      #default
@@ -65,10 +68,10 @@ class LinearRegression(AbstractClassifier):
                     text+=" +\n"
                 else:
                     first=False
-                text+=Utils.doubleToString(self.m_Coefficients[column],12,self.numDecimalPlaces)+" * "
+                text+= Utils.doubleToString(self.m_Coefficients[column], 12, self.numDecimalPlaces) + " * "
                 text+=self.m_TransformedData.attribute(i).name()
                 column+=1
-        text+=" +\n"+ Utils.doubleToString(self.m_Coefficients[column], 12, self.numDecimalPlaces)
+        text+=" +\n" + Utils.doubleToString(self.m_Coefficients[column], 12, self.numDecimalPlaces)
         if self.outputAdditionalStats:
             maxAttLength=0
             for i in range(self.m_TransformedData.numAttributes()):
@@ -78,24 +81,24 @@ class LinearRegression(AbstractClassifier):
             maxAttLength+=3
             if maxAttLength < len("Variable")+3:
                 maxAttLength=len("Variable")+3
-            text+="\n\nRegression Analysis:\n\n"\
+            text+="\n\nRegression Analysis:\n\n" \
                   + Utils.padRight("Variable", maxAttLength)\
                   + "  Coefficient     SE of Coef        t-Stat"
             column=0
             for i in range(self.m_TransformedData.numAttributes()):
                 if i != self.m_ClassIndex and self.m_SelectedAttributes[i]:
                     text+="\n" + Utils.padRight(self.m_TransformedData.attribute(i).name(), maxAttLength)
-                    text+=Utils.doubleToString(self.m_Coefficients[column],12,self.numDecimalPlaces)
-                    text+="   "+ Utils.doubleToString(self.m_StdErrorOfCoef[column], 12,self.numDecimalPlaces)
-                    text+="   "+ Utils.doubleToString(self.m_TStats[column], 12, self.numDecimalPlaces)
+                    text+= Utils.doubleToString(self.m_Coefficients[column], 12, self.numDecimalPlaces)
+                    text+="   " + Utils.doubleToString(self.m_StdErrorOfCoef[column], 12, self.numDecimalPlaces)
+                    text+="   " + Utils.doubleToString(self.m_TStats[column], 12, self.numDecimalPlaces)
                     column+=1
-            text+=Utils.padRight("\nconst", maxAttLength + 1)+ Utils.doubleToString(self.m_Coefficients[column], 12, self.numDecimalPlaces)
-            text+="   "+ Utils.doubleToString(self.m_StdErrorOfCoef[column], 12,self.numDecimalPlaces)
-            text+="   "+ Utils.doubleToString(self.m_TStats[column], 12, self.numDecimalPlaces)
+            text+= Utils.padRight("\nconst", maxAttLength + 1) + Utils.doubleToString(self.m_Coefficients[column], 12, self.numDecimalPlaces)
+            text+="   " + Utils.doubleToString(self.m_StdErrorOfCoef[column], 12, self.numDecimalPlaces)
+            text+="   " + Utils.doubleToString(self.m_TStats[column], 12, self.numDecimalPlaces)
             text+="\n\nDegrees of freedom = " + str(self.m_df)
-            text+="\nR^2 value = "+ Utils.doubleToString(self.m_RSquared, self.numDecimalPlaces)
-            text+="\nAdjusted R^2 = "+ Utils.doubleToString(self.m_RSquaredAdj, 5)
-            text+="\nF-statistic = "+ Utils.doubleToString(self.m_FStat, self.numDecimalPlaces)
+            text+="\nR^2 value = " + Utils.doubleToString(self.m_RSquared, self.numDecimalPlaces)
+            text+="\nAdjusted R^2 = " + Utils.doubleToString(self.m_RSquaredAdj, 5)
+            text+="\nF-statistic = " + Utils.doubleToString(self.m_FStat, self.numDecimalPlaces)
         return text
 
 

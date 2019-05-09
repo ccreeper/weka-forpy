@@ -1,9 +1,9 @@
-from typing import *
+from core.Instances import Instances, Instance
+
+from core.EuclideanDistance import EuclideanDistance
+from core.neighboursearch.MyHeap import MyHeap
 from core.neighboursearch.NearestNeighbourSearch import NearestNeighbourSearch
-from Instances import Instances,Instance
-from EuclideanDistance import EuclideanDistance
-from core.neighboursearch.MyHeap import MyHeap,MyHeapElement
-from Utils import Utils
+
 
 class LinearNNSearch(NearestNeighbourSearch):
     def __init__(self,insts:Instances=None):

@@ -1,7 +1,10 @@
-from Tag import Tag
 from typing import *
+
+from core.Tag import Tag
+
+
 class SelectedTag():
-    def __init__(self,tagID:int,tags:List[Tag]):
+    def __init__(self, tagID:int, tags:List[Tag]):
         ID=set()
         IDStr=set()
         for i in range(len(tags)):
@@ -20,7 +23,7 @@ class SelectedTag():
     def __str__(self):
         return str(self.getSelectedTag())
 
-    def getSelectedTag(self)->Tag:
+    def getSelectedTag(self)-> Tag:
         return self.m_Tags[self.m_Selected]
 
     def getTags(self):

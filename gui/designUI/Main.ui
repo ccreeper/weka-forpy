@@ -1329,22 +1329,20 @@
   <customwidget>
    <class>MatplotlibWidget</class>
    <extends>QWidget</extends>
-   <header>MatplotlibWidget</header>
+   <header>gui.MatplotlibWidget</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>TreeNodeButton</class>
    <extends>QPushButton</extends>
-   <header>TreeNodeButton</header>
+   <header>gui.TreeNodeButton</header>
   </customwidget>
   <customwidget>
    <class>ResultHistoryPanel</class>
    <extends>QListWidget</extends>
-   <header location="global">ResultHistoryPanel</header>
+   <header location="global">gui.common.ResultHistoryPanel</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../resources/apprcc.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

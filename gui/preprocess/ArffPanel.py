@@ -2,16 +2,16 @@ import pickle
 import tempfile
 from typing import *
 
+from core.Attributes import Attribute
+from core.Instances import Instances, Instance
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from gui.common.SelectListDialog import SelectListDialog
 
-from Attributes import Attribute
-from Instances import Instances, Instance
-from SelectListDialog import SelectListDialog
-from TableWidget import TableWidget
-from Utils import Utils
+from core.Utils import Utils
 from gui.InsertInstanceDialog import InserInstanceDialog
+from gui.TableWidget import TableWidget
 
 
 class ArffPanel(QObject):
@@ -106,6 +106,7 @@ class ArffPanel(QObject):
         if not self.m_Pass:
             row=item.row()
             column=item.column()
+            print("row",row,"column",column)
             if item.text() == "":
                 val=None
                 self.m_Pass=True
@@ -114,7 +115,7 @@ class ArffPanel(QObject):
             elif self.model.getInstance().attribute(column-1).isNumeric():
                 val=float(item.text())
             else:
-                val=self.model.getInstance().attribute(column-1).value(self.model.getInstance().instance(row).value(column-1))
+                val=item.text()
             self.model.setValueAt(val,[row],column)
             print("A=================")
             print("val:",val)
@@ -205,7 +206,7 @@ class ArffPanel(QObject):
     #表格菜单
     def generateMenu(self,pos):
         self.m_Table.setMenuClickNow(True)
-        Utils.debugOut("currentSelectedRow:",self.m_Table.getSelectedRow())
+        Utils.debugOut("currentSelectedRow:", self.m_Table.getSelectedRow())
         self.setMenu()
         action=self.tableMenu.exec_(self.m_Table.cursor().pos())
         if action == self.searchMenuItem:
@@ -226,7 +227,7 @@ class ArffPanel(QObject):
     def generateHeaderMenu(self,pos):
         self.m_Table.setMenuClickNow(True)
         self.m_CurrentCol=self.m_Table.horizontalHeader().logicalIndexAt(pos)
-        Utils.debugOut("header menu item index:",self.m_Table.horizontalHeader().logicalIndexAt(pos))
+        Utils.debugOut("header menu item index:", self.m_Table.horizontalHeader().logicalIndexAt(pos))
         self.setMenu()
         action=self.headerMenu.exec_(self.m_Table.cursor().pos())
         if action == self.setAllValuesToMenuItem:
@@ -266,10 +267,10 @@ class ArffPanel(QObject):
         if self.m_CurrentCombobox is not None and self.m_CurrentCombobox.row() == row:
             self.m_CurrentCombobox=None
         self.m_Table.removeRow(row)
-        Utils.debugOut("delete position:",row)
-        Utils.debugOut("delete after table rowCount:",self.m_Table.rowCount())
+        Utils.debugOut("delete position:", row)
+        Utils.debugOut("delete after table rowCount:", self.m_Table.rowCount())
         self.adjustRowNo(row)
-        Utils.debugOut("delete after current instance count:",self.model.getInstance().numInstances())
+        Utils.debugOut("delete after current instance count:", self.model.getInstance().numInstances())
         self.m_Pass=False
 
 
@@ -291,18 +292,22 @@ class ArffPanel(QObject):
 
     #插入新的实例
     def addInstance(self):
+        self.m_Pass=True
         index=self.m_Table.getSelectedRow()
         if index is None:
             index=self.model.getInstance().numInstances()
         self.model.insertInstance(index)
+        self.m_Pass=False
 
     #插入实例后回调函数
     def insertInstanceEvent(self,inst:Instances,row:int):
+        self.m_Pass=True
         self.m_Table.insertRow(row)
         self.m_Table.setItem(row,0,QTableWidgetItem(str(row+1)))
         self.m_Table.setRawItem(inst,row)
         self.adjustRowNo(row)
-        Utils.debugOut("insert after current instance count:",self.model.getInstance().numInstances())
+        Utils.debugOut("insert after current instance count:", self.model.getInstance().numInstances())
+        self.m_Pass=False
 
     #对实例数量产生影响时调用调整行数
     def adjustRowNo(self,begin:int,end:int=-1):
@@ -513,10 +518,10 @@ class ArffModel(QObject):
             temp.seek(0)
             self.m_UndoList.append(temp)
             self.state_changed_signal.emit()
-        Utils.debugOut("Now undo list len:",len(self.m_UndoList))
+        Utils.debugOut("Now undo list len:", len(self.m_UndoList))
 
     def insertInstance(self,index:int):
-        Utils.debugOut("insert instance position:",index)
+        Utils.debugOut("insert instance position:", index)
         self.dialog=InserInstanceDialog()
         self.dialog.setAttributes(self.m_Data,index)
         self.dialog.submit_signal.connect(self.submitEvent)
@@ -537,7 +542,7 @@ class ArffModel(QObject):
             att=inst.attribute(index)
 
             if value is None:
-                inst.setValue(index,Utils.missingValue())
+                inst.setValue(index, Utils.missingValue())
             else:
                 if type == Attribute.NUMERIC:
                     inst.setValue(index,float(value))
@@ -610,7 +615,7 @@ class ArffModel(QObject):
 
     def deleteAttributes(self,indexList:List):
         self.addUndoPoint()
-        Utils.debugOut('will delete attributes index:',indexList)
+        Utils.debugOut('will delete attributes index:', indexList)
         for i in indexList:
             self.m_Data.deleteAttributeAt(i-1)
         self.delete_attribute_signal[list].emit(indexList)

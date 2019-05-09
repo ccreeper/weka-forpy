@@ -1,14 +1,15 @@
-from typing import *
-from Instances import Instances,Instance
-from clusterers.Clusterer import Clusterer
-from clusterers.SimpleKMeans import SimpleKMeans
-from clusterers.DensityBasedClusterer import DensityBasedClusterer
-from Attributes import Attribute
-from filters.attribute.Remove import Remove
-from filters.Filter import Filter
-from Utils import Utils
 import copy
 import math
+from typing import *
+
+from core.Instances import Instances
+
+from clusterers.Clusterer import Clusterer
+from clusterers.SimpleKMeans import SimpleKMeans
+from core.Utils import Utils
+from filters.Filter import Filter
+from filters.attribute.Remove import Remove
+
 
 class ClusterEvaluation():
     def __init__(self):
@@ -76,11 +77,11 @@ class ClusterEvaluation():
         clustFieldWidth=int((math.log(cc)/math.log(10))+1)
         for i in range(cc):
             if instanceStats[i]>0:
-                self.m_clusteringResult+=Utils.doubleToString(i,clustFieldWidth,0)\
-                                        +"      "\
-                                        +Utils.doubleToString(instanceStats[i],numInstFieldWidth,0)\
-                                        +"("+Utils.doubleToString((instanceStats[i]/sumNum*100),3,0)\
-                                        +"%)\n"
+                self.m_clusteringResult+= Utils.doubleToString(i, clustFieldWidth, 0) \
+                                          +"      " \
+                                          + Utils.doubleToString(instanceStats[i], numInstFieldWidth, 0) \
+                                          +"(" + Utils.doubleToString((instanceStats[i] / sumNum * 100), 3, 0) \
+                                          +"%)\n"
         if unclusteredInstances > 0:
             self.m_clusteringResult+="\nUnclustered instances : "+str(unclusteredInstances)
         if hasClass:
@@ -116,7 +117,7 @@ class ClusterEvaluation():
         Cwidth=1+int(math.log(self.m_numClusters)/math.log(10))
         for i in range(self.m_numClusters):
             if clusterTotals[i] > 0 :
-                self.m_clusteringResult+="Cluster "+ Utils.doubleToString(i, Cwidth, 0)
+                self.m_clusteringResult+="Cluster " + Utils.doubleToString(i, Cwidth, 0)
                 self.m_clusteringResult+=" <-- "
                 if best[i] < 0:
                     self.m_clusteringResult+="No class\n"
@@ -124,8 +125,8 @@ class ClusterEvaluation():
                     self.m_clusteringResult+=inst.classAttribute().value(int(best[i]))+'\n'
         self.m_clusteringResult+="\nIncorrectly clustered instances :\t"\
                                   + str(best[self.m_numClusters])\
-                                  + "\t"\
-                                  + Utils.doubleToString((best[self.m_numClusters] / numInstances * 100.0), 8,4) \
+                                  + "\t" \
+                                 + Utils.doubleToString((best[self.m_numClusters] / numInstances * 100.0), 8, 4) \
                                   + " %\n"
         self.m_classToCluster=[]
         for i in range(self.m_numClusters):
@@ -142,12 +143,12 @@ class ClusterEvaluation():
         ms+='\n'
         for i in range(self.m_numClusters):
             if clusterTotals[i]>0:
-                ms+=" "+Utils.doubleToString(i,Cwidth,0)
+                ms+=" " + Utils.doubleToString(i, Cwidth, 0)
         ms+="  <-- assigned to cluster\n"
         for i in range(len(counts[0])):
             for j in range(self.m_numClusters):
                 if clusterTotals[j]>0:
-                    ms+=" "+Utils.doubleToString(counts[j][i],Cwidth,0)
+                    ms+=" " + Utils.doubleToString(counts[j][i], Cwidth, 0)
             ms+=" | "+inst.classAttribute().value(i)+"\n"
         return ms
 

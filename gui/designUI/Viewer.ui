@@ -144,7 +144,7 @@
   <customwidget>
    <class>TableWidget</class>
    <extends>QTableWidget</extends>
-   <header>TableWidget</header>
+   <header>gui.TableWidget</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,12 +1,13 @@
 from typing import *
-from Instances import Instances,Instance
-from gui.classifier.Plot2D import Plot2D
-from filters.attribute.Add import Add
+
+from core.Instances import Instances
 from filters.Filter import Filter
-import math
+from filters.attribute.Add import Add
+from gui.classifier.Plot2D import Plot2D
+
 
 class PlotData2D():
-    def __init__(self,insts:Instances):
+    def __init__(self, insts: Instances):
         self.m_maxX=self.m_minX=self.m_maxY=self.m_minY=self.m_maxC=self.m_minC=0
         self.m_plotName="new plot"
         self.m_plotInstances=insts
@@ -131,5 +132,5 @@ class PlotData2D():
     def getCindex(self):
         return self.m_cIndex
 
-    def getPlotInstances(self)->Instances:
+    def getPlotInstances(self)-> Instances:
         return Instances(self.m_plotInstances)

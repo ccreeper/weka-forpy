@@ -1,8 +1,10 @@
-from typing import *
-from Instances import Instances,Instance
-from Attributes import Attribute
-import numpy as np
 import math
+from typing import *
+
+import numpy as np
+
+from core.Instances import Instances
+
 
 def calculateRSquared(data:Instances,ssr:float):
     yMean=data.meanOrMode(data.classIndex())

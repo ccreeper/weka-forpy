@@ -1,13 +1,16 @@
+import math
 from typing import *
+
+from core.Attributes import Attribute
+from core.Capabilities import CapabilityEnum
+from core.Instances import Instances, Instance
+from core.Tag import Tag
+
 from classifiers.AbstractClassifier import AbstractClassifier
 from classifiers.rules.ZeroR import ZeroR
-from Attributes import Attribute
-from Capabilities import Capabilities,CapabilityEnum
-from Instances import Instances,Instance
-from Utils import Utils
+from core.Utils import Utils
 from core.neighboursearch.LinearNNSearch import LinearNNSearch
-from Tag import Tag
-import math
+
 
 #默认距离权重为0，不使用交叉验证
 class KNN(AbstractClassifier):
@@ -154,5 +157,5 @@ class KNN(AbstractClassifier):
                 distribution[0]+=current.classValue()*weight
             total+=weight
         if total > 0:
-            Utils.normalize(distribution,total)
+            Utils.normalize(distribution, total)
         return distribution

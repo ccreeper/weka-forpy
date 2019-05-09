@@ -1,10 +1,13 @@
-from classifiers.Classifier import Classifier
-from core.CapabilitiesHandler import CapabilitiesHandler
-from Capabilities import Capabilities,CapabilityEnum
-from Attributes import Attribute
-from Instances import Instances,Instance
-from Utils import Utils
 from typing import *
+
+from core.Attributes import Attribute
+from core.Capabilities import Capabilities
+from core.Instances import Instance
+
+from classifiers.Classifier import Classifier
+from core.Utils import Utils
+from core.CapabilitiesHandler import CapabilitiesHandler
+
 
 class AbstractClassifier(Classifier,CapabilitiesHandler):
     NUM_DECIMAL_PLACES_DEFAULT=2

@@ -1,9 +1,11 @@
-from TestInstance import Ui_Form
-from PyQt5.QtWidgets import *
-from Instances import Instances,Instance
-from Attributes import Attribute
-from PyQt5.QtCore import *
 import arff
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
+from core.Attributes import Attribute
+from core.Instances import Instances
+from gui.designUI.TestInstance import Ui_Form
+
 
 class SetInstancesPanel(QWidget,Ui_Form):
     NO_CLASS="No class"
