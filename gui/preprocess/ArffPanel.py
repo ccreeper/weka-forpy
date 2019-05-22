@@ -107,17 +107,8 @@ class ArffPanel(QObject):
             row=item.row()
             column=item.column()
             print("row",row,"column",column)
-            if item.text() == "":
-                val=None
-                self.m_Pass=True
-                item.setBackground(QBrush(QColor(232, 232, 232)))
-                self.m_Pass=False
-            elif self.model.getInstance().attribute(column-1).isNumeric():
-                val=float(item.text())
-            else:
-                val=item.text()
+            val=item.text()
             self.model.setValueAt(val,[row],column)
-            print("A=================")
             print("val:",val)
 
     def getInstance(self):
@@ -194,12 +185,8 @@ class ArffPanel(QObject):
         else:
             val=text
         self.m_Table.removeCellWidget(self.m_CurrentCombobox.row(), self.m_CurrentCombobox.column())
-        item=self.m_Table.item(self.m_CurrentCombobox.row(),self.m_CurrentCombobox.column())
-        item.setText(text)
         if text == "":
-            item.setBackground(QBrush(QColor(232, 232, 232)))
-        elif text == self.m_LastSearch:
-            item.setBackground(QBrush(Qt.red))
+            val=None
         self.model.setValueAt(val,[self.m_CurrentCombobox.row()],self.m_CurrentCombobox.column())
         self.m_CurrentCombobox = None
 
@@ -361,6 +348,7 @@ class ArffPanel(QObject):
         self.m_Pass=True
         for i in rowIndexList:
             item=self.m_Table.item(i,columnIndex)
+            item.setText(newValue)
             if newValue is None:
                 item.setBackground(QBrush(QColor(232,232,232)))
             elif newValue == self.m_LastSearch:
